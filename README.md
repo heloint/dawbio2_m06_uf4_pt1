@@ -47,19 +47,26 @@ Investigator:
 
 ## Components
 - Home
-- AboutApp ??
+- AboutSeqMine
 - AboutMembers
 - Login
-- Logout
 - Register
-- Users
-- FileStorage
+- UsersTable
+- UserManage
+- FileStorageTable
+- FileStorageManage
+- PageNotFound
+
 
 ## Services
 - FileUpload
 - CredentialValidation (For registration and login.)
-- SessionHandler ( Checking if the user is logged in or not. + Do the logout.)
+- SessionHandling ( Checking if the user is logged in or not. + Do the logout.)
 
 ## Directives
 - PasswordConfirmValidation
 - FastaFileValidation
+
+## Models
+- User
+- StorageEntity

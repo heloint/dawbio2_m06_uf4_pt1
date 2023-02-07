@@ -12,6 +12,9 @@ import { UserTableComponent } from './components/user-table/user-table.component
 import { FileStorageTableComponent } from './components/file-storage-table/file-storage-table.component';
 import { PasswordConfirmValidationDirective } from './directives/password-confirm-validation.directive';
 import { FastaFileValidationDirective } from './directives/fasta-file-validation.directive';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { FileStorageManageComponent } from './file-storage-manage/file-storage-manage.component';
+import { UserManageComponent } from './user-manage/user-manage.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,10 @@ import { FastaFileValidationDirective } from './directives/fasta-file-validation
     UserTableComponent,
     FileStorageTableComponent,
     PasswordConfirmValidationDirective,
-    FastaFileValidationDirective
+    FastaFileValidationDirective,
+    PageNotFoundComponent,
+    FileStorageManageComponent,
+    UserManageComponent
   ],
   imports: [
     BrowserModule,
