@@ -1,0 +1,125 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <div class="col-4 d-flex justify-content-center">
+      <a class="navbar-brand" href="#"
+        ><img src="/assets/images/SeqMine-logo.png"
+              alt="Site logo"
+      /></a>
+    </div>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarColor02"
+      aria-controls="navbarColor02"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="col-8 collapse navbar-collapse" id="navbarColor02">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            routerLink="/home"
+            routerLinkActive="active"
+            >Home
+            <span class="visually-hidden">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/about-seq-mine"
+            routerLinkActive="active"
+          >
+            SeqMine
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/about-members"
+            routerLinkActive="active"
+            >Members</a
+          >
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            data-bs-toggle="dropdown"
+            role="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            >Users</a
+          >
+          <div class="dropdown-menu">
+            <a
+              class="dropdown-item"
+              routerLink="/user-table"
+              routerLinkActive="active"
+              >Users table</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item"
+              routerLink="/user-manage"
+              routerLinkActive="active"
+              >Create user</a
+            >
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            data-bs-toggle="dropdown"
+            role="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            >FASTA</a
+          >
+          <div class="dropdown-menu">
+            <a
+              class="dropdown-item"
+              routerLink="/file-storage-table"
+              routerLinkActive="active"
+              >FASTA storage</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item"
+              routerLink="/file-storage-manage"
+              routerLinkActive="active"
+              >Upload FASTA</a
+            >
+          </div>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/register"
+            routerLinkActive="active"
+            >Register</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/login"
+            routerLinkActive="active"
+            >Log in</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="#"
+            (click)="doLogOut()"
+            >Log out</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

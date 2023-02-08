@@ -11,7 +11,4 @@ export class AppComponent {
 
 
 
-    doLogOut() {
-        console.log('Log out button works.');
-    }
 }
