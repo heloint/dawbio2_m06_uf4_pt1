@@ -43,7 +43,6 @@ export class CredentialValidationService {
    * @return User | null
    * */
   public validateLoginCredens(usernameParam: string, passwordParam: string): Observable<DataForCookie> {
-    // TODO
     return this.http.post<DataForCookie>(this.#BASE_URL, {username: usernameParam, password: passwordParam })
   }
 

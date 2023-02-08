@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { DatabaseService } from '../../services/database.service';
 
 @Component({
   selector: 'app-user-table',
@@ -6,5 +7,23 @@ import { Component } from '@angular/core';
   styleUrls: ['./user-table.component.css']
 })
 export class UserTableComponent {
+
+  allUsersArr!: any;
+  constructor(
+    private database: DatabaseService
+  ) { }
+
+  allUsers(): any {
+    return this.database.getAllUsers().subscribe(
+      users => {
+        console.log(users);
+        this.allUsersArr = users;
+      });
+  }
+
+  ngOnInit() {
+    this.allUsers();
+  }
+
 
 }
