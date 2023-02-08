@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CredentialValidationService } from '../../services/credential-validation.service';
+import { Observable } from 'rxjs';
+import { CredentialValidationService, DataForCookie } from '../../services/credential-validation.service';
+import { SessionHandlingService } from '../../services/session-handling.service';
 import { User } from '../../models/user.model';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -17,6 +19,7 @@ export class LoginComponent {
     private route: Router,
     private cookieService: CookieService,
     private credenService: CredentialValidationService,
+    private sessionService: SessionHandlingService
   ) {}
 
   validationResult!: User | null;
@@ -27,7 +30,7 @@ export class LoginComponent {
    * @return Boolean
    * */
   get isLoggedIn(): Boolean {
-    return this.credenService.isLoggedIn;
+    return this.sessionService.isLoggedIn;
   }
 
   /*
@@ -59,26 +62,38 @@ export class LoginComponent {
     }
   }
 
+      /* this.loginForm.get('username')?.value,
+      this.loginForm.get('password')?.value */
+
   // Try to validate credens and login the user.
   // After successful login create cookie.
   doLogin() {
-    this.validationResult = this.credenService.validateLoginCredens(
+    const validationResult: Observable<DataForCookie> = this.credenService.validateLoginCredens(
       this.loginForm.get('username')?.value,
       this.loginForm.get('password')?.value
     );
 
-    // TODO: Later uncomment it, when the backend is ready to do the login.
-    /* if (this.validationResult !== null) {
-      this.cookieService.set(
-        this.validationResult.username,
-        this.validationResult.role,
-        { expires: 3 }
-      );
-      this.credenService.isLoggedIn = true;
-      this.route.navigate(['/events']);
-    } else {
-      this.validationError = 'Invalid username or password.';
-      // Pass
-    } */
+    validationResult.subscribe((res) => {
+        console.log(res);
+
+        if (Object.keys(res).length > 0) {
+          this.cookieService.set(
+            res.username,
+            res.role,
+            { expires: 3 }
+          );
+          this.sessionService.isLoggedIn = true;
+          this.route.navigate(['/home']);
+        } else {
+          this.validationError = 'Invalid username or password.';
+        }
+    });
   }
+
+  // Delete cookie and logout.
+  public doLogOut() {
+    this.cookieService.deleteAll();
+    this.sessionService.isLoggedIn = false;
+  }
+
 }

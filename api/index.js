@@ -136,9 +136,14 @@ app.post("/login", cors(), function (req, res) {
 
                 console.log("Succesfully retrieved data.");
                 if (result.length > 0) {
-                    res.status(200).send({results: true});
+                    res.status(200).send({
+                        username: result[0].username,
+                        first_name: result[0].first_name,
+                        last_name: result[0].last_name,
+                        role: result[0].role,
+                    });
                 } else {
-                    res.status(200).send({results: false});
+                    res.status(200).send({});
                 }
             }
         }

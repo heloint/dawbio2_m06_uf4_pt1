@@ -14,6 +14,13 @@ export type RegistrationResult = {
   errorMessage: string;
 };
 
+export type DataForCookie = {
+  username: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+};
+
 export interface InfoTypes {
   [infoType: string]: Boolean;
 }
@@ -29,20 +36,15 @@ export class CredentialValidationService {
     private http: HttpClient
   ) {}
 
-  // Initialize and declare variables.
-  isLoggedIn: Boolean = false;
 
   /* Validates username and password against the "database".
    * @param username string
    * @param password string
    * @return User | null
    * */
-  public validateLoginCredens(usernameParam: string, passwordParam: string): | null {
+  public validateLoginCredens(usernameParam: string, passwordParam: string): Observable<DataForCookie> {
     // TODO
-    let validationResult = null;
-    let res = this.http.post(this.#BASE_URL, {username: usernameParam, password: passwordParam })
-    res.subscribe(result => console.log(result));
-    return validationResult;
+    return this.http.post<DataForCookie>(this.#BASE_URL, {username: usernameParam, password: passwordParam })
   }
 
   /* Validates user object against the "database".
