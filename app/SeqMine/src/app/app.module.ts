@@ -15,6 +15,7 @@ import { FastaFileValidationDirective } from './directives/fasta-file-validation
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { FileStorageManageComponent } from './file-storage-manage/file-storage-manage.component';
 import { UserManageComponent } from './user-manage/user-manage.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { UserManageComponent } from './user-manage/user-manage.component';
     FastaFileValidationDirective,
     PageNotFoundComponent,
     FileStorageManageComponent,
-    UserManageComponent
+    UserManageComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
