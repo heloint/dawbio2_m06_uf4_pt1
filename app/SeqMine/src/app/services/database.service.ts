@@ -3,7 +3,11 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class FileUploadService {
+export class DatabaseService {
 
   constructor() { }
+
+  public getAllUsers() {
+    // TODO
+  }
 }

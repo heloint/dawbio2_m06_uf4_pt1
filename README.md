@@ -59,7 +59,7 @@ Investigator:
 
 
 ## Services
-- FileUpload
+- Database
 - CredentialValidation (For registration and login.)
 - SessionHandling ( Checking if the user is logged in or not. + Do the logout.)
 
