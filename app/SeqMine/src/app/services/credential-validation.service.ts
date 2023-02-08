@@ -40,8 +40,8 @@ export class CredentialValidationService {
   public validateLoginCredens(usernameParam: string, passwordParam: string): | null {
     // TODO
     let validationResult = null;
-    let res = this.http.post(this.#BASE_URL, {username: usernameParam, password: passwordParam });
-    console.log(res);
+    let res = this.http.post(this.#BASE_URL, {username: usernameParam, password: passwordParam })
+    res.subscribe(result => console.log(result));
     return validationResult;
   }
 

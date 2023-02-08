@@ -112,7 +112,7 @@ app.get("/users", cors(), function (req, res) {
  * @param  {string}     '/postClientData' as path where to sent the data.
  * @return {Response}   to http://localhost:3000/postClientData
  */
-app.post("/postClientData", cors(), function (req, res) {
+app.post("/login", cors(), function (req, res) {
     console.log("Trying to send data from the database.");
 
     let sql = `SELECT * FROM users WHERE username=? AND password=?`;
