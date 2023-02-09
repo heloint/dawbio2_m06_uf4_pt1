@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from '../../services/database.service';
 import { User } from '../../models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-table',
@@ -12,6 +13,7 @@ export class UserTableComponent {
   allUsersArr: Array<User> = [];
   // allUsersArr!: any;
   constructor(
+    private route: Router,
     private database: DatabaseService
   ) { }
 
@@ -32,6 +34,10 @@ export class UserTableComponent {
             ));
         });
       });
+  }
+
+  goToUserManage(inputUserID: number) {
+    this.route.navigate(['/user-manage', {userID: inputUserID}]);
   }
 
   ngOnInit() {

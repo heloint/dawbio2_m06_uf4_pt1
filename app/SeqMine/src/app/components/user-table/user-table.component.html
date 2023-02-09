@@ -29,7 +29,22 @@
               <td>{{ user.firstName}}</td>
               <td>{{ user.lastName}}</td>
               <td>{{ user.registrationDate.toLocaleDateString()}}</td>
-              <td></td>
+              <td>
+                  <div class="d-flex justify-content-around">
+                      <button type="button"
+                              class="btn btn-primary"
+                              (click)="goToUserManage(user.id)"
+                      >
+                        Modify
+                      </button>
+
+                      <button type="button"
+                              class="btn btn-danger"
+                      >
+                        Delete
+                      </button>
+                  </div>
+              </td>
             </tr>
           </tbody>
         </table>
