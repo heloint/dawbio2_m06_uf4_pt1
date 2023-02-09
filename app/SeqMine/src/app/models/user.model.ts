@@ -3,25 +3,44 @@
  * @author Dániel Májer
  * */
 
+
+              /* <th scope="col">ID</th>
+              <th scope="col">Username</th>
+              <th scope="col">Role</th>
+              <th scope="col">Password</th>
+              <th scope="col">First name</th>
+              <th scope="col">Last name</th>
+              <th scope="col">Registration date</th> */
+
+
 export class User {
   #id: number;
   #username: string;
+  #role: string;
   #password: string;
   #email: string;
-  #role: string;
+  #firstName: string;
+  #lastName: string;
+  #registrationDate: Date;
 
   constructor(
     id: number,
     username: string,
+    role: string,
     password: string,
     email: string,
-    role: string,
+    firstName: string,
+    lastName: string,
+    registrationDate: Date,
   ) {
     this.#id = id;
     this.#username = username;
+    this.#role = role;
     this.#password = password;
     this.#email = email;
-    this.#role = role;
+    this.#firstName = firstName;
+    this.#lastName = lastName;
+    this.#registrationDate = registrationDate;
   }
 
   // Get ID.
@@ -34,6 +53,12 @@ export class User {
     return this.#username;
   }
 
+
+  // Get role.
+  get role(): string {
+    return this.#role;
+  }
+
   // Get password.
   get password(): string {
     return this.#password;
@@ -44,9 +69,19 @@ export class User {
     return this.#email;
   }
 
-  // Get role.
-  get role(): string {
-    return this.#role;
+  // Get first name.
+  get firstName(): string {
+    return this.#firstName;
+  }
+
+  // Get last name.
+  get lastName(): string {
+    return this.#lastName;
+  }
+
+  // Get last name.
+  get registrationDate(): Date {
+    return this.#registrationDate;
   }
 
   // Set username.
@@ -59,6 +94,11 @@ export class User {
     this.#username = username;
   }
 
+  // Set role.
+  set role(role: string) {
+    this.#role = role;
+  }
+
   // Set password.
   set password(password: string) {
     this.#password = password;
@@ -69,8 +109,18 @@ export class User {
     this.#email = email;
   }
 
-  // Set role.
-  set role(role: string) {
-    this.#role = role;
+  // Set first name.
+  set firstname(firstName: string) {
+    this.#firstName = firstName;
+  }
+
+  // Set first name.
+  set lastname(lastName: string) {
+    this.#lastName = lastName;
+  }
+
+  // Set registration date.
+  set registrationDate(registrationDate: Date) {
+    this.#registrationDate= registrationDate;
   }
 }

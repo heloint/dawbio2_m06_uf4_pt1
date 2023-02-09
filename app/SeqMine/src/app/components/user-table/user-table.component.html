@@ -12,6 +12,7 @@
               <th scope="col">Username</th>
               <th scope="col">Role</th>
               <th scope="col">Password</th>
+              <th scope="col">E-mail</th>
               <th scope="col">First name</th>
               <th scope="col">Last name</th>
               <th scope="col">Registration date</th>
@@ -19,14 +20,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of this.allUsersArr.result" scope="row">
-              <th scope="row">{{ user.user_id}}</th>
+            <tr *ngFor="let user of this.allUsersArr" scope="row">
+              <th scope="row">{{ user.id}}</th>
               <td>{{ user.username }}</td>
               <td>{{ user.role}}</td>
               <td>{{ user.password}}</td>
-              <td>{{ user.first_name}}</td>
-              <td>{{ user.last_name}}</td>
-              <td>{{ user.registration_date}}</td>
+              <td>{{ user.email}}</td>
+              <td>{{ user.firstName}}</td>
+              <td>{{ user.lastName}}</td>
+              <td>{{ user.registrationDate.toLocaleDateString()}}</td>
               <td></td>
             </tr>
           </tbody>

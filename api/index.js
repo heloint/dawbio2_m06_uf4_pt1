@@ -75,6 +75,7 @@ app.get("/users", cors(), function (req, res) {
             username,
             role,
             password,
+            email,
             first_name,
             last_name,
             registration_date
