@@ -1,0 +1,15 @@
+thead {
+    background-color: #8b7c7b;
+}
+
+tbody {
+    background-color: #DEDDE3;
+}
+
+thead > tr > th {
+    border: 1px solid #b3b2b2;
+}
+
+tr {
+    border-bottom: 1px solid #9b9b9b;
+}

@@ -1,5 +1,37 @@
-<p>user-table works!</p>
+<div class="container">
 
-<p *ngFor="let i of this.allUsersArr.result">
-  {{ i.username }}
-</p>
+    <div class="row my-3">
+        <h3 class="text-center">Users</h3>
+    </div>
+
+    <div class="row">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Username</th>
+              <th scope="col">Role</th>
+              <th scope="col">Password</th>
+              <th scope="col">First name</th>
+              <th scope="col">Last name</th>
+              <th scope="col">Registration date</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of this.allUsersArr.result" scope="row">
+              <th scope="row">{{ user.user_id}}</th>
+              <td>{{ user.username }}</td>
+              <td>{{ user.role}}</td>
+              <td>{{ user.password}}</td>
+              <td>{{ user.first_name}}</td>
+              <td>{{ user.last_name}}</td>
+              <td>{{ user.registration_date}}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+</div>
+
+
