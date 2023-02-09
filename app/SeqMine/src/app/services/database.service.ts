@@ -13,7 +13,7 @@ export type DBRoleArr = {
 
 export type DBRole = {
   role_id: number,
-  role: string
+  role_name: string
 }
 
 export type DBUser = {

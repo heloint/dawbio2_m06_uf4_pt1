@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute} from '@angular/router';
 import { User } from '../../models/user.model';
+import { Role } from '../../models/role.model';
 import { DatabaseService, DBUser, DBRole } from '../../services/database.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
@@ -56,7 +57,10 @@ export class UserManageComponent {
     fetchRoles() {
       return this.database.getAllRoles().subscribe(result => {
         result.result.forEach((role) => {
-          this.roles.push(role)
+          this.roles.push(new Role(
+            role.role_id,
+            role.role_name
+          ));
         });
       });
     }

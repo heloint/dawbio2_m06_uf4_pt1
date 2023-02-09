@@ -22,7 +22,7 @@
         <div class="form-group">
           <label for="role" class="form-label mt-3">Role</label>
           <select class="form-select" id="role" formControlName="role">
-            <option *ngFor="let role of this.roles" [value]="role.role_name" >{{ role.role_name | titlecase }}</option>
+            <option *ngFor="let role of this.roles" [value]="role.name" >{{ role.name | titlecase }}</option>
           </select>
         </div>
         <!-- END: ROLE -->
