@@ -33,10 +33,10 @@ const connection = mysql.createConnection({
 
     // USERS:
     // ======
-    user: "dama",
-    password: "Stabilo1",
-    /* user: "danielmajer",
-    password: "Fdfac416+", */
+    /* user: "dama",
+    password: "Stabilo1", */
+    user: "danielmajer",
+    password: "Fdfac416+",
 
 });
 console.log("Logging into the database...");

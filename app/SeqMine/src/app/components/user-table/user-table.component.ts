@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from '../../services/database.service';
 import { User } from '../../models/user.model';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-user-table',
@@ -14,6 +14,7 @@ export class UserTableComponent {
   // allUsersArr!: any;
   constructor(
     private route: Router,
+    private activatedRoute: ActivatedRoute,
     private database: DatabaseService
   ) { }
 
@@ -38,6 +39,12 @@ export class UserTableComponent {
 
   goToUserManage(inputUserID: number) {
     this.route.navigate(['/user-modify', {userID: inputUserID}]);
+  }
+
+  requireConfirmation(id: number, username: string) {
+      const dialog: string = `Are you sure you want to delete "${username}" user?`;
+
+    this.route.navigate(['/confirm-page', {id: id, confirmDialog: dialog, method: 'userDelete'}]);
   }
 
   ngOnInit() {

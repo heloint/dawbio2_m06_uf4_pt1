@@ -19,6 +19,7 @@ import { FileStorageManageComponent } from './components/file-storage-manage/fil
 import { UserManageComponent } from './components/user-manage/user-manage.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
+import { ConfirmationPageComponent } from './components/confirmation-page/confirmation-page.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { HeaderComponent } from './components/header/header.component';
     FileStorageManageComponent,
     UserManageComponent,
     FooterComponent,
-    HeaderComponent
+    HeaderComponent,
+    ConfirmationPageComponent
   ],
   imports: [
     BrowserModule,

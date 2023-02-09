@@ -11,7 +11,7 @@ import { FileStorageTableComponent } from './components/file-storage-table/file-
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { FileStorageManageComponent } from './components/file-storage-manage/file-storage-manage.component';
 import { UserManageComponent } from './components/user-manage/user-manage.component';
-
+import { ConfirmationPageComponent } from './components/confirmation-page/confirmation-page.component';
 
 const routes: Routes = [
   {
@@ -58,6 +58,10 @@ const routes: Routes = [
   {
     path: 'file-storage-manage',
     component: FileStorageManageComponent,
+  },
+  {
+    path: 'confirm-page',
+    component: ConfirmationPageComponent,
   },
   {
     path: '**', // Cuando el usuario se equivoca con la ruta.
