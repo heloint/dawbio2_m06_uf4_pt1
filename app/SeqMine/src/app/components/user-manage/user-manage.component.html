@@ -1,0 +1,77 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <form [formGroup]="userManageForm" class="col-6">
+      <fieldset>
+        <legend>Add user</legend>
+
+        <!-- ID -->
+        <div class="form-group">
+          <label for="exampleInputEmail1" class="form-label mt-4">User ID</label>
+          <input type="number" [readonly]="this.isAddUserMode === true" class="form-control" formControlName="id">
+        </div>
+        <!-- END: ID -->
+
+        <!-- ROLE -->
+        <div class="form-group">
+          <label for="role" class="form-label mt-4">Role</label>
+          <select class="form-select" id="role">
+            <option>Investigator</option>
+            <option>Admin</option>
+          </select>
+        </div>
+        <!-- END: ROLE -->
+
+        <!-- USERNAME -->
+        <div class="form-group">
+          <label for="username" class="form-label mt-4">Username</label>
+          <input type="text" class="form-control" id="username" placeholder="Enter username" formControlName="username">
+        </div>
+        <!-- END: USERNAME -->
+
+        <!-- FIRST NAME-->
+        <div class="form-group">
+          <label for="first name" class="form-label mt-4">First name</label>
+          <input type="text" class="form-control" id="first name" placeholder="Enter first name" formControlName="firstName">
+        </div>
+        <!-- END: FIRST NAME-->
+
+        <!-- Last NAME-->
+        <div class="form-group">
+          <label for="Last name" class="form-label mt-4">Last name</label>
+          <input type="text" class="form-control" id="Last name" placeholder="Enter last name" formControlName="lastName">
+        </div>
+        <!-- END: Last NAME-->
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+          <label for="password" class="form-label mt-4">Password</label>
+          <input type="password" class="form-control" id="password" placeholder="Enter password.">
+        </div>
+        <!-- END: PASSWORD -->
+
+        <!-- PASSWORD CONFIRMATION -->
+        <div *ngIf="this.isAddUserMode == true"class="form-group">
+          <label for="password" class="form-label mt-4">Confirm password</label>
+          <input type="password" class="form-control" id="password" placeholder="Enter password.">
+        </div>
+        <!-- END: PASSWORD CONFIRMATION -->
+
+        <!-- EMAIL -->
+        <div class="form-group">
+          <label for="email" class="form-label mt-4">Email address</label>
+          <input type="email" class="form-control" id="email" placeholder="Enter email">
+        </div>
+        <!-- END: EMAIL -->
+
+      </fieldset>
+
+      <div class="my-3">
+        <button type="submit" class="btn btn-primary">ADD USER</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+

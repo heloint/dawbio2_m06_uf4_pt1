@@ -33,10 +33,10 @@ const connection = mysql.createConnection({
 
     // USERS:
     // ======
-    /* user: "dama",
-    password: "Stabilo1", */
-    user: "danielmajer",
-    password: "Fdfac416+",
+    user: "dama",
+    password: "Stabilo1",
+    /* user: "danielmajer",
+    password: "Fdfac416+", */
 
 });
 console.log("Logging into the database...");
@@ -54,18 +54,6 @@ connection.connect(function (err) {
     console.log("Connected as id " + connection.threadId);
 });
 
-/**
- * Get all users data
- *
- * @description         Recieve a request by GET method.
- *                      Query the request to the database.
- *                      Return a response to http://localhost:3000/userData. If error
- *                      ocurred the response will be null, else return all users data.
- *
- * @param  {string}     '/users' as path where to sent the data.
- * @return {Response}   to http://localhost:3000/userData
- *
- */
 app.get("/users", cors(), function (req, res) {
     console.log("Trying to get data from the database.");
 
@@ -101,20 +89,6 @@ app.get("/users", cors(), function (req, res) {
 
 // ----------------------------------------------------------------
 
-/**
- * Summary:
- * ------------
- * Modify de database.
- *
- * @description         Recieve a request by POST method.
- *                      Make a Query to update the database.
- *                      Return a response to http://localhost:3000/postClientData. If error
- *                      ocurred the response will be an error message, else will be a success
- *                      message.
- *
- * @param  {string}     '/postClientData' as path where to sent the data.
- * @return {Response}   to http://localhost:3000/postClientData
- */
 app.post("/login", cors(), function (req, res) {
     console.log("Trying to send data from the database.");
 
@@ -154,6 +128,39 @@ app.post("/login", cors(), function (req, res) {
 
 });
 // ----------------------------------------------------------------
+
+app.post("/userByID", cors(), function (req, res) {
+    console.log("Trying to send data from the database.");
+
+    let sql = `SELECT * FROM users WHERE user_id=?`;
+
+    connection.query(
+        sql,
+        [
+            req.body.userID,
+        ],
+        function (error, result, field) {
+            if (error) {
+                console.log(
+                    "The following error has occured during querying the database:"
+                );
+                console.log("===================================");
+                console.log(error);
+                console.log("===================================");
+                res.status(400).send({ results: false});
+            } else {
+
+                console.log("Succesfully retrieved data.");
+                if (result.length > 0) {
+                    res.status(200).send({ result: result });
+                } else {
+                    res.status(200).send({});
+                }
+            }
+        }
+    );
+
+});
 
 app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");

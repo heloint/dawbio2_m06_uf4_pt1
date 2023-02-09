@@ -8,9 +8,9 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { UserTableComponent } from './components/user-table/user-table.component';
 import { FileStorageTableComponent } from './components/file-storage-table/file-storage-table.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { FileStorageManageComponent } from './file-storage-manage/file-storage-manage.component';
-import { UserManageComponent } from './user-manage/user-manage.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { FileStorageManageComponent } from './components/file-storage-manage/file-storage-manage.component';
+import { UserManageComponent } from './components/user-manage/user-manage.component';
 
 
 const routes: Routes = [
@@ -44,7 +44,11 @@ const routes: Routes = [
     component: UserTableComponent,
   },
   {
-    path: 'user-manage',
+    path: 'user-modify',
+    component: UserManageComponent,
+  },
+  {
+    path: 'user-add',
     component: UserManageComponent,
   },
   {

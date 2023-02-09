@@ -37,7 +37,7 @@ export class UserTableComponent {
   }
 
   goToUserManage(inputUserID: number) {
-    this.route.navigate(['/user-manage', {userID: inputUserID}]);
+    this.route.navigate(['/user-modify', {userID: inputUserID}]);
   }
 
   ngOnInit() {

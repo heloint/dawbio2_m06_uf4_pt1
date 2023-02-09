@@ -22,13 +22,20 @@ export type DBUser = {
   providedIn: 'root'
 })
 export class DatabaseService {
+
+  #BASE_URL: string = 'http://localhost:3000';
   constructor(
     private http: HttpClient,
   ) { }
 
+  // Requests all the users can be found in the database.
   public getAllUsers() {
-    // TODO
-    let res = this.http.get<DBUserArr>('http://localhost:3000/users');
+    let res = this.http.get<DBUserArr>(this.#BASE_URL + '/users');
     return res;
+  }
+
+  // Requests to find a user by it's ID.
+  public getUserByID(inputID: number) {
+    return this.http.post<DBUserArr>(this.#BASE_URL + '/userByID', {userID: inputID})
   }
 }
