@@ -54,20 +54,64 @@ connection.connect(function (err) {
     console.log("Connected as id " + connection.threadId);
 });
 
+app.get("/roles", cors(), function (req, res) {
+    console.log("Trying to get data from the database.");
+
+    connection.query(
+        `SELECT * FROM roles`,
+
+        function (error, results, field) {
+            if (error) {
+                console.log(
+                    "Error occured during the query of the bank accounts."
+                );
+                console.log("============================");
+                console.log(error);
+                console.log("============================");
+                res.status(400).send({ results: null });
+            } else {
+                res.status(200).send({ result: results });
+            }
+        }
+    );
+});
+
+app.get("/lastUserID", cors(), function (req, res) {
+    console.log("Trying to get data from the database.");
+
+    connection.query(
+        `SELECT MAX(user_id) AS last_id FROM users`,
+
+        function (error, results, field) {
+            if (error) {
+                console.log(
+                    "Error occured during the query of the bank accounts."
+                );
+                console.log("============================");
+                console.log(error);
+                console.log("============================");
+                res.status(400).send({ results: null });
+            } else {
+                res.status(200).send({ result: results[0].last_id });
+            }
+        }
+    );
+});
+
 app.get("/users", cors(), function (req, res) {
     console.log("Trying to get data from the database.");
 
     connection.query(
         `SELECT
-            user_id,
-            username,
-            role,
-            password,
-            email,
-            first_name,
-            last_name,
-            registration_date
-         FROM users
+            U.user_id,
+            U.username,
+            R.role_name,
+            U.password,
+            U.email,
+            U.first_name,
+            U.last_name,
+            U.registration_date
+         FROM users AS U JOIN roles as R ON U.role_id=R.role_id
         `,
 
         function (error, results, field) {
@@ -132,7 +176,20 @@ app.post("/login", cors(), function (req, res) {
 app.post("/userByID", cors(), function (req, res) {
     console.log("Trying to send data from the database.");
 
-    let sql = `SELECT * FROM users WHERE user_id=?`;
+    let sql = `
+        SELECT
+            U.user_id,
+            U.username,
+            R.role_name,
+            U.password,
+            U.email,
+            U.first_name,
+            U.last_name,
+            U.registration_date
+         FROM users AS U JOIN roles as R ON U.role_id=R.role_id
+         WHERE U.user_id = ?
+    `;
+
 
     connection.query(
         sql,

@@ -18,14 +18,14 @@ export class UserTableComponent {
   ) { }
 
 
-  allUsers(): any {
+  fetchAllUsers(): any {
     return this.database.getAllUsers().subscribe(
       users => {
         users.result.forEach((user) => {
             this.allUsersArr.push(new User(
                 user.user_id,
                 user.username,
-                user.role,
+                user.role_name,
                 user.password,
                 user.email,
                 user.first_name,
@@ -41,7 +41,7 @@ export class UserTableComponent {
   }
 
   ngOnInit() {
-    this.allUsers();
+    this.fetchAllUsers();
   }
 
 
