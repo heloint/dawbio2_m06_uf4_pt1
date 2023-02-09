@@ -219,6 +219,35 @@ app.post("/userByID", cors(), function (req, res) {
 
 });
 
+app.post("/deleteUserByID", cors(), function (req, res) {
+    console.log("Trying to send data from the database.");
+
+    let sql = `DELETE FROM users WHERE user_id=? `;
+
+
+    connection.query(
+        sql,
+        [
+            req.body.userID,
+        ],
+        function (error, result, field) {
+            if (error) {
+                console.log(
+                    "The following error has occured during querying the database:"
+                );
+                console.log("===================================");
+                console.log(error);
+                console.log("===================================");
+                res.status(400).send({ results: false});
+            } else {
+              console.log("Succesfully deleted user.");
+              res.status(200).send({ result: true});
+            }
+        }
+    );
+
+});
+
 app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");
 });

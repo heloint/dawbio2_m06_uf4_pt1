@@ -31,12 +31,17 @@ export type DBLastUserID = {
   result: number;
 }
 
+export type QueryConfirmation = {
+    result: Boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
-
+  
   #BASE_URL: string = 'http://localhost:3000';
+
   constructor(
     private http: HttpClient,
   ) { }
@@ -51,13 +56,22 @@ export class DatabaseService {
     return this.http.get<DBRoleArr>(this.#BASE_URL + '/roles');
   }
 
-  // Requests to find a user by it's ID.
+  /* Requests to find a user by it's ID.
+   * @param inputID number
+   * */
   public getUserByID(inputID: number) {
-    return this.http.post<DBUserArr>(this.#BASE_URL + '/userByID', {userID: inputID})
+    return this.http.post<DBUserArr>(this.#BASE_URL + '/userByID', {userID: inputID});
   }
 
   // Requests the last user id from the database.
   public getLastUserID() {
     return this.http.get<DBLastUserID>(this.#BASE_URL + '/lastUserID');
   }
+
+  /* Send a request to the server to delete a user by the argument ID.
+   * @param inputID number
+   * */
+   public deleteUserByID(inputID: number) {
+     return this.http.post<QueryConfirmation>(this.#BASE_URL + '/deleteUserByID', {userID: inputID});
+   }
 }

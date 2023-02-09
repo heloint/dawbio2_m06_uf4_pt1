@@ -44,7 +44,15 @@ export class UserTableComponent {
   requireConfirmation(id: number, username: string) {
       const dialog: string = `Are you sure you want to delete "${username}" user?`;
 
-    this.route.navigate(['/confirm-page', {id: id, confirmDialog: dialog, method: 'userDelete'}]);
+    this.route.navigate(['/confirm-page', {id: id, confirmDialog: dialog, method: 'userDelete', username: username}]);
+  }
+
+  getUserDeletionStatus(): Boolean {
+      let result: Boolean = false;
+      if (sessionStorage['userDeletionStatus'] !== undefined) {
+          result = JSON.parse(sessionStorage['userDeletionStatus']).status;
+      }
+      return result;
   }
 
   ngOnInit() {

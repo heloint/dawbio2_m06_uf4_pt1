@@ -22,7 +22,23 @@ export class ConfirmationPageComponent {
     }
 
     executeMethod() {
-
+      if (this.id !== 0 &&
+          this.confirmDialog !== '' &&
+          this.method !== '')
+      {
+          switch(this.method) {
+              case 'userDelete':
+                  if (this.id !== null &&
+                      this.id !== undefined) {
+                        const username: string | null = this.route.snapshot.paramMap.get('username');
+                        this.database.deleteUserByID(this.id).subscribe(result => {
+                        sessionStorage['userDeletionStatus'] = JSON.stringify({status: result.result, username: username});
+                    });
+                  }
+                  this.location.back();
+                  break;
+          }
+      }
     }
 
     returnToPage() {
@@ -34,9 +50,5 @@ export class ConfirmationPageComponent {
       this.confirmDialog = this.route.snapshot.paramMap.get('confirmDialog');
       this.method = this.route.snapshot.paramMap.get('method');
 
-      switch(this.method) {
-          case 'userDelete':
-              break;
-      }
     }
 }
