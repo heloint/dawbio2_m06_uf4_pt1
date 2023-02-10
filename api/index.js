@@ -17,46 +17,12 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql");
 const cors = require("cors");
 const path = require('path');
+const multer = require("multer");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/', express.static(path.join(__dirname, './public')))
-
-
-// MULTER FILE UPLOAD
-// ===========================================
-const multer = require("multer");
-var storage = multer.diskStorage({
-    destination: function (req, file, callback) {
-        callback(null, 'uploads/');
-    },
-    filename: function (req, file, callback) {
-        callback(null, file.originalname);
-    }
-});
-
-const upload = multer({storage: storage });
-
-app.post('/uploadFasta', cors(), upload.array("file"), (req, res) => {
-
-  const file = req;
-    console.log(req.body);
-    console.log(req.files);
-
-  /* if (!file) {
-
-    const error = new Error('Please upload a file')
-
-    error.httpStatusCode = 400
-
-    return next(error)
-
-  }
-
-    res.send(file) */
-})
-// ===========================================
 
 // Create a connection to the databse.
 // You can create your user in the next comment below called "USERS".
@@ -88,6 +54,40 @@ connection.connect(function (err) {
 
     console.log("Connected as id " + connection.threadId);
 });
+
+// MULTER FILE UPLOAD
+// ===========================================
+const storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, 'uploads/');
+    },
+    filename: function (req, file, callback) {
+        callback(null, file.originalname);
+    }
+});
+
+const upload = multer({storage: storage });
+
+app.post('/uploadFasta', [cors(), upload.array("file")], (req, res) => {
+
+  const file = req;
+    console.log(req.body);
+    console.log(req.files);
+
+  if (!file) {
+
+    const error = new Error('Please upload a file')
+
+    error.httpStatusCode = 400
+
+    return next(error)
+
+  }
+
+    res.status(200).send({result: true})
+})
+// ===========================================
+
 
 app.get("/roles", cors(), function (req, res) {
     console.log("Trying to get data from the database.");

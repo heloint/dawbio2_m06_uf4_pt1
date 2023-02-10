@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpRequest } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 
 // Represents a response with user related queries.
@@ -92,5 +92,24 @@ export class DatabaseService {
     * */
     public addUser(user: DBUser) {
         return this.http.post<QueryConfirmation>(this.#BASE_URL + '/addUser', user);
+    }
+
+   /* Send a request to the server with a File object save it on the server.
+    * @param user DBUser
+    * */
+    public uploadFasta(file: File) {
+
+      let formData: FormData = new FormData();
+
+      formData.append("file", file);
+      const req = new HttpRequest('POST',
+                                  `${this.#BASE_URL}/uploadFasta`,
+                                  formData, {
+                                    reportProgress: true,
+                                    responseType: 'json'
+      });
+
+      return this.http.request(req);
+
     }
 }
