@@ -3,16 +3,6 @@
  * @author Dániel Májer
  * */
 
-
-              /* <th scope="col">ID</th>
-              <th scope="col">Username</th>
-              <th scope="col">Role</th>
-              <th scope="col">Password</th>
-              <th scope="col">First name</th>
-              <th scope="col">Last name</th>
-              <th scope="col">Registration date</th> */
-
-
 export class User {
   #id: number;
   #username: string;

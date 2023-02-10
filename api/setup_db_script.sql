@@ -29,12 +29,12 @@ INSERT INTO roles VALUES
 -- #####################################################################
 CREATE TABLE IF NOT EXISTS users (
                                 user_id INT(10) PRIMARY KEY,
-                                username VARCHAR(25) NOT NULL,
-                                role_id INT(10),
-                                password VARCHAR(25) NOT NULL,
-                                email VARCHAR(30) NOT NULL,
-                                first_name VARCHAR(50) NOT NULL,
-                                last_name VARCHAR(60) NOT NULL,
+                                username VARCHAR(25) NOT NULL CHECK(username <> ''),
+                                role_id INT(10) NOT NULL CHECK(role_id <> 0),
+                                password VARCHAR(25) NOT NULL CHECK(password <> ''),
+                                email VARCHAR(30) NOT NULL CHECK(email <> ''),
+                                first_name VARCHAR(50) NOT NULL CHECK(first_name <> ''),
+                                last_name VARCHAR(60) NOT NULL CHECK(last_name <> ''),
                                 registration_date DATE NOT NULL,
                                 FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );

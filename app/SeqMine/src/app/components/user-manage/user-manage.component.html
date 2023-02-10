@@ -3,12 +3,19 @@
     <form [formGroup]="userManageForm" class="col-6">
       <fieldset>
         <div *ngIf="this.isAddUserMode; else modifyLegend">
-          <legend>Add user</legend>
+          <div>
+              <legend>Add user</legend>
+          </div>
+          <h4 *ngIf="this.creationResult" class="success-msg">Successfully created user!</h4>
+          <h4 *ngIf="this.creationResult === false" class="failed-msg">Failed to create user!</h4>
         </div>
+
         <ng-template #modifyLegend>
           <div>
             <legend>Modify user</legend>
           </div>
+          <h4 *ngIf="this.modificationResult" class="success-msg">Successful update!</h4>
+          <h4 *ngIf="this.modificationResult === false" class="failed-msg">Failed to update!</h4>
         </ng-template>
 
         <!-- ID -->
@@ -72,16 +79,24 @@
       </fieldset>
 
       <div *ngIf="this.isAddUserMode;else modifyButton" class="my-3">
-        <button type="submit" class="btn btn-primary">ADD USER</button>
+        <button type="submit"
+                class="btn btn-primary"
+                (click)="doAddUser()"
+        >
+            ADD USER
+        </button>
       </div>
       <ng-template #modifyButton>
         <div class="my-3">
-          <button type="submit" class="btn btn-primary">MODIFY USER</button>
+          <button type="submit"
+                  class="btn btn-primary"
+                  (click)="doModifyUser()"
+          >
+            MODIFY USER
+          </button>
         </div>
       </ng-template>
 
     </form>
   </div>
 </div>
-
-

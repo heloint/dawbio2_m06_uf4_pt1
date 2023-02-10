@@ -5,6 +5,7 @@ import { Role } from '../../models/role.model';
 import { DatabaseService, DBUser, DBRole } from '../../services/database.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+
 @Component({
   selector: 'app-user-manage',
   templateUrl: './user-manage.component.html',
@@ -14,6 +15,10 @@ export class UserManageComponent {
 
     isAddUserMode: Boolean = true;
     roles: any = [];
+    userID: number | null = null;
+    modificationResult: Boolean | null = null;
+    creationResult: Boolean | null = null;
+
     constructor(
         private route: ActivatedRoute,
         private database: DatabaseService,
@@ -36,12 +41,10 @@ export class UserManageComponent {
      * @param inputID number
      * */
     fetchUserByID(inputID: number) {
-      this.database.getUserByID(inputID).subscribe(
+      return this.database.getUserByID(inputID).subscribe(
         result => {
-
           if (Object.keys(result).length > 0) {
             const foundUser: DBUser = result.result[0];
-
             this.userManageForm.controls['id'].setValue(foundUser.user_id);
             this.userManageForm.controls['username'].setValue(foundUser.username);
             this.userManageForm.controls['role'].setValue(foundUser.role_name);
@@ -71,17 +74,49 @@ export class UserManageComponent {
       });
     }
 
+    doModifyUser(){
+        return this.database.updateUser({
+            user_id: this.userManageForm.get('id')?.value,
+            username: this.userManageForm.get('username')?.value,
+            role_name: this.userManageForm.get('role')?.value,
+            password: this.userManageForm.get('password')?.value,
+            email: this.userManageForm.get('email')?.value,
+            first_name: this.userManageForm.get('firstName')?.value,
+            last_name: this.userManageForm.get('lastName')?.value,
+            registration_date: new Date()
+        }).subscribe({
+            next: result => { this.modificationResult = result.result; },
+            error: error => { this.modificationResult = false; }
+        });
+    }
+
+    doAddUser() {
+        return this.database.addUser({
+            user_id: this.userManageForm.get('id')?.value,
+            username: this.userManageForm.get('username')?.value,
+            role_name: this.userManageForm.get('role')?.value,
+            password: this.userManageForm.get('password')?.value,
+            email: this.userManageForm.get('email')?.value,
+            first_name: this.userManageForm.get('firstName')?.value,
+            last_name: this.userManageForm.get('lastName')?.value,
+            registration_date: new Date()
+        }).subscribe({
+            next: result => { this.creationResult = result.result; },
+            error: error => { this.creationResult = false; }
+        });
+    }
 
     ngOnInit() {
       this.fetchRoles();
 
-      const userID = Number(this.route.snapshot.paramMap.get('userID'));
+      this.userID = Number(this.route.snapshot.paramMap.get('userID'));
 
-      if (userID) {
+      if (this.userID) {
         this.isAddUserMode = false;
-        this.fetchUserByID(userID);
+        this.fetchUserByID(this.userID);
       } else {
         this.fetchLastUserID();
       }
     }
+
 }
