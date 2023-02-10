@@ -7,13 +7,14 @@
     >
       <!-- USERNAME -->
       <!-- ===================================================== -->
-      <div class="col-5 mt-5 text-center">
-        <label for="login-username">Username</label>
+      <div class="col-3 mt-5 text-center form-group">
+        <label for="login-username" class="form-label">Username</label>
         <div class="w-100"></div>
         <input
           id="login-username"
           type="text"
           formControlName="username"
+          class="form-control"
         />
 
         <span
@@ -28,11 +29,12 @@
 
       <!-- Password -->
       <!-- ===================================================== -->
-      <div class="col-5 mt-3 text-center">
-        <label for="login-password">Password</label>
+      <div class="col-3 mt-3 text-center form-group">
+        <label for="login-password" class="form-label">Password</label>
         <div class="w-100"></div>
         <input
           type="password"
+          class="form-control"
           formControlName="password"
           value="this.getLocalStorageValue('loginPassword')"
         />
@@ -46,7 +48,7 @@
 
       <div class="w-100"></div>
 
-      <div class="col-5 mt-3 text-center">
+      <div class="col-5 my-3 text-center">
         <button
           class="btn btn-m btn-info"
           type="submit"
