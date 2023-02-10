@@ -57,6 +57,11 @@ export class UserManageComponent {
       );
     }
 
+    /**
+     * fetchRoles fetches all roles from the database and maps them to an array of Role objects.
+     *
+     * @return {void}
+     */
     fetchRoles() {
       return this.database.getAllRoles().subscribe(result => {
         result.result.forEach((role) => {
@@ -68,12 +73,22 @@ export class UserManageComponent {
       });
     }
 
+    /**
+     * fetchLastUserID fetches the last user ID from the database and sets it as the next user ID.
+     *
+     * @return {void}
+     */
     fetchLastUserID() {
       return this.database.getLastUserID().subscribe(result => {
         this.userManageForm.controls['id'].setValue(result.result+1);
       });
     }
 
+    /**
+     * doModifyUser updates a user in the database.
+     *
+     * @return {void}
+     */
     doModifyUser(){
         return this.database.updateUser({
             user_id: this.userManageForm.get('id')?.value,
@@ -90,6 +105,11 @@ export class UserManageComponent {
         });
     }
 
+    /**
+     * doAddUser adds a user to the database.
+     *
+     * @return {void}
+     */
     doAddUser() {
         return this.database.addUser({
             user_id: this.userManageForm.get('id')?.value,
@@ -106,6 +126,10 @@ export class UserManageComponent {
         });
     }
 
+    /* It fetches the roles, determines whether the user is in "add" or "modify" mode, and fetches the user data if in "modify" mode.
+     *
+     * @return {void}
+     */
     ngOnInit() {
       this.fetchRoles();
 
