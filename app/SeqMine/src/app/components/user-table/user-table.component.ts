@@ -11,7 +11,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class UserTableComponent {
 
   allUsersArr: Array<User> = [];
-  // allUsersArr!: any;
+  recentlyDeletedUser: string | null = null;
+  userDeletionStatus: Boolean | null = null;
+
   constructor(
     private route: Router,
     private activatedRoute: ActivatedRoute,
@@ -47,16 +49,20 @@ export class UserTableComponent {
     this.route.navigate(['/confirm-page', {id: id, confirmDialog: dialog, method: 'userDelete', username: username}]);
   }
 
-  getUserDeletionStatus(): Boolean {
-      let result: Boolean = false;
-      if (sessionStorage['userDeletionStatus'] !== undefined) {
-          result = JSON.parse(sessionStorage['userDeletionStatus']).status;
-      }
-      return result;
+  getUserDeletionStatus(): Boolean | null {
+    const status: string | null = this.activatedRoute.snapshot.paramMap.get('status');
+
+    if (status !== null) {
+        this.userDeletionStatus = (this.activatedRoute.snapshot.paramMap.get('status') === 'true');
+        this.recentlyDeletedUser = this.activatedRoute.snapshot.paramMap.get('username');
+    }
+
+    return this.userDeletionStatus;
   }
 
   ngOnInit() {
     this.fetchAllUsers();
+
   }
 
 

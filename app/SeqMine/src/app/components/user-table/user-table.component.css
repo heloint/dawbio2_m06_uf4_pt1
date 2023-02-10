@@ -13,3 +13,11 @@ thead > tr > th {
 tr {
     border-bottom: 1px solid #9b9b9b;
 }
+
+#success-deletion-message {
+    color: #00D100;
+}
+
+#failed-deletion-message {
+    color: #D10000;
+}

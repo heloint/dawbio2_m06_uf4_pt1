@@ -5,7 +5,10 @@
     </div>
 
     <div class="row">
-      <h3 *ngIf="getUserDeletionStatus()">fdasfdsa</h3>
+
+        <h3 *ngIf="getUserDeletionStatus()" class="text-center" id="success-deletion-message">User "{{ recentlyDeletedUser }}" has successfully been deleted. </h3>
+        <h3 *ngIf="getUserDeletionStatus() === false" class="text-center" id="failed-deletion-message">Failed to delete "{{ recentlyDeletedUser }}".<br> Something went wrong.</h3>
+
         <table class="table table-hover">
           <thead>
             <tr>

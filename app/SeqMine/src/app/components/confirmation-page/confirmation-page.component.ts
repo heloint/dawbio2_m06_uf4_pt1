@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from '../../services/database.service';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 @Component({
@@ -14,7 +14,8 @@ export class ConfirmationPageComponent {
     method!: string | null;
 
     constructor(
-      private route: ActivatedRoute,
+      private activatedRoute: ActivatedRoute,
+      private route: Router,
       private database: DatabaseService,
       private location: Location
     ) {
@@ -26,18 +27,18 @@ export class ConfirmationPageComponent {
           this.confirmDialog !== '' &&
           this.method !== '')
       {
-          switch(this.method) {
-              case 'userDelete':
-                  if (this.id !== null &&
-                      this.id !== undefined) {
-                        const username: string | null = this.route.snapshot.paramMap.get('username');
-                        this.database.deleteUserByID(this.id).subscribe(result => {
-                        sessionStorage['userDeletionStatus'] = JSON.stringify({status: result.result, username: username});
-                    });
-                  }
-                  this.location.back();
-                  break;
-          }
+        switch(this.method) {
+            case 'userDelete':
+                if (this.id !== null &&
+                    this.id !== undefined) {
+                      const username: string | null = this.activatedRoute.snapshot.paramMap.get('username');
+                      this.database.deleteUserByID(this.id).subscribe(result => {
+                        this.route.navigate(['/user-table', {status: result.result, username: username}]);
+                  });
+                }
+                this.location.back();
+                break;
+        }
       }
     }
 
@@ -46,9 +47,9 @@ export class ConfirmationPageComponent {
     }
 
     ngOnInit() {
-      this.id = Number(this.route.snapshot.paramMap.get('id'));
-      this.confirmDialog = this.route.snapshot.paramMap.get('confirmDialog');
-      this.method = this.route.snapshot.paramMap.get('method');
+      this.id = Number(this.activatedRoute.snapshot.paramMap.get('id'));
+      this.confirmDialog = this.activatedRoute.snapshot.paramMap.get('confirmDialog');
+      this.method = this.activatedRoute.snapshot.paramMap.get('method');
 
     }
 }
