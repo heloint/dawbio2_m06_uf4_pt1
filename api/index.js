@@ -16,12 +16,47 @@ const app = express();
 const bodyParser = require("body-parser");
 const mysql = require("mysql");
 const cors = require("cors");
-// const path       = require('path');
+const path = require('path');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
-// app.use('/', express.static(path.join(__dirname, 'test')))
+app.use('/', express.static(path.join(__dirname, './public')))
+
+
+// MULTER FILE UPLOAD
+// ===========================================
+const multer = require("multer");
+var storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, 'uploads/');
+    },
+    filename: function (req, file, callback) {
+        callback(null, file.originalname);
+    }
+});
+
+const upload = multer({storage: storage });
+
+app.post('/uploadFasta', cors(), upload.array("file"), (req, res) => {
+
+  const file = req;
+    console.log(req.body);
+    console.log(req.files);
+
+  /* if (!file) {
+
+    const error = new Error('Please upload a file')
+
+    error.httpStatusCode = 400
+
+    return next(error)
+
+  }
+
+    res.send(file) */
+})
+// ===========================================
 
 // Create a connection to the databse.
 // You can create your user in the next comment below called "USERS".
@@ -33,10 +68,10 @@ const connection = mysql.createConnection({
 
     // USERS:
     // ======
-    /* user: "dama",
-    password: "Stabilo1", */
-    user: "danielmajer",
-    password: "Fdfac416+",
+    user: "dama",
+    password: "Stabilo1",
+    /* user: "danielmajer",
+    password: "Fdfac416+", */
 
 });
 console.log("Logging into the database...");
