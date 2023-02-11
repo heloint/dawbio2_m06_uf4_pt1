@@ -20,12 +20,13 @@ const configureStorage = () => {
  * Function to handle the file upload
  * @function
  * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
  */
 const handleFileUpload = (app, cors) => {
   const storage = configureStorage();
   const upload = multer({ storage: storage });
 
-  app.post("/uploadFasta", [cors(), upload.array("file")], (req, res) => {
+  app.post("/uploadSequence", [cors(), upload.array("file")], (req, res) => {
     const file = req;
 
     if (!file) {
@@ -42,6 +43,8 @@ const handleFileUpload = (app, cors) => {
  * Function to handle getting all roles.
  * @function
  * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
  */
 const handleGetRoles = (app, cors, connection) => {
   app.get("/roles", cors(), function (req, res) {
@@ -60,6 +63,8 @@ const handleGetRoles = (app, cors, connection) => {
  * Function to handle getting the last occupied user ID.
  * @function
  * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
  */
 const handleGetLastUserID = (app, cors, connection) => {
   app.get("/lastUserID", cors(), function (req, res) {
@@ -81,6 +86,8 @@ const handleGetLastUserID = (app, cors, connection) => {
  * Function to handle getting all users from database.
  * @function
  * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
  */
 const handleGetUsers = (app, cors, connection) => {
   app.get("/users", cors(), function (req, res) {
@@ -108,6 +115,14 @@ const handleGetUsers = (app, cors, connection) => {
   });
 };
 
+/**
+ * Function to handle retrieving the informations about the user 
+ * by it's username and password at the moment of the login process.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
 const handlePostLogin = (app, cors, connection) => {
   app.post("/login", cors(), function (req, res) {
     connection.query(
@@ -134,6 +149,13 @@ const handlePostLogin = (app, cors, connection) => {
   });
 };
 
+/**
+ * Function to handle adding new user to the database.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
 const handlePostAddUser = (app, cors, connection) => {
   app.post("/addUser", cors(), function (req, res) {
     connection.query(
@@ -166,6 +188,13 @@ const handlePostAddUser = (app, cors, connection) => {
   });
 };
 
+/**
+ * Function to handle getting data about user by it's ID.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
 const handlePostUserByID = (app, cors, connection) => {
   app.post("/userByID", cors(), function (req, res) {
     connection.query(
@@ -197,6 +226,82 @@ const handlePostUserByID = (app, cors, connection) => {
   });
 };
 
+/**
+ * Function to handle post request to delete the 
+ * user with the corresponding ID.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
+const handlePostDeleteUserByID = (app, cors, connection) => {
+  app.post("/deleteUserByID", cors(), function (req, res) {
+    connection.query(
+      `DELETE FROM users WHERE user_id=?`,
+      [req.body.userID],
+      function (error, result, field) {
+        if (error) {
+          console.log(error);
+          res.status(400).send({ results: false });
+        } else {
+          console.log("Succesfully deleted user.");
+          res.status(200).send({ result: true });
+        }
+      }
+    );
+  });
+};
+
+/**
+ * Function to handle post request to update the 
+ * user with the received datas.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
+const handlePostUpdateUser = (app, cors, connection) => {
+  app.post("/updateUser", cors(), function (req, res) {
+    connection.query(
+      `
+            UPDATE users
+            SET
+                username=?,
+                role_id=(
+                    SELECT role_id
+                    FROM roles
+                    WHERE role_name=?
+                ),
+                password=?,
+                email=?,
+                first_name=?,
+                last_name=?
+            WHERE
+                user_id=?
+        `,
+      [
+        req.body.username,
+        req.body.role_name,
+        req.body.password,
+        req.body.email,
+        req.body.first_name,
+        req.body.last_name,
+        req.body.user_id,
+      ],
+      function (error, result, field) {
+        if (error) {
+          console.log(error);
+          res.status(400).send({ results: false });
+        } else {
+          console.log("Succesfully deleted user.");
+          res.status(200).send({ result: true });
+        }
+      }
+    );
+  });
+};
+
+// Export functions.
 module.exports = {
   handleFileUpload: handleFileUpload,
   handleGetRoles: handleGetRoles,
@@ -204,5 +309,7 @@ module.exports = {
   handleGetUsers: handleGetUsers,
   handlePostLogin: handlePostLogin,
   handlePostAddUser: handlePostAddUser,
-  handlePostUserByID: handlePostUserByID, 
+  handlePostUserByID: handlePostUserByID,
+  handlePostDeleteUserByID: handlePostDeleteUserByID,
+  handlePostUpdateUser: handlePostUpdateUser,
 };

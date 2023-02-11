@@ -97,13 +97,13 @@ export class DatabaseService {
    /* Send a request to the server with a File object save it on the server.
     * @param user DBUser
     * */
-    public uploadFasta(file: File) {
+    public uploadSequence(file: File) {
 
       let formData: FormData = new FormData();
 
       formData.append("file", file);
       const req = new HttpRequest('POST',
-                                  `${this.#BASE_URL}/uploadFasta`,
+                                  `${this.#BASE_URL}/uploadSequence`,
                                   formData, {
                                     reportProgress: true,
                                     responseType: 'json'

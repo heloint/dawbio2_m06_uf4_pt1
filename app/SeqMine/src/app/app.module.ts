@@ -13,7 +13,6 @@ import { RegisterComponent } from './components/register/register.component';
 import { UserTableComponent } from './components/user-table/user-table.component';
 import { FileStorageTableComponent } from './components/file-storage-table/file-storage-table.component';
 import { PasswordConfirmValidationDirective } from './directives/password-confirm-validation.directive';
-import { FastaFileValidationDirective } from './directives/fasta-file-validation.directive';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { FileStorageManageComponent } from './components/file-storage-manage/file-storage-manage.component';
 import { UserManageComponent } from './components/user-manage/user-manage.component';
@@ -32,7 +31,6 @@ import { ConfirmationPageComponent } from './components/confirmation-page/confir
     UserTableComponent,
     FileStorageTableComponent,
     PasswordConfirmValidationDirective,
-    FastaFileValidationDirective,
     PageNotFoundComponent,
     FileStorageManageComponent,
     UserManageComponent,

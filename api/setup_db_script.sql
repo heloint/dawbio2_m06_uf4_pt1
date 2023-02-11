@@ -8,7 +8,7 @@ USE SeqMine;
 -- #####################################################################
 CREATE SEQUENCE user_id START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE roles_id START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE fasta_files_id START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE sequence_files_id START WITH 1 INCREMENT BY 1;
 -- #####################################################################
 
 -- Create and fetch roles table.

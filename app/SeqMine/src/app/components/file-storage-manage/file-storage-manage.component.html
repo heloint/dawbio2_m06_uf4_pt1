@@ -1,56 +1,149 @@
-<input type="file" class="file-input"
-        name="file"
-       (change)="onFileSelected($event)" #fileUpload>
+<div class="container">
+  <div class="row justify-content-center">
+    <form class="col-6" [formGroup]="sequenceUploadForm" (ngSubmit)="uploadSequenceFiles()">
+      <fieldset>
+        <legend>Upload sequence files.</legend>
 
-<div class="file-upload">
+        <!-- TAX. ID -->
+        <div class="form-group">
+          <label for="exampleInputEmail1" class="form-label mt-3"
+            >Taxonomy ID</label
+          >
+          <input type="number" min=0 class="form-control" formControlName="taxonomyID"/>
+        <span
+            class="text-danger"
+          *ngIf="this.sequenceUploadForm.get('taxonomyID')?.errors?.['required'] &&
+                             this.sequenceUploadForm.get('taxonomyID')?.touched"
+        >
+          Taxonomy ID field cannot be empty.
+        </span>
+        <span
+            class="text-danger"
+          *ngIf="this.sequenceUploadForm.get('taxonomyID')?.errors?.['min'] &&
+                             this.sequenceUploadForm.get('taxonomyID')?.touched"
+        >
+          Taxonomy ID value cannot be less than 1.
+        </span>
+        <span
+            class="text-danger"
+          *ngIf="this.sequenceUploadForm.get('taxonomyID')?.errors?.['max'] &&
+                             this.sequenceUploadForm.get('taxonomyID')?.touched"
+        >
+          Taxonomy ID value is too big.
+        </span>
+        </div>
+        <!-- END: TAX. ID -->
 
-   {{fileName || "No file uploaded yet."}}
+        <!-- Gene identifier -->
+        <div class="form-group">
+          <label for="exampleInputEmail1" class="form-label mt-3"
+            >Gene name / Gene ID</label
+          >
+          <input type="text" class="form-control" formControlName="geneID"/>
+          <span
+            class="text-danger"
+          *ngIf="this.sequenceUploadForm.get('geneID')?.errors?.['required'] &&
+                             this.sequenceUploadForm.get('geneID')?.touched"
+        >
+          Gene identifier field cannot be empty.
+        </span>
+        <span
+            class="text-danger"
+          *ngIf="this.sequenceUploadForm.get('geneID')?.errors?.['maxlength'] &&
+                             this.sequenceUploadForm.get('geneID')?.touched"
+        >
+          Gene identifier is too long.
+        </span>
+        </div>
+        <!-- END: Gene identifier -->
 
-    <button color="primary" class="upload-btn"
-      (click)="fileUpload.click()"> fdsafdsa
-    </button>
-</div>
+        <!-- DESCRIPTION -->
+        <div class="form-group">
+          <label for="exampleInputEmail1" class="form-label mt-3"
+            >Description</label
+          >
+          <textarea
+            class="form-control"
+            formControlName="description"
+            rows="4"
+            cols="50"
+            placeholder="Describe your batch of files."
+          >
+          </textarea>
+          <span
+            class="text-danger"
+          *ngIf="this.sequenceUploadForm.get('description')?.errors?.['required'] &&
+                             this.sequenceUploadForm.get('description')?.touched"
+        >
+          Description field cannot be empty.
+        </span>
+        <span
+            class="text-danger"
+          *ngIf="this.sequenceUploadForm.get('geneID')?.errors?.['maxlength'] &&
+                             this.sequenceUploadForm.get('geneID')?.touched"
+        >
+          Description is too long.
+        </span>
+        </div>
+        <!-- END: DESCRIPTION -->
 
-<form
-      [formGroup]="fastaUploadForm"
-      (ngSubmit)="uploadFastaFiles()"
-  >
+        <!-- FILE UPLOAD -->
+        <div class="form-group">
+          <label for="formFile" class="form-label mt-4">Select files.</label>
+          <input
+            id="formFile"
+            formControlName="files"
+            class="form-control"
+            type="file"
+            multiple
+            (change)="onFileSelected($event)"
+          />
+        <span
+            class="text-danger"
+          *ngIf="this.sequenceUploadForm.get('files')?.errors?.['required'] &&
+                             this.sequenceUploadForm.get('files')?.touched"
+        >
+          No files are selected.
+        </span>
+        <span
+            class="text-danger"
+          *ngIf="this.sequenceUploadForm.get('files')?.errors?.['invalidFileExtension'] &&
+                             this.sequenceUploadForm.get('files')?.touched"
+        >
+          The listed files contain invalid files.
+          All files must be a valid sequence format. Such as, .fasta, .fastq, .gb, etc..
+        </span>
+        </div>
+        <!-- END: FILE UPLOAD -->
 
-  <fieldset>
-    <legend>Upload FASTA files.</legend>
+        <button type="submit"
+            [disabled]="sequenceUploadForm.invalid"
+            class="btn btn-primary my-3">Upload</button>
+      </fieldset>
 
-    <div class="form-group">
-      <label for="formFile" class="form-label mt-4">Default file input example</label>
-      <input class="form-control" type="file" multiple (change)="onFileSelected($event)" id="formFile">
-    </div>
+    <!-- Progress bars. -->
+      <div>
+          <h3 *ngIf='uploadSuccess === true' class="text-success">Successfully uploaded files!</h3>
+          <h3 *ngIf='uploadSuccess === false' class="text-danger">Failed to upload files. Contact with our maintanence.</h3>
 
-    <button type="submit" class="btn btn-primary">Upload</button>
-  </fieldset>
-</form>
+        <div *ngFor="let progressInfo of progressInfos" class="my-3">
+          <p>{{ progressInfo.fileName }}</p>
+          <div class="progress">
+            <div
+              class="progress-bar progress-bar-striped"
+              role="progressbar"
+              [ngStyle]="{ width: progressInfo.value + '%' }"
+              attr.aria-valuenow="{{ progressInfo.value }}"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              {{ progressInfo.value }}
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- END: Progress bars. -->
 
-  <div class="col-6">
-    <div *ngFor="let progressInfo of progressInfos" class="my-3">
-
-      <p>{{ progressInfo.fileName }}</p>
-    <div class="progress">
-      <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{width: progressInfo.value + '%'}" attr.aria-valuenow="{{ progressInfo.value }}" aria-valuemin="0" aria-valuemax="100">{{ progressInfo.value }}</div>
-    </div>
-
-    </div>
+    </form>
   </div>
-
-<!-- <div class="progress">
-  <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
-<div class="progress">
-  <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-<div class="progress">
-  <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-<div class="progress">
-  <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-<div class="progress">
-  <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-</div> -->
