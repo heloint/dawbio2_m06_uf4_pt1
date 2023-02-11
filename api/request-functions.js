@@ -1,4 +1,6 @@
 const multer = require("multer");
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Function to configure the storage for the uploaded files
@@ -11,7 +13,10 @@ const configureStorage = () => {
       callback(null, "uploads/");
     },
     filename: function (req, file, callback) {
-      callback(null, file.originalname);
+        // If file exists, we don't upload.
+        if (!fs.existsSync(path.join('uploads/',file.originalname))) {
+            callback(null, file.originalname);
+        }
     },
   });
 };
@@ -26,9 +31,8 @@ const handleFileUpload = (app, cors) => {
   const storage = configureStorage();
   const upload = multer({ storage: storage });
 
-  app.post("/uploadSequence", [cors(), upload.array("file")], (req, res) => {
+  app.post("/uploadSequence", upload.array("file"), (req, res) => {
     const file = req;
-
     if (!file) {
       const error = new Error("Please upload a file");
       error.httpStatusCode = 400;
