@@ -56,7 +56,7 @@ connection.connect(function (err) {
     console.log("Connected as id " + connection.threadId);
 });
 
-requestFunctions.handleFileUpload(app, cors);
+requestFunctions.handleFileUpload(app, cors, connection);
 requestFunctions.handleGetRoles(app, cors, connection);
 requestFunctions.handleGetLastUserID(app, cors, connection);
 requestFunctions.handleGetUsers(app, cors, connection);
@@ -65,7 +65,7 @@ requestFunctions.handlePostAddUser(app, cors, connection);
 requestFunctions.handlePostUserByID(app, cors, connection);
 requestFunctions.handlePostDeleteUserByID(app, cors, connection);
 requestFunctions.handlePostUpdateUser(app, cors, connection);
-
+requestFunctions.handleRegisterFileUpload(app, cors, connection);
 
 app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");

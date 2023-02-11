@@ -53,10 +53,10 @@ INSERT INTO users VALUES
 CREATE TABLE IF NOT EXISTS sequence_files(
                                 file_id INT(10) PRIMARY KEY,
                                 name VARCHAR(25) NOT NULL UNIQUE CHECK(name <> ''),
-                                size INT(60) NOT NULL CHECK(size <> 0),
+                                size INT(60) NOT NULL,
                                 path TEXT NOT NULL CHECK(path <> ''),
                                 gene VARCHAR(25) NOT NULL CHECK(gene <> ''),
-                                taxonomy_name VARCHAR(30) NOT NULL CHECK(taxonomy_name <> ''),
+                                taxonomy_id INT(10) NOT NULL CHECK(taxonomy_id <> 0),
                                 upload_date DATE NOT NULL,
                                 uploaded_by VARCHAR(25) NOT NULL CHECK(uploaded_by <> ''),
                                 CONSTRAINT file_name_unique UNIQUE (name),
@@ -64,8 +64,8 @@ CREATE TABLE IF NOT EXISTS sequence_files(
 );
 
 INSERT INTO sequence_files VALUES
-    (NEXT VALUE FOR sequence_file_id, "fasta-example.fasta", 100, "./uploads/fasta-example.fasta", "SELL", "Homo Sapiens", "2023-2-8", "admin"),
-    (NEXT VALUE FOR sequence_file_id, "fastq-example.fastq", 101, "./uploads/fastq-example.fastq", "SELL", "Canis lupus", "2023-2-9", "investigator")
+    (NEXT VALUE FOR sequence_file_id, "fasta-example.fasta", 100, "./uploads/fasta-example.fasta", "SELL", 9606, "2023-2-8", "admin"),
+    (NEXT VALUE FOR sequence_file_id, "fastq-example.fastq", 101, "./uploads/fastq-example.fastq", "SELL", 9615, "2023-2-9", "investigator")
 ;
 
 -- #####################################################################

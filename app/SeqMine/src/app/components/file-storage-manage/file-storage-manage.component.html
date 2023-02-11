@@ -9,7 +9,7 @@
           <label for="exampleInputEmail1" class="form-label mt-3"
             >Taxonomy ID</label
           >
-          <input type="number" min=0 class="form-control" formControlName="taxonomyID"/>
+          <input type="number" class="form-control" formControlName="taxonomyID"/>
         <span
             class="text-danger"
           *ngIf="this.sequenceUploadForm.get('taxonomyID')?.errors?.['required'] &&
@@ -124,7 +124,7 @@
     <!-- Progress bars. -->
       <div>
           <h3 *ngIf='uploadSuccess === true' class="text-success">Successfully uploaded files!</h3>
-          <h3 *ngIf='uploadSuccess === false' class="text-danger">Failed to upload files. Contact with our maintanence.</h3>
+          <h3 *ngIf='uploadSuccess === false' class="text-danger">{{ errorMessage }}</h3>
 
         <div *ngFor="let progressInfo of progressInfos" class="my-3">
           <p>{{ progressInfo.fileName }}</p>

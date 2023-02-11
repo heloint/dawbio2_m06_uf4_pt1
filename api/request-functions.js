@@ -16,8 +16,57 @@ const configureStorage = () => {
         // If file exists, we don't upload.
         if (!fs.existsSync(path.join('uploads/',file.originalname))) {
             callback(null, file.originalname);
+         } else {
+            callback(new Error('File already exists!'), file.originalname);
         }
+        // callback(null, file.originalname);
     },
+  });
+};
+
+/**
+ * Function to handle the registration of the uploaded file in the database.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
+const handleRegisterFileUpload = (app, cors, connection) => {
+  app.post("/registerSequence", (req, res) => {
+
+
+console.log({
+    1:req.body.name,
+       2: req.body.size,
+       3: `${__dirname}/uploads/${req.body.name}`,
+       4: req.body.gene,
+       5: req.body.taxonomyID,
+       6: req.body.uploadedBy
+  });
+    connection.query(
+      ` INSERT INTO sequence_files VALUES
+            (
+                NEXT VALUE FOR sequence_file_id,
+                ?, ?, ?, ?, ?, now(), ?
+            ) `,
+      [
+        req.body.name,
+        req.body.size,
+        `${__dirname}/uploads/${req.body.name}`,
+        req.body.gene,
+        req.body.taxonomyID,
+        req.body.uploadedBy
+      ],
+      function (error, result, field) {
+        if (error) {
+            console.log(error);
+          res.status(400).send({ results: false });
+        } else {
+          res.status(200).send({ result: true });
+        }
+      }
+    );
   });
 };
 
@@ -27,19 +76,22 @@ const configureStorage = () => {
  * @param {Object} app - Express application
  * @param {Object} cors - Module to handle CORS.
  */
-const handleFileUpload = (app, cors) => {
+const handleFileUpload = (app, cors, connection) => {
   const storage = configureStorage();
   const upload = multer({ storage: storage });
 
   app.post("/uploadSequence", upload.array("file"), (req, res) => {
     const file = req;
+
+    // If no file received, then exception sent back.
     if (!file) {
       const error = new Error("Please upload a file");
-      error.httpStatusCode = 400;
-      return next(error);
+      res.status(400).send({ error: error.message});
     }
-
-    res.status(200).send({ result: true });
+  },
+  (err, req, res, next)=> {
+      console.log(err.message);
+    res.status(400).json({error: err.message});
   });
 };
 
@@ -308,6 +360,7 @@ const handlePostUpdateUser = (app, cors, connection) => {
 // Export functions.
 module.exports = {
   handleFileUpload: handleFileUpload,
+  handleRegisterFileUpload: handleRegisterFileUpload,
   handleGetRoles: handleGetRoles,
   handleGetLastUserID: handleGetLastUserID,
   handleGetUsers: handleGetUsers,

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { HttpClient, HttpRequest } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
+import { StorageEntity } from '../models/storage-entity.model';
 
 // Represents a response with user related queries.
 export type DBUserArr = {
@@ -18,6 +19,18 @@ export type DBUser = {
     first_name: string,
     last_name: string,
     registration_date: Date,
+}
+
+// Represents an item in a response with user related queries.
+export type DBStorageEntity = {
+    id: number,
+    name: string,
+    size: number,
+    path: string,
+    gene: string,
+    taxonomyID: number,
+    uploadedDate: Date,
+    uploadedBy: string,
 }
 
 // Represents a response with role related queries.
@@ -102,6 +115,7 @@ export class DatabaseService {
       let formData: FormData = new FormData();
 
       formData.append("file", file);
+
       const req = new HttpRequest('POST',
                                   `${this.#BASE_URL}/uploadSequence`,
                                   formData, {
@@ -110,6 +124,23 @@ export class DatabaseService {
       });
 
       return this.http.request(req);
-
     }
+
+   /* Send a request to the server with a StorageEntity object
+    * to register it in the database.
+    * @param user DBUser
+    * */
+    public registerSequence(storageEntity: StorageEntity) {
+
+      return this.http.post<QueryConfirmation>(this.#BASE_URL + '/registerSequence',
+            {
+              name: storageEntity.name ,
+              size: storageEntity.size ,
+              gene: storageEntity.gene,
+              taxonomyID: storageEntity.taxonomyID ,
+              uploadedBy: storageEntity.uploadedBy
+            }
+        );
+    }
+
 }
