@@ -38,13 +38,52 @@
         <div class="form-group">
           <label for="username" class="form-label mt-3">Username</label>
           <input type="text" class="form-control" id="username" placeholder="Enter username" formControlName="username">
+
+            <span
+              *ngIf="this.userManageForm.get('username')?.errors?.['required'] &&
+                               this.userManageForm.get('username')?.touched"
+              class="text-danger"
+            >
+              Username field is empty.
+            </span>
+
+            <span
+              *ngIf="this.userManageForm.get('username')?.errors?.['minlength'] &&
+                               this.userManageForm.get('username')?.touched"
+              class="text-danger"
+            >
+              Minimum 6 character length is required.
+            </span>
+            <span
+              *ngIf="this.userManageForm.get('username')?.errors?.['pattern'] &&
+                               this.userManageForm.get('username')?.touched"
+              class="text-danger"
+            >
+              Username contains illegal characters, such as special characters or spaces.
+            </span>
         </div>
         <!-- END: USERNAME -->
 
         <!-- FIRST NAME-->
         <div class="form-group">
           <label for="first name" class="form-label mt-3">First name</label>
-          <input type="text" class="form-control" id="first name" placeholder="Enter first name" formControlName="firstName">
+          <input type="text" class="form-control" id="firstname" placeholder="Enter first name" formControlName="firstName">
+
+            <span
+              *ngIf="this.userManageForm.get('firstName')?.errors?.['required'] &&
+                               this.userManageForm.get('firstName')?.touched"
+              class="text-danger"
+            >
+              First name field is empty.
+            </span>
+
+            <span
+              *ngIf="this.userManageForm.get('firstName')?.errors?.['pattern'] &&
+                               this.userManageForm.get('firstName')?.touched"
+              class="text-danger"
+            >
+              First name contains illegal characters, such as special characters.
+            </span>
         </div>
         <!-- END: FIRST NAME-->
 
@@ -52,6 +91,22 @@
         <div class="form-group">
           <label for="Last name" class="form-label mt-3">Last name</label>
           <input type="text" class="form-control" id="Last name" placeholder="Enter last name" formControlName="lastName">
+
+            <span
+              *ngIf="this.userManageForm.get('lastName')?.errors?.['required'] &&
+                               this.userManageForm.get('lastName')?.touched"
+              class="text-danger"
+            >
+              Last name field is empty.
+            </span>
+
+            <span
+              *ngIf="this.userManageForm.get('lastName')?.errors?.['pattern'] &&
+                               this.userManageForm.get('lastName')?.touched"
+              class="text-danger"
+            >
+              Last name contains illegal characters, such as special characters.
+            </span>
         </div>
         <!-- END: Last NAME-->
 
@@ -59,13 +114,50 @@
         <div class="form-group">
           <label for="password" class="form-label mt-3">Password</label>
           <input type="password" class="form-control" id="password" placeholder="Enter password." formControlName="password">
+
+            <div
+              *ngIf="this.userManageForm.get('password')?.errors?.['required'] &&
+                              this.userManageForm.get('password')?.touched"
+              class="text-danger"
+            >
+              Password cannot be empty.
+            </div>
+            <div
+              *ngIf="this.userManageForm.get('password')?.errors?.['minlength'] &&
+                               this.userManageForm.get('password')?.touched"
+              class="text-danger"
+            >
+              Minimum 8 character length is required.
+            </div>
         </div>
         <!-- END: PASSWORD -->
 
         <!-- PASSWORD CONFIRMATION -->
         <div *ngIf="this.isAddUserMode" class="form-group">
-          <label for="passwordConfirm" class="form-label mt-3">Confirm password</label>
-          <input type="password" class="form-control" id="passwordConfirm" placeholder="Confirm password." formControlName="password">
+          <label for="passwordConfirmation" class="form-label mt-3">Confirm password</label>
+          <input type="password"
+                 class="form-control" 
+                 id="passwordConfirmation"
+                 placeholder="Confirm password."
+                 formControlName="passwordConfirmation"
+                  appPasswordConfirmValidation
+                  [firstPassword]="this.userManageForm.get('password')?.value"
+            >
+
+            <span
+              *ngIf="this.userManageForm.get('passwordConfirmation')?.errors?.['required'] &&
+                              this.userManageForm.get('passwordConfirmation')?.touched"
+                class="text-danger"
+            >
+              Password repetation cannot be empty.
+            </span>
+            <span
+              *ngIf="this.userManageForm.get('passwordConfirmation')?.errors?.['unequivalentPassword'] &&
+                              this.userManageForm.get('passwordConfirmation')?.touched"
+                class="text-danger"
+            >
+              Two passwords must be the same.
+            </span>
         </div>
         <!-- END: PASSWORD CONFIRMATION -->
 

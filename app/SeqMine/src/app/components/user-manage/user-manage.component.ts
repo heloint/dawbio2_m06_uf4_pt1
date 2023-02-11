@@ -28,12 +28,32 @@ export class UserManageComponent {
     // Initialize login FormGroup + FormControl.
     userManageForm: FormGroup = new FormGroup({
       id: new FormControl('', [Validators.required]),
-      username: new FormControl('', [Validators.required]),
+      username: new FormControl('', [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.pattern('^[a-zA-Záéíóúñ0-9]+$'),
+      ]),
       role: new FormControl('investigator', [Validators.required]),
-      password: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required]),
-      firstName: new FormControl('', [Validators.required]),
-      lastName: new FormControl('', [Validators.required]),
+      password: new FormControl('', [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern('^[a-zA-Z0-9+$.!]+$'),
+      ]),
+      passwordConfirmation: new FormControl('', [
+        Validators.required
+      ]),
+      email: new FormControl('', [
+          Validators.required,
+          Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,3}$'),
+      ]),
+      firstName: new FormControl('', [
+          Validators.required,
+          Validators.pattern('^[a-zA-ZÀ-ÿ \u00f1\u00d1]+$')
+      ]),
+      lastName: new FormControl('', [
+          Validators.required,
+          Validators.pattern('^[a-zA-ZÀ-ÿ \u00f1\u00d1]+$')
+      ]),
     });
 
     /* Receives an ID as an argument,
