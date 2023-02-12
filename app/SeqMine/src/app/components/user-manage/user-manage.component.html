@@ -165,6 +165,21 @@
         <div class="form-group">
           <label for="email" class="form-label mt-3">Email address</label>
           <input type="email" class="form-control" id="email" placeholder="Enter email" formControlName="email">
+
+            <span
+              *ngIf="this.userManageForm.get('email')?.errors?.['required'] &&
+                              this.userManageForm.get('email')?.touched"
+                class="text-danger"
+            >
+              Email cannot be empty.
+            </span>
+            <span
+              *ngIf="this.userManageForm.get('email')?.errors?.['pattern'] &&
+                        this.userManageForm.get('email')?.touched"
+                class="text-danger"
+            >
+              This email is not correct.
+            </span>
         </div>
         <!-- END: EMAIL -->
 
