@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from '../../services/database.service';
 import { StorageEntity } from '../../models/storage-entity.model';
 import { Router, ActivatedRoute } from '@angular/router';
+import { SessionHandlingService, DataForCookie } from '../../services/session-handling.service';
 
 @Component({
   selector: 'app-file-storage-table',
@@ -16,8 +17,13 @@ export class FileStorageTableComponent {
   constructor(
     private route: Router,
     private activatedRoute: ActivatedRoute,
-    private database: DatabaseService
+    private database: DatabaseService,
+    private sessionHandler: SessionHandlingService
   ) { }
+
+  get sessionUser(): DataForCookie {
+    return this.sessionHandler.userData;
+  }
 
   /**
   * Subscribes to the result of the getAllUsers function from the database service.
@@ -31,6 +37,7 @@ export class FileStorageTableComponent {
             this.allFilesArr.push(new StorageEntity(
                 file.file_id,
                 file.name,
+                file.description,
                 file.size,
                 file.path,
                 file.gene,
@@ -87,6 +94,16 @@ export class FileStorageTableComponent {
     getDownloadLink(id: number): string {
         return this.database.generateFileDownloadHREF(id);
     }
+
+  /**
+   * Navigates to the /file-storage-modify route, passing in the id as a parameter.
+   * @param {number} id - The file ID to be passed as a parameter to the /file-storage-modify route.
+   * @returns {void}
+   */
+    goToSeqFileManage(id: number) {
+        this.route.navigate(['/file-storage-modify', {fileID: id}]);
+    }
+
   /**
    * Calls the fetchAllSequenceFiles method.
    * @returns {void}

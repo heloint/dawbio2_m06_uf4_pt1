@@ -60,6 +60,10 @@ const routes: Routes = [
     component: FileStorageManageComponent,
   },
   {
+    path: 'file-storage-modify',
+    component: FileStorageManageComponent,
+  },
+  {
     path: 'confirm-page',
     component: ConfirmationPageComponent,
   },

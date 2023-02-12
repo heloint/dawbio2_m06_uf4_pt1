@@ -17,7 +17,7 @@ export class UserTableComponent {
   constructor(
     private route: Router,
     private activatedRoute: ActivatedRoute,
-    private database: DatabaseService
+    private database: DatabaseService,
   ) { }
 
   /**

@@ -19,6 +19,10 @@ export class UserManageComponent {
     modificationResult: Boolean | null = null;
     creationResult: Boolean | null = null;
     errorMessage: string = 'Failed to add new user!';
+    showPass: Boolean = false;
+    showPassConf: Boolean = false;
+    passwordType: string = 'password';
+    passwordConfType: string = "password";
 
     constructor(
         private route: ActivatedRoute,
@@ -31,13 +35,13 @@ export class UserManageComponent {
       id: new FormControl('', [Validators.required]),
       username: new FormControl('', [
           Validators.required,
-          Validators.minLength(6),
+          Validators.minLength(5),
           Validators.pattern('^[a-zA-Záéíóúñ0-9]+$'),
       ]),
       role: new FormControl('investigator', [Validators.required]),
       password: new FormControl('', [
           Validators.required,
-          Validators.minLength(8),
+          Validators.minLength(5),
           Validators.pattern('^[a-zA-Z0-9+$.!]+$'),
       ]),
       passwordConfirmation: new FormControl('', [
@@ -147,6 +151,26 @@ export class UserManageComponent {
         });
     }
 
+    changePassVisibilityOnPass() {
+        if (this.passwordType === 'password') {
+          this.passwordType = 'text';
+          this.showPass = true;
+        } else {
+          this.passwordType = 'password';
+          this.showPass = false;
+        }
+    }
+
+    changePassVisibilityOnPassConf() {
+        if (this.passwordConfType === 'password') {
+          this.passwordConfType = 'text';
+          this.showPass = true;
+        } else {
+          this.passwordConfType = 'password';
+          this.showPass = false;
+        }
+    }
+
     /* It fetches the roles, determines whether the user is in "add" or "modify" mode, and fetches the user data if in "modify" mode.
      *
      * @return {void}
@@ -159,6 +183,11 @@ export class UserManageComponent {
       if (this.userID) {
         this.isAddUserMode = false;
         this.fetchUserByID(this.userID);
+
+        // This assignment is just to avoid to trigger Validators.required.
+        // In this case we are re-using the same component for adding and modifying.
+        // If this is not assigned, then it will complain about invalid form.
+        this.userManageForm.controls['passwordConfirmation'].setValue('___');
       } else {
         this.fetchLastUserID();
       }

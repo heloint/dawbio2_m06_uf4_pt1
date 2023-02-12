@@ -56,6 +56,7 @@ INSERT INTO users VALUES
 CREATE TABLE IF NOT EXISTS sequence_files(
                                 file_id INT(10) PRIMARY KEY,
                                 name VARCHAR(25) NOT NULL CHECK(name <> ''),
+                                description TEXT NOT NULL CHECK(description <> ''),
                                 size INT(60) NOT NULL,
                                 path TEXT NOT NULL CHECK(path <> ''),
                                 gene VARCHAR(25) NOT NULL CHECK(gene <> ''),
@@ -67,8 +68,8 @@ CREATE TABLE IF NOT EXISTS sequence_files(
 );
 
 INSERT INTO sequence_files VALUES
-    (NEXT VALUE FOR sequence_file_id, "fasta-example.fasta", 100, "./uploads/fasta-example.fasta", "SELL", 9606, CURRENT_TIMESTAMP(), "admin"),
-    (NEXT VALUE FOR sequence_file_id, "fastq-example.fastq", 101, "./uploads/fastq-example.fastq", "SELL", 9615, CURRENT_TIMESTAMP(), "investigator")
+    (NEXT VALUE FOR sequence_file_id, "fasta-example.fasta", "Testing fasta file.", 100, "./uploads/fasta-example.fasta", "SELL", 9606, CURRENT_TIMESTAMP(), "admin"),
+    (NEXT VALUE FOR sequence_file_id, "fastq-example.fastq", "Testing fastq file.", 101, "./uploads/fastq-example.fastq", "SELL", 9615, CURRENT_TIMESTAMP(), "investigator")
 ;
 
 -- #####################################################################

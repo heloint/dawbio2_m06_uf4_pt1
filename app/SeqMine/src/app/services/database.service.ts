@@ -29,6 +29,7 @@ export type DBStorageEntityArr = {
 export type DBStorageEntity = {
     file_id: number,
     name: string,
+    description: string,
     size: number,
     path: string,
     gene: string,
@@ -83,6 +84,13 @@ export class DatabaseService {
    * */
   public getUserByID(inputID: number) {
     return this.http.post<DBUserArr>(this.#BASE_URL + '/userByID', {userID: inputID});
+  }
+
+  /* Requests to find a user by it's ID.
+   * @param inputID number
+   * */
+  public getFileByID(inputID: number) {
+    return this.http.post<DBStorageEntityArr>(this.#BASE_URL + '/fileByID', {fileID: inputID});
   }
 
   // Requests the last user id from the database.
@@ -172,4 +180,10 @@ export class DatabaseService {
         return `${this.#BASE_URL}/downloadSequenceFile?id=${id}`;
   }
 
+   /* Send a request to the server with a DBStorageEntity object to update it's register with the new data.
+    * @param user DBStorageEntity
+    * */
+    public updateSequenceFile(file: DBStorageEntity) {
+        return this.http.post<QueryConfirmation>(this.#BASE_URL + '/updateSequenceFile', file);
+    }
 }

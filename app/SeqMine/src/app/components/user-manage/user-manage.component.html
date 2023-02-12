@@ -3,7 +3,7 @@
     <form [formGroup]="userManageForm" class="col-6">
       <fieldset>
         <div *ngIf="this.isAddUserMode; else modifyLegend">
-          <div>
+          <div class="my-3">
               <h3>Add user</h3>
           </div>
           <h4 *ngIf="this.creationResult" class="success-msg">Successfully created user!</h4>
@@ -11,8 +11,8 @@
         </div>
 
         <ng-template #modifyLegend>
-          <div>
-            <legend>Modify user</legend>
+          <div class="my-3">
+              <h3>Modify user</h3>
           </div>
           <h4 *ngIf="this.modificationResult" class="success-msg">Successful update!</h4>
           <h4 *ngIf="this.modificationResult === false" class="failed-msg">Failed to update!</h4>
@@ -52,7 +52,7 @@
                                this.userManageForm.get('username')?.touched"
               class="text-danger"
             >
-              Minimum 6 character length is required.
+              Minimum 5 character length is required.
             </span>
             <span
               *ngIf="this.userManageForm.get('username')?.errors?.['pattern'] &&
@@ -113,36 +113,48 @@
         <!-- PASSWORD -->
         <div class="form-group">
           <label for="password" class="form-label mt-3">Password</label>
-          <input type="password" class="form-control" id="password" placeholder="Enter password." formControlName="password">
-
-            <div
-              *ngIf="this.userManageForm.get('password')?.errors?.['required'] &&
-                              this.userManageForm.get('password')?.touched"
-              class="text-danger"
-            >
-              Password cannot be empty.
-            </div>
-            <div
-              *ngIf="this.userManageForm.get('password')?.errors?.['minlength'] &&
-                               this.userManageForm.get('password')?.touched"
-              class="text-danger"
-            >
-              Minimum 8 character length is required.
-            </div>
+          <span class="d-flex">
+              <input type="{{ passwordType }}" class="form-control" id="password" placeholder="Enter password." formControlName="password">
+              <button *ngIf="isAddUserMode" (click)="changePassVisibilityOnPass()">
+                 <i class="fa fa-eye" aria-hidden="true" *ngIf="!showPass"></i>
+                 <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="showPass"></i>
+              </button>
+          </span>
+          <div
+            *ngIf="this.userManageForm.get('password')?.errors?.['required'] &&
+                            this.userManageForm.get('password')?.touched"
+            class="text-danger"
+          >
+            Password cannot be empty.
+          </div>
+          <div
+            *ngIf="this.userManageForm.get('password')?.errors?.['minlength'] &&
+                             this.userManageForm.get('password')?.touched"
+            class="text-danger"
+          >
+            Minimum 5 character length is required.
+          </div>
         </div>
         <!-- END: PASSWORD -->
 
         <!-- PASSWORD CONFIRMATION -->
         <div *ngIf="this.isAddUserMode" class="form-group">
           <label for="passwordConfirmation" class="form-label mt-3">Confirm password</label>
-          <input type="password"
-                 class="form-control" 
-                 id="passwordConfirmation"
-                 placeholder="Confirm password."
-                 formControlName="passwordConfirmation"
-                  appPasswordConfirmValidation
-                  [firstPassword]="this.userManageForm.get('password')?.value"
-            >
+
+          <span class="d-flex">
+              <input type="{{ passwordConfType }}"
+                     class="form-control" 
+                     id="passwordConfirmation"
+                     placeholder="Confirm password."
+                     formControlName="passwordConfirmation"
+                      appPasswordConfirmValidation
+                      [firstPassword]="this.userManageForm.get('password')?.value"
+                >
+               <button (click)="changePassVisibilityOnPassConf()">
+                  <i class="fa fa-eye" aria-hidden="true" *ngIf="!showPassConf"></i>
+                  <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="showPassConf"></i>
+               </button>
+          </span>
 
             <span
               *ngIf="this.userManageForm.get('passwordConfirmation')?.errors?.['required'] &&

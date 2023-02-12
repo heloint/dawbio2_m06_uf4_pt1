@@ -1,6 +1,7 @@
 export class StorageEntity {
     #id: number;
     #name: string;
+    #description: string;
     #size: number;
     #path: string;
     #gene: string;
@@ -11,6 +12,7 @@ export class StorageEntity {
     constructor(
       id: number = 0,
       name: string = '',
+      description: string,
       size: number = 0,
       path: string = '',
       gene: string = '',
@@ -21,6 +23,7 @@ export class StorageEntity {
 
       this.#id = id;
       this.#name = name;
+      this.#description = description;
       this.#size = size;
       this.#path = path;
       this.#gene = gene;
@@ -37,6 +40,11 @@ export class StorageEntity {
     // Get name.
     get name(): string{
         return this.#name;
+    }
+
+    // Get description.
+    get description(): string{
+        return this.#description;
     }
 
     // Get size.
@@ -76,8 +84,13 @@ export class StorageEntity {
     }
 
     // set name.
-    set name(name) {
+    set name(name: string){
         this.#name = name;
+    }
+
+    // set description.
+    set description(description: string) {
+        this.#description = description;
     }
 
     // set size.

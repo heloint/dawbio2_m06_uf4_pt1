@@ -202,6 +202,45 @@ const handleGetSequenceFiles = (app, cors, connection) => {
 };
 
 /**
+ * Function to handle post request to update the
+ * user with the received datas.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
+const handlePostUpdateSeqFile = (app, cors, connection) => {
+  app.post("/updateSequenceFile", cors(), function (req, res) {
+    connection.query(
+      `
+            UPDATE sequence_files
+            SET
+                name=?,
+                description=?,
+                taxonomy_id=?,
+                gene=?
+            WHERE
+                file_id=?
+        `,
+      [
+        req.body.name,
+        req.body.description,
+        req.body.taxonomy_id,
+        req.body.gene,
+        req.body.file_id,
+      ],
+      function (error, result, field) {
+        if (error) {
+          console.log(error);
+          res.status(400).send({ results: false });
+        } else {
+          res.status(200).send({ result: true });
+        }
+      }
+    );
+  });
+};
+/**
  * Function to handle getting all roles.
  * @function
  * @param {Object} app - Express application
@@ -373,7 +412,6 @@ const handlePostSessionValidation = (app, cors, connection) => {
  */
 const handlePostLogOut = (app, cors, connection) => {
   app.post("/logout", cors(), function (req, res) {
-        console.log('fdasfdsafsad===============>');
     connection.query(
       `DELETE FROM user_sessions WHERE token=?`,
       [req.body.token],
@@ -469,6 +507,36 @@ const handlePostRegisterUser = (app, cors, connection) => {
           res.status(400).send({ results: false, errorMsg: errorMsg });
         } else {
           res.status(200).send({ result: true });
+        }
+      }
+    );
+  });
+};
+
+
+
+/**
+ * Function to handle getting data about user by it's ID.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
+const handlePostSeqFileByID = (app, cors, connection) => {
+  app.post("/fileByID", cors(), function (req, res) {
+    connection.query(
+      ` SELECT * FROM sequence_files WHERE file_id = ?`,
+      [req.body.fileID],
+      function (error, result, field) {
+        if (error) {
+          console.log(error);
+          res.status(400).send({ results: false });
+        } else {
+          if (result.length > 0) {
+            res.status(200).send({ result: result });
+          } else {
+            res.status(200).send({});
+          }
         }
       }
     );
@@ -606,4 +674,6 @@ module.exports = {
   handleDownloadSequenceFile: handleDownloadSequenceFile,
   handlePostDeleteFileByID: handlePostDeleteFileByID,
   handlePostRegisterUser: handlePostRegisterUser,
+  handlePostSeqFileByID: handlePostSeqFileByID,
+  handlePostUpdateSeqFile: handlePostUpdateSeqFile,
 };

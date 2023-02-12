@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
-import { DatabaseService } from '../../services/database.service';
+import { DatabaseService, DBStorageEntity } from '../../services/database.service';
+import { SessionHandlingService } from '../../services/session-handling.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { StorageEntity } from '../../models/storage-entity.model';
 import { CookieService } from 'ngx-cookie-service';
+import { ActivatedRoute} from '@angular/router';
+
 
 export type ProgressEntity = {
   value: number;
@@ -16,25 +19,33 @@ export type ProgressEntity = {
   styleUrls: ['./file-storage-manage.component.css'],
 })
 export class FileStorageManageComponent {
-  fileName = '';
+  fileName: string = '';
+  fileID: number = 0;
   filesToUpload: Array<File> = [];
   progressInfos: Array<ProgressEntity> = [];
   uploadSuccess: Boolean | null = null;
   errorMessage: string =
     'Failed to upload files. Contact with our maintanence.';
+  isModifyFileMode: Boolean = false;
+  modificationResult: Boolean | null = null;
 
   constructor(
     private database: DatabaseService,
     private http: HttpClient,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+        private route: ActivatedRoute,
+        private sessionHandler: SessionHandlingService
   ) {}
 
   // Initialize login FormGroup + FormControl.
-  sequenceUploadForm: FormGroup = new FormGroup({
-    taxonomyID: new FormControl('', [
+  sequenceManageForm: FormGroup = new FormGroup({
+    taxonomyID: new FormControl(0, [
       Validators.required,
       Validators.min(1),
       Validators.max(999999999999),
+    ]),
+    fileName: new FormControl('', [
+      Validators.required,
     ]),
     geneID: new FormControl('', [
       Validators.required,
@@ -46,6 +57,7 @@ export class FileStorageManageComponent {
     ]),
     files: new FormControl('', [Validators.required]),
   });
+
 
   /* Save the selected files from the event. Must use this way,
    * because Angular doesn't manage this scenary correctly.
@@ -91,9 +103,9 @@ export class FileStorageManageComponent {
     });
 
     // Reset form error and re-check the validation.
-    this.sequenceUploadForm.controls['files'].setErrors(null);
+    this.sequenceManageForm.controls['files'].setErrors(null);
     if (!areValidExtensions) {
-      this.sequenceUploadForm.controls['files'].setErrors({
+      this.sequenceManageForm.controls['files'].setErrors({
         invalidFileExtension: true,
       });
     }
@@ -125,13 +137,13 @@ export class FileStorageManageComponent {
     const storageEntity: StorageEntity = new StorageEntity(
       0,
       file.name,
+      this.sequenceManageForm.get('description')?.value,
       file.size,
       '',
-      this.sequenceUploadForm.get('geneID')?.value,
-      this.sequenceUploadForm.get('taxonomyID')?.value,
+      this.sequenceManageForm.get('geneID')?.value,
+      this.sequenceManageForm.get('taxonomyID')?.value,
       new Date(),
-      'admin'
-      // Object.keys(this.cookieService.getAll())[0]
+      this.sessionHandler.userData.role
     );
 
     if (file) {
@@ -169,5 +181,59 @@ export class FileStorageManageComponent {
         },
       });
     }
+  }
+
+    /**
+     * modifySequenceFiles updates a file's data in the database.
+     *
+     * @return {void}
+     */
+    modifySequenceFiles() {
+        return this.database.updateSequenceFile({
+            file_id: this.fileID,
+            name: this.sequenceManageForm.get('fileName')?.value,
+            description: this.sequenceManageForm.get('description')?.value,
+            size: 0,
+            path: '',
+            gene: this.sequenceManageForm.get('geneID')?.value,
+            taxonomy_id: this.sequenceManageForm.get('taxonomyID')?.value,
+            upload_date: new Date(),
+            uploaded_by: ''
+        }).subscribe({
+            next: result => { 
+                console.log(result);
+                this.modificationResult = result.result;
+            },
+            error: error => { this.modificationResult = false; }
+        });
+    }
+
+    fetchFileByID(id: number) {
+      return this.database.getFileByID(id).subscribe(
+        result => {
+          if (Object.keys(result).length > 0) {
+            const foundFile: DBStorageEntity = result.result[0];
+            this.sequenceManageForm.controls['fileName'].setValue(foundFile.name);
+            this.sequenceManageForm.controls['taxonomyID'].setValue(foundFile.taxonomy_id);
+            this.sequenceManageForm.controls['geneID'].setValue(foundFile.gene);
+            this.sequenceManageForm.controls['description'].setValue(foundFile.description);
+          }
+        }
+      );
+
+    }
+
+  ngOnInit() {
+      this.fileID = Number(this.route.snapshot.paramMap.get('fileID'));
+
+      if (this.fileID) {
+        this.fetchFileByID(this.fileID);
+        this.isModifyFileMode = true;
+
+        // This assignment is just to avoid to trigger Validators.required.
+        // In this case we are re-using the same component for uploading and modifying.
+        // If this is not assigned, then it will complain about invalid form.
+        this.sequenceManageForm.controls['files'].setValue('____');
+      }
   }
 }

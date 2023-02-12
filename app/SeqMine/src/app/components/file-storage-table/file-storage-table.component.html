@@ -14,6 +14,7 @@
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Name</th>
+              <th scope="col">Description</th>
               <th scope="col">Size</th>
               <th scope="col">Gene</th>
               <th scope="col">Taxonomy ID</th>
@@ -26,6 +27,7 @@
             <tr *ngFor="let file of this.allFilesArr" scope="row">
               <th scope="row">{{ file.id}}</th>
               <td>{{ file.name }}</td>
+              <td>{{ file.description }}</td>
               <td>{{ file.size}}</td>
               <td>{{ file.gene}}</td>
               <td>{{ file.taxonomyID}}</td>
@@ -34,16 +36,24 @@
               <td>
                   <div class="d-flex justify-content-around">
                       <button type="button"
-                              class="btn btn-primary"
+                              class="btn btn-info"
                       >
                       <a
                           [href]="getDownloadLink(file.id)"
+                          style="color: inherit;"
                           >
                         Download
                       </a>
                       </button>
 
-                      <button type="button"
+                      <button *ngIf="['admin','investigator'].includes(sessionUser.role)" type="button"
+                              class="btn btn-primary"
+                              (click)="goToSeqFileManage(file.id)"
+                      >
+                        Modify
+                      </button>
+
+                      <button *ngIf="sessionUser.role === 'admin' " type="button"
                               class="btn btn-danger"
                               (click)="requireConfirmation(file.id, file.name)"
                       >
