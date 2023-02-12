@@ -138,6 +138,13 @@ export class DatabaseService {
       return this.http.request(req);
     }
 
+   /* Send a request to the server with a User object to create a new resgister.
+    * @param user DBUser
+    * */
+    public registerUser(user: DBUser) {
+        return this.http.post<QueryConfirmation>(this.#BASE_URL + '/registerUser', user);
+    }
+    
    /* Send a request to the server with a StorageEntity object
     * to register it in the database.
     * @param user DBUser

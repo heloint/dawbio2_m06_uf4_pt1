@@ -71,6 +71,7 @@ requestFunctions.handlePostLogOut(app, cors, connection);
 requestFunctions.handleGetSequenceFiles(app, cors, connection);
 requestFunctions.handleDownloadSequenceFile(app, cors, connection);
 requestFunctions.handlePostDeleteFileByID(app, cors, connection);
+requestFunctions.handlePostRegisterUser(app, cors, connection);
 
 app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");

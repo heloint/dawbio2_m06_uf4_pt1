@@ -31,7 +31,6 @@ export class PasswordConfirmValidationDirective implements Validator{
     if (control.value === this.firstPassword) {
       validate = true;
     }
-    console.log(validate);
     return validate ? null : { unequivalentPassword: true };
   }
 }

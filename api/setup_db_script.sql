@@ -37,7 +37,9 @@ CREATE TABLE IF NOT EXISTS users (
                                 first_name VARCHAR(50) NOT NULL CHECK(first_name <> ''),
                                 last_name VARCHAR(60) NOT NULL CHECK(last_name <> ''),
                                 registration_date TIMESTAMP NOT NULL,
-                                FOREIGN KEY (role_id) REFERENCES roles(role_id)
+                                FOREIGN KEY (role_id) REFERENCES roles(role_id),
+                                CONSTRAINT user_name_unique UNIQUE (username),
+                                CONSTRAINT user_email_unique UNIQUE (email)
 );
 
 INSERT INTO users VALUES
@@ -53,7 +55,7 @@ INSERT INTO users VALUES
 -- #####################################################################
 CREATE TABLE IF NOT EXISTS sequence_files(
                                 file_id INT(10) PRIMARY KEY,
-                                name VARCHAR(25) NOT NULL UNIQUE CHECK(name <> ''),
+                                name VARCHAR(25) NOT NULL CHECK(name <> ''),
                                 size INT(60) NOT NULL,
                                 path TEXT NOT NULL CHECK(path <> ''),
                                 gene VARCHAR(25) NOT NULL CHECK(gene <> ''),

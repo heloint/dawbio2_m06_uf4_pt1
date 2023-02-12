@@ -18,6 +18,7 @@ export class UserManageComponent {
     userID: number | null = null;
     modificationResult: Boolean | null = null;
     creationResult: Boolean | null = null;
+    errorMessage: string = 'Failed to add new user!';
 
     constructor(
         private route: ActivatedRoute,
@@ -142,7 +143,7 @@ export class UserManageComponent {
             registration_date: new Date()
         }).subscribe({
             next: result => { this.creationResult = result.result; },
-            error: error => { this.creationResult = false; }
+            error: error => { this.creationResult = false; this.errorMessage += error.error.errorMsg}
         });
     }
 

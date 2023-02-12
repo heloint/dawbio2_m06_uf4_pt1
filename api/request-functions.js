@@ -419,7 +419,54 @@ const handlePostAddUser = (app, cors, connection) => {
       function (error, result, field) {
         if (error) {
           console.log(error);
-          res.status(400).send({ results: false });
+            let errorMsg = 'Internal error has occured.';
+            if (error.code === 'ER_DUP_ENTRY') {
+                errorMsg = 'User already exists!';
+            }
+          res.status(400).send({ results: false, errorMsg: errorMsg });
+        } else {
+          res.status(200).send({ result: true });
+        }
+      }
+    );
+  });
+};
+
+/**
+ * Function to handle registration of a new user in the database.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
+const handlePostRegisterUser = (app, cors, connection) => {
+  app.post("/registerUser", cors(), function (req, res) {
+    connection.query(
+      ` INSERT INTO users VALUES
+            (NEXT VALUE FOR user_id,
+                ?,
+                ( SELECT role_id
+                  FROM roles
+                  WHERE role_name=?
+                ),
+                ?, ?, ?, ?, CURRENT_TIMESTAMP()
+            ) `,
+      [
+        req.body.username,
+        'investigator',
+        req.body.password,
+        req.body.email,
+        req.body.first_name,
+        req.body.last_name,
+      ],
+      function (error, result, field) {
+        if (error) {
+          console.log(error.code);
+            let errorMsg = 'Internal error has occured.';
+            if (error.code === 'ER_DUP_ENTRY') {
+                errorMsg = 'User already exists!';
+            }
+          res.status(400).send({ results: false, errorMsg: errorMsg });
         } else {
           res.status(200).send({ result: true });
         }
@@ -558,4 +605,5 @@ module.exports = {
   handleGetSequenceFiles: handleGetSequenceFiles,
   handleDownloadSequenceFile: handleDownloadSequenceFile,
   handlePostDeleteFileByID: handlePostDeleteFileByID,
+  handlePostRegisterUser: handlePostRegisterUser,
 };

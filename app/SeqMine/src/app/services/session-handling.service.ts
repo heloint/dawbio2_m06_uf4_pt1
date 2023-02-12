@@ -85,7 +85,6 @@ export class SessionHandlingService {
     );
 
     validationResult.subscribe((res) => {
-        console.log(res);
         if (Object.keys(res).length > 0) {
           this.cookieService.set(
             'SeqMineSession',

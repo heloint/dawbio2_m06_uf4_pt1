@@ -1,1 +1,171 @@
-<p>register works!</p>
+<div class="container">
+  <div class="row justify-content-center">
+      <form [formGroup]="userRegistrationForm" (ngSubmit)="doRegisterUser()" class="col-6">
+      <fieldset>
+          <div class="my-3">
+              <h3>Registration</h3>
+          </div>
+          <h4 *ngIf="this.registrationResult" class="success-msg">Successfully created user!</h4>
+          <h4 *ngIf="this.registrationResult === false" class="failed-msg">{{ this.errorMessage }}</h4>
+
+        <!-- USERNAME -->
+        <div class="form-group">
+          <label for="username" class="form-label mt-3">Username</label>
+          <input type="text" class="form-control" id="username" placeholder="Enter username" formControlName="username">
+
+            <span
+              *ngIf="this.userRegistrationForm.get('username')?.errors?.['required'] &&
+                               this.userRegistrationForm.get('username')?.touched"
+              class="text-danger"
+            >
+              Username field is empty.
+            </span>
+
+            <span
+              *ngIf="this.userRegistrationForm.get('username')?.errors?.['minlength'] &&
+                               this.userRegistrationForm.get('username')?.touched"
+              class="text-danger"
+            >
+              Minimum 6 character length is required.
+            </span>
+            <span
+              *ngIf="this.userRegistrationForm.get('username')?.errors?.['pattern'] &&
+                               this.userRegistrationForm.get('username')?.touched"
+              class="text-danger"
+            >
+              Username contains illegal characters, such as special characters or spaces.
+            </span>
+        </div>
+        <!-- END: USERNAME -->
+
+        <!-- FIRST NAME-->
+        <div class="form-group">
+          <label for="first name" class="form-label mt-3">First name</label>
+          <input type="text" class="form-control" id="firstname" placeholder="Enter first name" formControlName="firstName">
+
+            <span
+              *ngIf="this.userRegistrationForm.get('firstName')?.errors?.['required'] &&
+                               this.userRegistrationForm.get('firstName')?.touched"
+              class="text-danger"
+            >
+              First name field is empty.
+            </span>
+
+            <span
+              *ngIf="this.userRegistrationForm.get('firstName')?.errors?.['pattern'] &&
+                               this.userRegistrationForm.get('firstName')?.touched"
+              class="text-danger"
+            >
+              First name contains illegal characters, such as special characters.
+            </span>
+        </div>
+        <!-- END: FIRST NAME-->
+
+        <!-- Last NAME-->
+        <div class="form-group">
+          <label for="Last name" class="form-label mt-3">Last name</label>
+          <input type="text" class="form-control" id="Last name" placeholder="Enter last name" formControlName="lastName">
+
+            <span
+              *ngIf="this.userRegistrationForm.get('lastName')?.errors?.['required'] &&
+                               this.userRegistrationForm.get('lastName')?.touched"
+              class="text-danger"
+            >
+              Last name field is empty.
+            </span>
+
+            <span
+              *ngIf="this.userRegistrationForm.get('lastName')?.errors?.['pattern'] &&
+                               this.userRegistrationForm.get('lastName')?.touched"
+              class="text-danger"
+            >
+              Last name contains illegal characters, such as special characters.
+            </span>
+        </div>
+        <!-- END: Last NAME-->
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+          <label for="password" class="form-label mt-3">Password</label>
+          <input type="password" class="form-control" id="password" placeholder="Enter password." formControlName="password">
+
+            <div
+              *ngIf="this.userRegistrationForm.get('password')?.errors?.['required'] &&
+                              this.userRegistrationForm.get('password')?.touched"
+              class="text-danger"
+            >
+              Password cannot be empty.
+            </div>
+            <div
+              *ngIf="this.userRegistrationForm.get('password')?.errors?.['minlength'] &&
+                               this.userRegistrationForm.get('password')?.touched"
+              class="text-danger"
+            >
+              Minimum 8 character length is required.
+            </div>
+        </div>
+        <!-- END: PASSWORD -->
+
+        <!-- PASSWORD CONFIRMATION -->
+        <div class="form-group">
+          <label for="passwordConfirmation" class="form-label mt-3">Confirm password</label>
+          <input type="password"
+                 class="form-control" 
+                 id="passwordConfirmation"
+                 placeholder="Confirm password."
+                 formControlName="passwordConfirmation"
+                  appPasswordConfirmValidation
+                  [firstPassword]="this.userRegistrationForm.get('password')?.value"
+            >
+
+            <span
+              *ngIf="this.userRegistrationForm.get('passwordConfirmation')?.errors?.['required'] &&
+                              this.userRegistrationForm.get('passwordConfirmation')?.touched"
+                class="text-danger"
+            >
+              Password repetation cannot be empty.
+            </span>
+            <span
+              *ngIf="this.userRegistrationForm.get('passwordConfirmation')?.errors?.['unequivalentPassword'] &&
+                              this.userRegistrationForm.get('passwordConfirmation')?.touched"
+                class="text-danger"
+            >
+              Two passwords must be the same.
+            </span>
+        </div>
+        <!-- END: PASSWORD CONFIRMATION -->
+
+        <!-- EMAIL -->
+        <div class="form-group">
+          <label for="email" class="form-label mt-3">Email address</label>
+          <input type="email" class="form-control" id="email" placeholder="Enter email" formControlName="email">
+
+            <span
+              *ngIf="this.userRegistrationForm.get('email')?.errors?.['required'] &&
+                              this.userRegistrationForm.get('email')?.touched"
+                class="text-danger"
+            >
+              Email cannot be empty.
+            </span>
+            <span
+              *ngIf="this.userRegistrationForm.get('email')?.errors?.['pattern'] &&
+                        this.userRegistrationForm.get('email')?.touched"
+                class="text-danger"
+            >
+              This email is not correct.
+            </span>
+        </div>
+        <!-- END: EMAIL -->
+
+      </fieldset>
+      <div class="my-3">
+        <button type="submit"
+                [disabled]="userRegistrationForm.invalid"
+                class="btn btn-primary"
+        >
+            REGISTER
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

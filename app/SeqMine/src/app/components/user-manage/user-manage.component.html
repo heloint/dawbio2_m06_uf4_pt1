@@ -4,10 +4,10 @@
       <fieldset>
         <div *ngIf="this.isAddUserMode; else modifyLegend">
           <div>
-              <legend>Add user</legend>
+              <h3>Add user</h3>
           </div>
           <h4 *ngIf="this.creationResult" class="success-msg">Successfully created user!</h4>
-          <h4 *ngIf="this.creationResult === false" class="failed-msg">Failed to create user!</h4>
+          <h4 *ngIf="this.creationResult === false" class="failed-msg">{{ this.errorMessage }}</h4>
         </div>
 
         <ng-template #modifyLegend>
