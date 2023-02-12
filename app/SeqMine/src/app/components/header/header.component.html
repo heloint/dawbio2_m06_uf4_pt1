@@ -45,7 +45,7 @@
             >Members</a
           >
         </li>
-        <li class="nav-item dropdown">
+        <li *ngIf="this.userData.role === 'admin'" class="nav-item dropdown">
           <a
             class="nav-link dropdown-toggle"
             data-bs-toggle="dropdown"
@@ -77,21 +77,21 @@
             role="button"
             aria-haspopup="true"
             aria-expanded="false"
-            >FASTA</a
+            >Sequences</a
           >
           <div class="dropdown-menu">
             <a
               class="dropdown-item"
               routerLink="/file-storage-table"
               routerLinkActive="active"
-              >FASTA storage</a
+              >Sequence storage</a
             >
             <div class="dropdown-divider"></div>
-            <a
+            <a *ngIf="['admin', 'investigator'].includes(this.userData.role)"
               class="dropdown-item"
               routerLink="/file-storage-manage"
               routerLinkActive="active"
-              >Upload FASTA</a
+              >Upload sequences</a
             >
           </div>
         </li>

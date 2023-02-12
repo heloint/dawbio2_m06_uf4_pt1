@@ -9,6 +9,7 @@ USE SeqMine;
 CREATE SEQUENCE user_id START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE roles_id START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE sequence_file_id START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE user_sess_id START WITH 1 INCREMENT BY 1;
 -- #####################################################################
 
 -- Create and fetch roles table.
@@ -35,15 +36,15 @@ CREATE TABLE IF NOT EXISTS users (
                                 email VARCHAR(30) NOT NULL CHECK(email <> ''),
                                 first_name VARCHAR(50) NOT NULL CHECK(first_name <> ''),
                                 last_name VARCHAR(60) NOT NULL CHECK(last_name <> ''),
-                                registration_date DATE NOT NULL,
+                                registration_date TIMESTAMP NOT NULL,
                                 FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );
 
 INSERT INTO users VALUES
-    (NEXT VALUE FOR user_id, "admin", 1, "admin", "admin@gmail.com", "Dániel", "Májer", "2023-2-8"),
-    (NEXT VALUE FOR user_id, "investigator", 2, "investigator", "investigator@gmail.com","Dániel", "Májer", "2023-2-8"),
-    (NEXT VALUE FOR user_id, "user01", 2, "pass01", "lili@gmail.com", "Lili", "Lala", "2022-2-8"),
-    (NEXT VALUE FOR user_id, "user02", 2, "pass02", "didi@gmail.com", "Didi", "Dada", "2022-2-10")
+    (NEXT VALUE FOR user_id, "admin", 1, "admin", "admin@gmail.com", "Dániel", "Májer", CURRENT_TIMESTAMP()),
+    (NEXT VALUE FOR user_id, "investigator", 2, "investigator", "investigator@gmail.com","Dániel", "Májer", CURRENT_TIMESTAMP()),
+    (NEXT VALUE FOR user_id, "user01", 2, "pass01", "lili@gmail.com", "Lili", "Lala", CURRENT_TIMESTAMP()),
+    (NEXT VALUE FOR user_id, "user02", 2, "pass02", "didi@gmail.com", "Didi", "Dada", CURRENT_TIMESTAMP())
 ;
 
 -- #####################################################################
@@ -57,16 +58,29 @@ CREATE TABLE IF NOT EXISTS sequence_files(
                                 path TEXT NOT NULL CHECK(path <> ''),
                                 gene VARCHAR(25) NOT NULL CHECK(gene <> ''),
                                 taxonomy_id INT(10) NOT NULL CHECK(taxonomy_id <> 0),
-                                upload_date DATE NOT NULL,
+                                upload_date TIMESTAMP NOT NULL,
                                 uploaded_by VARCHAR(25) NOT NULL CHECK(uploaded_by <> ''),
                                 CONSTRAINT file_name_unique UNIQUE (name),
                                 CONSTRAINT file_path_unique UNIQUE (path)
 );
 
 INSERT INTO sequence_files VALUES
-    (NEXT VALUE FOR sequence_file_id, "fasta-example.fasta", 100, "./uploads/fasta-example.fasta", "SELL", 9606, "2023-2-8", "admin"),
-    (NEXT VALUE FOR sequence_file_id, "fastq-example.fastq", 101, "./uploads/fastq-example.fastq", "SELL", 9615, "2023-2-9", "investigator")
+    (NEXT VALUE FOR sequence_file_id, "fasta-example.fasta", 100, "./uploads/fasta-example.fasta", "SELL", 9606, CURRENT_TIMESTAMP(), "admin"),
+    (NEXT VALUE FOR sequence_file_id, "fastq-example.fastq", 101, "./uploads/fastq-example.fastq", "SELL", 9615, CURRENT_TIMESTAMP(), "investigator")
 ;
+
+-- #####################################################################
+
+-- Create and fetch user_sessions table.
+-- Also, prepare a scheduled event to delete sessions older, than x time.
+-- #####################################################################
+CREATE TABLE IF NOT EXISTS user_sessions(
+                                user_sess_id INT(50) PRIMARY KEY,
+                                user_id INT(10) NOT NULL CHECK(user_id <> 0),
+                                token VARCHAR(50) NOT NULL CHECK(token <> ''),
+                                timestamp TIME NOT NULL,
+                                FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
 
 -- #####################################################################
 

@@ -2,28 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { CredentialValidationService, DataForCookie } from '../../services/credential-validation.service';
+import { CredentialValidationService} from '../../services/credential-validation.service';
 import { SessionHandlingService } from '../../services/session-handling.service';
 import { User } from '../../models/user.model';
 import { CookieService } from 'ngx-cookie-service';
 
-import { AppComponent } from '../../app.component';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   constructor(
     private route: Router,
     private cookieService: CookieService,
-    private credenService: CredentialValidationService,
     private sessionService: SessionHandlingService
   ) {}
 
   validationResult!: User | null;
-  validationError!: string | null;
 
   /*
    * Check if the user logged in.
@@ -49,6 +45,14 @@ export class LoginComponent {
     return Object.values(this.cookieService.getAll())[0];
   }
 
+  /*
+   * Get validation error message from the sessionService.
+   * @return string
+   * */
+  get validationErrorMessage(): string | null {
+    return this.sessionService.validationError;
+  }
+
   // Initialize login FormGroup + FormControl.
   loginForm: FormGroup = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -62,37 +66,22 @@ export class LoginComponent {
     }
   }
 
-      /* this.loginForm.get('username')?.value,
-      this.loginForm.get('password')?.value */
-
-  // Try to validate credens and login the user.
-  // After successful login create cookie.
+  /* Send the credentials for validation to sessionService, who will consult with the
+   * server if the credentials are correct or not. If correct, then initializes the cookies of the session.
+   * @return void
+   * */
   doLogin() {
-    const validationResult: Observable<DataForCookie> = this.credenService.validateLoginCredens(
+    this.sessionService.login(
       this.loginForm.get('username')?.value,
       this.loginForm.get('password')?.value
     );
-
-    validationResult.subscribe((res) => {
-
-        if (Object.keys(res).length > 0) {
-          this.cookieService.set(
-            res.username,
-            res.role,
-            { expires: 3 }
-          );
-          this.sessionService.isLoggedIn = true;
-          this.route.navigate(['/home']);
-        } else {
-          this.validationError = 'Invalid username or password.';
-        }
-    });
   }
 
-  // Delete cookie and logout.
-  public doLogOut() {
+  /* Delete cookie and logout.
+   * @return void
+   **/
+  doLogOut() {
     this.cookieService.deleteAll();
     this.sessionService.isLoggedIn = false;
   }
-
 }

@@ -1,1 +1,60 @@
-<p>file-storage-table works!</p>
+<div class="container">
+
+    <div class="row my-3">
+        <h3 class="text-center">Sequence Files</h3>
+    </div>
+
+    <div class="row">
+
+        <h3 *ngIf="getFileDeletionStatus()" class="text-center" id="success-deletion-message">File "{{ recentlyDeletedUser }}" has successfully been deleted. </h3>
+        <h3 *ngIf="getFileDeletionStatus() === false" class="text-center" id="failed-deletion-message">Failed to delete "{{ recentlyDeletedUser }}".<br> Something went wrong.</h3>
+
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Size</th>
+              <th scope="col">Gene</th>
+              <th scope="col">Taxonomy ID</th>
+              <th scope="col">Upload date</th>
+              <th scope="col">Uploaded by</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let file of this.allFilesArr" scope="row">
+              <th scope="row">{{ file.id}}</th>
+              <td>{{ file.name }}</td>
+              <td>{{ file.size}}</td>
+              <td>{{ file.gene}}</td>
+              <td>{{ file.taxonomyID}}</td>
+              <td>{{ file.uploadDate.toISOString().split('T').join(' ').split('.')[0]}}</td>
+              <td>{{ file.uploadedBy}}</td>
+              <td>
+                  <div class="d-flex justify-content-around">
+                      <button type="button"
+                              class="btn btn-primary"
+                      >
+                      <a
+                          [href]="getDownloadLink(file.id)"
+                          >
+                        Download
+                      </a>
+                      </button>
+
+                      <button type="button"
+                              class="btn btn-danger"
+                              (click)="requireConfirmation(file.id, file.name)"
+                      >
+                        Delete
+                      </button>
+                  </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+</div>
+
+

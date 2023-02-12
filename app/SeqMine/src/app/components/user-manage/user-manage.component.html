@@ -187,6 +187,7 @@
 
       <div *ngIf="this.isAddUserMode;else modifyButton" class="my-3">
         <button type="submit"
+                [disabled]="userManageForm.invalid"
                 class="btn btn-primary"
                 (click)="doAddUser()"
         >
@@ -196,6 +197,7 @@
       <ng-template #modifyButton>
         <div class="my-3">
           <button type="submit"
+                  [disabled]="userManageForm.invalid"
                   class="btn btn-primary"
                   (click)="doModifyUser()"
           >

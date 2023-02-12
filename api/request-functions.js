@@ -1,6 +1,6 @@
 const multer = require("multer");
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 /**
  * Function to configure the storage for the uploaded files
@@ -13,13 +13,13 @@ const configureStorage = () => {
       callback(null, "uploads/");
     },
     filename: function (req, file, callback) {
-        // If file exists, we don't upload.
-        if (!fs.existsSync(path.join('uploads/',file.originalname))) {
-            callback(null, file.originalname);
-         } else {
-            callback(new Error('File already exists!'), file.originalname);
-        }
-        // callback(null, file.originalname);
+      // If file exists, we don't upload.
+      if (!fs.existsSync(path.join("uploads/", file.originalname))) {
+        callback(null, file.originalname);
+      } else {
+        callback(new Error("File already exists!"), file.originalname);
+      }
+      // callback(null, file.originalname);
     },
   });
 };
@@ -34,21 +34,19 @@ const configureStorage = () => {
  */
 const handleRegisterFileUpload = (app, cors, connection) => {
   app.post("/registerSequence", (req, res) => {
-
-
-console.log({
-    1:req.body.name,
-       2: req.body.size,
-       3: `${__dirname}/uploads/${req.body.name}`,
-       4: req.body.gene,
-       5: req.body.taxonomyID,
-       6: req.body.uploadedBy
-  });
+    console.log({
+      1: req.body.name,
+      2: req.body.size,
+      3: `${__dirname}/uploads/${req.body.name}`,
+      4: req.body.gene,
+      5: req.body.taxonomyID,
+      6: req.body.uploadedBy,
+    });
     connection.query(
       ` INSERT INTO sequence_files VALUES
             (
                 NEXT VALUE FOR sequence_file_id,
-                ?, ?, ?, ?, ?, now(), ?
+                ?, ?, ?, ?, ?, CURRENT_TIMESTAMP(), ?
             ) `,
       [
         req.body.name,
@@ -56,12 +54,12 @@ console.log({
         `${__dirname}/uploads/${req.body.name}`,
         req.body.gene,
         req.body.taxonomyID,
-        req.body.uploadedBy
+        req.body.uploadedBy,
       ],
       function (error, result, field) {
         if (error) {
-            console.log(error);
-          res.status(400).send({ results: false });
+          console.log(error);
+          res.status(400).send({ error: "File already exists!"});
         } else {
           res.status(200).send({ result: true });
         }
@@ -80,18 +78,126 @@ const handleFileUpload = (app, cors, connection) => {
   const storage = configureStorage();
   const upload = multer({ storage: storage });
 
-  app.post("/uploadSequence", upload.array("file"), (req, res) => {
-    const file = req;
+  app.post(
+    "/uploadSequence",
+    upload.array("file"),
+    (req, res) => {
+      const file = req;
 
-    // If no file received, then exception sent back.
-    if (!file) {
-      const error = new Error("Please upload a file");
-      res.status(400).send({ error: error.message});
-    }
-  },
-  (err, req, res, next)=> {
+      // If no file received, then exception sent back.
+      if (!file) {
+        const error = new Error("Please upload a file");
+        res.status(400).send({ error: error.message });
+      }
+    },
+    (err, req, res, next) => {
       console.log(err.message);
-    res.status(400).json({error: err.message});
+      res.status(400).json({ error: err.message });
+    }
+  );
+};
+
+/**
+ * Function to handle the file upload
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ */
+const handleDownloadSequenceFile = (app, cors, connection) => {
+
+  app.get(
+    "/downloadSequenceFile", (req, res) => {
+        console.log(req.query.id);
+      const fileID = req.query.id;
+
+      // If no file received, then exception sent back.
+      if (!fileID) {
+        const error = new Error("No file were requested for download.");
+        res.status(400).send({ error: error.message });
+      } else {
+        connection.query(
+          `SELECT path FROM sequence_files WHERE file_id=?`,
+          [fileID],
+          function (error, result, field) {
+            if (error) {
+                console.log('fdsa');
+              console.log(error);
+              res.status(400).send({ result: false });
+            } else {
+                const path = result[0].path;
+              // res.status(200).send({ result: true });
+              res.download(path);
+            }
+          }
+        );
+      }
+    },
+    (err, req, res, next) => {
+      console.log(err.message);
+      res.status(400).json({ error: err.message });
+    }
+  );
+};
+
+/**
+ * Function to handle post request to delete the
+ * user with the corresponding ID.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
+const handlePostDeleteFileByID = (app, cors, connection) => {
+  app.post("/deleteFileByID", cors(), function (req, res) {
+      connection.query(
+        `SELECT path FROM sequence_files WHERE file_id=?`,
+          [req.body.id],
+          function (error, result, field) {
+              if (error) {
+                  console.log(error);
+                res.status(400).send({ error: error.message});
+              } else {
+
+                const path = result[0].path;
+                fs.unlinkSync(path);
+
+                connection.query(
+                  `DELETE FROM sequence_files WHERE file_id=?`,
+                  [req.body.id],
+                  function (error, result, field) {
+                    if (error) {
+                      console.log(error);
+                      res.status(400).send({ results: false });
+                    } else {
+                      console.log("Succesfully deleted file.");
+                      res.status(200).send({ result: true });
+                    }
+                  }
+                );
+
+              }
+          }
+      );
+  });
+};
+
+/**
+ * Function to handle getting all sequence files.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
+const handleGetSequenceFiles = (app, cors, connection) => {
+  app.get("/sequenceFiles", cors(), function (req, res) {
+    connection.query(`SELECT * FROM sequence_files`, function (error, results, field) {
+      if (error) {
+        console.log(error);
+        res.status(400).send({ results: null });
+      } else {
+        res.status(200).send({ result: results });
+      }
+    });
   });
 };
 
@@ -172,8 +278,7 @@ const handleGetUsers = (app, cors, connection) => {
 };
 
 /**
- * Function to handle retrieving the informations about the user 
- * by it's username and password at the moment of the login process.
+ * Function to handle the session login and registration of the received user.
  * @function
  * @param {Object} app - Express application
  * @param {Object} cors - Module to handle CORS.
@@ -182,7 +287,7 @@ const handleGetUsers = (app, cors, connection) => {
 const handlePostLogin = (app, cors, connection) => {
   app.post("/login", cors(), function (req, res) {
     connection.query(
-      `SELECT * FROM users WHERE username=? AND password=?`,
+      `SELECT U.user_id, U.username, U.first_name, U.last_name, R.role_name FROM users AS U JOIN roles as R ON U.role_id=R.role_id WHERE username=? AND password=?`,
       [req.body.username, req.body.password],
       function (error, result, field) {
         if (error) {
@@ -190,15 +295,94 @@ const handlePostLogin = (app, cors, connection) => {
           res.status(400).send({ results: false });
         } else {
           if (result.length > 0) {
+            // If result is not zero, then register the session token.
+            connection.query(
+              `INSERT INTO user_sessions VALUES (NEXT VALUE FOR user_sess_id, ?, ?, CURRENT_TIMESTAMP())`,
+              [result[0].user_id, req.body.token],
+              function (error, result, field) {
+                if (error) {
+                  res.status(400).send({ results: false });
+                }
+              }
+            );
+
             res.status(200).send({
               username: result[0].username,
               first_name: result[0].first_name,
               last_name: result[0].last_name,
-              role: result[0].role,
+              role: result[0].role_name,
+              token: req.body.token,
             });
           } else {
             res.status(200).send({});
           }
+        }
+      }
+    );
+  });
+};
+
+/**
+ * Function to handle the session login and registration of the received user.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
+const handlePostSessionValidation = (app, cors, connection) => {
+  app.post("/sessionValidation", cors(), function (req, res) {
+    connection.query(
+      `SELECT U.username, U.first_name, U.last_name, R.role_name
+        FROM roles AS R
+        JOIN users AS U
+        ON R.role_id=U.role_id
+        JOIN user_sessions AS SESS
+        ON U.user_id=SESS.user_id
+        WHERE token=?
+        `,
+      [req.body.token],
+      function (error, result, field) {
+        if (error) {
+          console.log(error);
+          res.status(400).send({ results: false });
+        } else {
+          if (result.length > 0) {
+            // If result is not zero, then register the session token.
+            res.status(200).send({
+              username: result[0].username,
+              first_name: result[0].first_name,
+              last_name: result[0].last_name,
+              role: result[0].role_name,
+            });
+          } else {
+            res.status(200).send({});
+          }
+        }
+      }
+    );
+  });
+};
+
+/**
+ * Function to handle the logout process by destroying
+ * the corresponding register in the database.
+ * @function
+ * @param {Object} app - Express application
+ * @param {Object} cors - Module to handle CORS.
+ * @param {Object} connection - Connector instance to MySQL.
+ */
+const handlePostLogOut = (app, cors, connection) => {
+  app.post("/logout", cors(), function (req, res) {
+        console.log('fdasfdsafsad===============>');
+    connection.query(
+      `DELETE FROM user_sessions WHERE token=?`,
+      [req.body.token],
+      function (error, result, field) {
+        if (error) {
+          console.log(error);
+          res.status(400).send({ results: false });
+        } else {
+          res.status(200).send({});
         }
       }
     );
@@ -222,7 +406,7 @@ const handlePostAddUser = (app, cors, connection) => {
                   FROM roles
                   WHERE role_name=?
                 ),
-                ?, ?, ?, ?, now()
+                ?, ?, ?, ?, CURRENT_TIMESTAMP()
             ) `,
       [
         req.body.username,
@@ -283,7 +467,7 @@ const handlePostUserByID = (app, cors, connection) => {
 };
 
 /**
- * Function to handle post request to delete the 
+ * Function to handle post request to delete the
  * user with the corresponding ID.
  * @function
  * @param {Object} app - Express application
@@ -309,7 +493,7 @@ const handlePostDeleteUserByID = (app, cors, connection) => {
 };
 
 /**
- * Function to handle post request to update the 
+ * Function to handle post request to update the
  * user with the received datas.
  * @function
  * @param {Object} app - Express application
@@ -365,8 +549,13 @@ module.exports = {
   handleGetLastUserID: handleGetLastUserID,
   handleGetUsers: handleGetUsers,
   handlePostLogin: handlePostLogin,
+  handlePostSessionValidation: handlePostSessionValidation,
+  handlePostLogOut: handlePostLogOut,
   handlePostAddUser: handlePostAddUser,
   handlePostUserByID: handlePostUserByID,
   handlePostDeleteUserByID: handlePostDeleteUserByID,
   handlePostUpdateUser: handlePostUpdateUser,
+  handleGetSequenceFiles: handleGetSequenceFiles,
+  handleDownloadSequenceFile: handleDownloadSequenceFile,
+  handlePostDeleteFileByID: handlePostDeleteFileByID,
 };

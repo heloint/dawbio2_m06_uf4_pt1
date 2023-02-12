@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '../models/user.model';
-import { HttpClient, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpRequest, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { StorageEntity } from '../models/storage-entity.model';
 
@@ -21,16 +20,21 @@ export type DBUser = {
     registration_date: Date,
 }
 
+// Represents a response with user related queries.
+export type DBStorageEntityArr = {
+    result: Array<DBStorageEntity>
+}
+
 // Represents an item in a response with user related queries.
 export type DBStorageEntity = {
-    id: number,
+    file_id: number,
     name: string,
     size: number,
     path: string,
     gene: string,
-    taxonomyID: number,
-    uploadedDate: Date,
-    uploadedBy: string,
+    taxonomy_id: number,
+    upload_date: Date,
+    uploaded_by: string,
 }
 
 // Represents a response with role related queries.
@@ -93,6 +97,14 @@ export class DatabaseService {
      return this.http.post<QueryConfirmation>(this.#BASE_URL + '/deleteUserByID', {userID: inputID});
    }
 
+  /* Send a request to the server to delete a file by the argument ID.
+   * @param inputID number
+   * */
+   public deleteFileByID(inputID: number) {
+     return this.http.post<QueryConfirmation>(this.#BASE_URL + '/deleteFileByID', {id: inputID});
+   }
+
+
    /* Send a request to the server with a User object to update it's register with the new data.
     * @param user DBUser
     * */
@@ -106,7 +118,7 @@ export class DatabaseService {
     public addUser(user: DBUser) {
         return this.http.post<QueryConfirmation>(this.#BASE_URL + '/addUser', user);
     }
-
+    
    /* Send a request to the server with a File object save it on the server.
     * @param user DBUser
     * */
@@ -142,5 +154,15 @@ export class DatabaseService {
             }
         );
     }
+
+
+  // Requests all the sequence files can be found in the database.
+  public getAllSequenceFiles() {
+    return this.http.get<DBStorageEntityArr>(this.#BASE_URL + '/sequenceFiles');
+  }
+
+  public generateFileDownloadHREF(id: number): string {
+        return `${this.#BASE_URL}/downloadSequenceFile?id=${id}`;
+  }
 
 }

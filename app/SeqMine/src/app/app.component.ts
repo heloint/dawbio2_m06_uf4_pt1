@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SessionHandlingService } from './services/session-handling.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,12 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'SeqMine';
 
+  constructor(
+    private sessionService: SessionHandlingService
+  ){}
 
-
+  ngOnInit() {
+    this.sessionService.validateSessionCookie(); 
+  }
 
 }

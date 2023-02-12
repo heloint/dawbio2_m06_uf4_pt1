@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { SessionHandlingService } from '../../services/session-handling.service';
+import { SessionHandlingService, DataForCookie } from '../../services/session-handling.service';
+
 
 @Component({
   selector: 'app-header',
@@ -20,6 +21,9 @@ export class HeaderComponent {
     return this.sessionService.isLoggedIn;
   }
 
+ get userData(): DataForCookie {
+    return this.sessionService.userData;
+ }
   // Logs out the user and destroys the cookies of the site.
   public logout() {
     this.sessionService.doLogOut();

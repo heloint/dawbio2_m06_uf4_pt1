@@ -29,6 +29,7 @@ export class UserTableComponent {
     return this.database.getAllUsers().subscribe(
       users => {
         users.result.forEach((user) => {
+            console.log(user.registration_date);
             this.allUsersArr.push(new User(
                 user.user_id,
                 user.username,

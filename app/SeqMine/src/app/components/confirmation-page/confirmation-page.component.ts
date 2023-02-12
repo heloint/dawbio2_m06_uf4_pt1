@@ -38,6 +38,15 @@ export class ConfirmationPageComponent {
                 }
                 this.location.back();
                 break;
+            case 'fileDelete':
+                if (this.id !== null &&
+                    this.id !== undefined) {
+                      const filename: string | null = this.activatedRoute.snapshot.paramMap.get('name');
+                      this.database.deleteFileByID(this.id).subscribe(result => {
+                        this.route.navigate(['/file-storage-table', {status: result.result, name: filename}]);
+                  });
+                }
+                this.location.back();
         }
       }
     }
