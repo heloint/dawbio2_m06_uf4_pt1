@@ -12,6 +12,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { FileStorageManageComponent } from './components/file-storage-manage/file-storage-manage.component';
 import { UserManageComponent } from './components/user-manage/user-manage.component';
 import { ConfirmationPageComponent } from './components/confirmation-page/confirmation-page.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -33,6 +34,7 @@ const routes: Routes = [
   },
   {
     path: 'register',
+    canActivate: [AuthGuard],
     component: RegisterComponent,
   },
   {

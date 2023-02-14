@@ -12,7 +12,6 @@ export class HeaderComponent {
     private sessionService: SessionHandlingService
   ){}
 
-
   /*
    * Check if the user logged in.
    * @return Boolean
