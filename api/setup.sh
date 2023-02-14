@@ -2,7 +2,7 @@
 
 npm init
 
-npm install -y body-parser express mysql cors multer --save
+npm install -y body-parser express mysql cors multer jsonwebtoken --save
 sudo npm install -g -y nodemon
 
 sed -i '/"scripts"/a  \ \ \ \ "start": "nodemon index.js",' package.json

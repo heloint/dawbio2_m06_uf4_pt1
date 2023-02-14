@@ -25,6 +25,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/', express.static(path.join(__dirname, './public')))
 
+
+const ACCESS_TOKEN_SECRET = 'hellohello';
+
+
 // Create a connection to the databse.
 // You can create your user in the next comment below called "USERS".
 //-------------------------------------------------------------------
@@ -35,10 +39,10 @@ const connection = mysql.createConnection({
 
     // USERS:
     // ======
-    /* user: "dama",
-    password: "Stabilo1", */
-    user: "danielmajer",
-    password: "Fdfac416+",
+    user: "dama",
+    password: "Stabilo1",
+    /* user: "danielmajer",
+    password: "Fdfac416+", */
 
 });
 console.log("Logging into the database...");
@@ -60,7 +64,7 @@ requestFunctions.handleFileUpload(app, cors, connection);
 requestFunctions.handleGetRoles(app, cors, connection);
 requestFunctions.handleGetLastUserID(app, cors, connection);
 requestFunctions.handleGetUsers(app, cors, connection);
-requestFunctions.handlePostLogin(app, cors, connection);
+requestFunctions.handlePostLogin(app, connection, ACCESS_TOKEN_SECRET);
 requestFunctions.handlePostAddUser(app, cors, connection);
 requestFunctions.handlePostUserByID(app, cors, connection);
 requestFunctions.handlePostDeleteUserByID(app, cors, connection);

@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 import { CredentialValidationService } from './credential-validation.service';
 import { HttpClient } from '@angular/common/http';
+import {shareReplay } from 'rxjs/operators';
 
 export type DataForCookie = {
   username: string;
@@ -39,7 +40,7 @@ export class SessionHandlingService {
     const rand = function() {
         return Math.random().toString(36).substr(2); // remove `0.`
     };
-    return rand() + rand(); 
+    return rand() + rand();
   }
 
   /* Validates username and password against the "database"
@@ -49,7 +50,7 @@ export class SessionHandlingService {
    * @return  Observable<DataForCookie>
    * */
   private validateLoginCredens(usernameParam: string, passwordParam: string, token: string): Observable<DataForCookie> {
-    return this.http.post<DataForCookie>(this.#BASE_URL + '/login', {username: usernameParam, password: passwordParam, token: token})
+    return this.http.post<DataForCookie>(this.#BASE_URL + '/login', {username: usernameParam, password: passwordParam, token: token}).pipe(shareReplay());
   }
 
   /* Validates session token against the "database"
@@ -85,6 +86,7 @@ export class SessionHandlingService {
     );
 
     validationResult.subscribe((res) => {
+      console.log(res);
         if (Object.keys(res).length > 0) {
           this.cookieService.set(
             'SeqMineSession',

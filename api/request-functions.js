@@ -1,6 +1,7 @@
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const jwt = require('jsonwebtoken');
 
 /**
  * Function to configure the storage for the uploaded files
@@ -323,8 +324,8 @@ const handleGetUsers = (app, cors, connection) => {
  * @param {Object} cors - Module to handle CORS.
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handlePostLogin = (app, cors, connection) => {
-  app.post("/login", cors(), function (req, res) {
+const handlePostLogin = (app, connection, accessTokenSecret) => {
+  app.post("/login", function (req, res) {
     connection.query(
       `SELECT U.user_id, U.username, U.first_name, U.last_name, R.role_name FROM users AS U JOIN roles as R ON U.role_id=R.role_id WHERE username=? AND password=?`,
       [req.body.username, req.body.password],
@@ -333,6 +334,7 @@ const handlePostLogin = (app, cors, connection) => {
           console.log(error);
           res.status(400).send({ results: false });
         } else {
+
           if (result.length > 0) {
             // If result is not zero, then register the session token.
             connection.query(
@@ -345,13 +347,27 @@ const handlePostLogin = (app, cors, connection) => {
               }
             );
 
-            res.status(200).send({
+            const accessToken = jwt.sign({
               username: result[0].username,
               first_name: result[0].first_name,
               last_name: result[0].last_name,
               role: result[0].role_name,
               token: req.body.token,
-            });
+            }, accessTokenSecret);
+
+            // res.json({token: accessToken});
+              //
+            res.status(200).send(
+                {
+                  username: result[0].username,
+                  first_name: result[0].first_name,
+                  last_name: result[0].last_name,
+                  role: result[0].role_name,
+                  token: req.body.token,
+                }
+            );
+
+
           } else {
             res.status(200).send({});
           }
