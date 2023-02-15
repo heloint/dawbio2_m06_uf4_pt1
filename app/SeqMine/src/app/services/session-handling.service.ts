@@ -13,6 +13,7 @@ export type DataForCookie = {
   role: string;
   token: string;
   accessToken: string;
+  refreshToken: string;
 };
 
 @Injectable({
@@ -24,7 +25,7 @@ export class SessionHandlingService {
   isLoggedIn: Boolean = false;
   #BASE_URL: string = 'http://localhost:3000';
   validationError!: string | null;
-  userData: DataForCookie = {role: '', username: '', first_name: '', last_name: '', token: '', accessToken: ''};
+  userData: DataForCookie = {role: '', username: '', first_name: '', last_name: '', token: '', accessToken: '', refreshToken: ''};
 
   constructor(
     private route: Router,
@@ -54,16 +55,6 @@ export class SessionHandlingService {
     return this.http.post<DataForCookie>(this.#BASE_URL + '/login', {username: usernameParam, password: passwordParam, token: token}).pipe(shareReplay());
   }
 
-  /* Validates session token against the "database"
-   * and registers the session token if all good.
-   * @param username string
-   * @param password string
-   * @return Observable<DataForCookie>
-   * */
-  private validateSessionToken(token: string): Observable<DataForCookie> {
-    return this.http.post<DataForCookie>(this.#BASE_URL + '/sessionValidation', {token: token})
-  }
-
   /* Send a request to destroy the session register corresponding to the argument token value.
    * @param username string
    * @param password string
@@ -87,7 +78,6 @@ export class SessionHandlingService {
     );
 
     validationResult.subscribe((res) => {
-      console.log(res);
         if (Object.keys(res).length > 0) {
           this.cookieService.set(
             'SeqMineSession',
@@ -95,7 +85,8 @@ export class SessionHandlingService {
             { expires: 3 }
           );
           localStorage['token'] = res.accessToken;
-          console.log(res);
+          localStorage['refreshToken'] = res.refreshToken;
+
           this.userData = res;
           this.isLoggedIn = true;
           this.route.navigate(['/home']);
@@ -103,6 +94,17 @@ export class SessionHandlingService {
           this.validationError = 'Invalid username or password.';
         }
     });
+  }
+
+  /* Validates session token against the "database"
+   * and registers the session token if all good.
+   * @param username string
+   * @param password string
+   * @return Observable<DataForCookie>
+   * */
+  private validateSessionToken(): Observable<DataForCookie> {
+    return this.http.post<DataForCookie>(this.#BASE_URL + '/sessionValidation',
+                                         {token: localStorage['token']})
   }
 
 
@@ -115,7 +117,7 @@ export class SessionHandlingService {
   validateSessionCookie(){
       if (this.cookieService.getAll()['SeqMineSession'] !== undefined) {
         const token: string = this.cookieService.getAll()['SeqMineSession'];
-        const validationResult: Observable<DataForCookie> = this.validateSessionToken(token);
+        const validationResult: Observable<DataForCookie> = this.validateSessionToken();
 
         validationResult.subscribe((res) => {
             if (Object.keys(res).length > 0) {

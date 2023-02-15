@@ -27,7 +27,9 @@ app.use(bodyParser.json());
 app.use('/', express.static(path.join(__dirname, './public')))
 
 
-const ACCESS_TOKEN_SECRET = 'hellohello';
+global.ACCESS_TOKEN_SECRET = 'hellohello';
+global.REFRESH_TOKEN_SECRET = 'hellohello2';
+global.REFRESH_TOKENS = [];
 
 const authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -83,13 +85,13 @@ requestFunctions.handleFileUpload(app, cors, connection);
 requestFunctions.handleGetRoles(app, cors, connection);
 requestFunctions.handleGetLastUserID(app, cors, connection);
 requestFunctions.handleGetUsers(app, authenticateJWT, connection);
-requestFunctions.handlePostLogin(app, connection, ACCESS_TOKEN_SECRET);
+requestFunctions.handlePostLogin(app, connection, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, REFRESH_TOKENS);
 requestFunctions.handlePostAddUser(app, cors, connection);
 requestFunctions.handlePostUserByID(app, cors, connection);
 requestFunctions.handlePostDeleteUserByID(app, cors, connection);
 requestFunctions.handlePostUpdateUser(app, cors, connection);
 requestFunctions.handleRegisterFileUpload(app, cors, connection);
-requestFunctions.handlePostSessionValidation(app, cors, connection);
+requestFunctions.handlePostSessionValidation(app, connection);
 requestFunctions.handlePostLogOut(app, cors, connection);
 requestFunctions.handleGetSequenceFiles(app, cors, connection);
 requestFunctions.handleDownloadSequenceFile(app, cors, connection);
@@ -97,7 +99,7 @@ requestFunctions.handlePostDeleteFileByID(app, cors, connection);
 requestFunctions.handlePostRegisterUser(app, cors, connection);
 requestFunctions.handlePostSeqFileByID(app, cors, connection);
 requestFunctions.handlePostUpdateSeqFile(app, cors, connection);
-
+console.log(REFRESH_TOKENS);
 app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");
 });

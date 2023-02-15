@@ -293,6 +293,7 @@ const handleGetLastUserID = (app, cors, connection) => {
  */
 const handleGetUsers = (app, authenticateJWT, connection) => {
   app.get("/users", authenticateJWT, function (req, res) {
+      console.log(REFRESH_TOKENS);
     connection.query(
       `SELECT
                 U.user_id,
@@ -324,7 +325,7 @@ const handleGetUsers = (app, authenticateJWT, connection) => {
  * @param {Object} cors - Module to handle CORS.
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handlePostLogin = (app, connection, accessTokenSecret) => {
+const handlePostLogin = (app, connection) => {
   app.post("/login", function (req, res) {
     connection.query(
       `SELECT U.user_id, U.username, U.first_name, U.last_name, R.role_name FROM users AS U JOIN roles as R ON U.role_id=R.role_id WHERE username=? AND password=?`,
@@ -353,8 +354,17 @@ const handlePostLogin = (app, connection, accessTokenSecret) => {
               last_name: result[0].last_name,
               role: result[0].role_name,
               token: req.body.token,
-            }, accessTokenSecret);
+            }, ACCESS_TOKEN_SECRET, {expiresIn: '20m'});
 
+            const refreshToken = jwt.sign({
+              username: result[0].username,
+              first_name: result[0].first_name,
+              last_name: result[0].last_name,
+              role: result[0].role_name,
+              token: req.body.token,
+            }, REFRESH_TOKEN_SECRET);
+
+            REFRESH_TOKENS.push(refreshToken);
             // res.json({token: accessToken});
 
             res.status(200).send(
@@ -365,6 +375,7 @@ const handlePostLogin = (app, connection, accessTokenSecret) => {
                   role: result[0].role_name,
                   token: req.body.token,
                   accessToken: accessToken,
+                  refreshToken: refreshToken,
                 }
             );
 
@@ -385,39 +396,79 @@ const handlePostLogin = (app, connection, accessTokenSecret) => {
  * @param {Object} cors - Module to handle CORS.
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handlePostSessionValidation = (app, cors, connection) => {
-  app.post("/sessionValidation", cors(), function (req, res) {
-    connection.query(
-      `SELECT U.username, U.first_name, U.last_name, R.role_name
-        FROM roles AS R
-        JOIN users AS U
-        ON R.role_id=U.role_id
-        JOIN user_sessions AS SESS
-        ON U.user_id=SESS.user_id
-        WHERE token=?
-        `,
-      [req.body.token],
-      function (error, result, field) {
-        if (error) {
-          console.log(error);
-          res.status(400).send({ results: false });
-        } else {
-          if (result.length > 0) {
-            // If result is not zero, then register the session token.
-            res.status(200).send({
-              username: result[0].username,
-              first_name: result[0].first_name,
-              last_name: result[0].last_name,
-              role: result[0].role_name,
-            });
-          } else {
-            res.status(200).send({});
-          }
+const handlePostSessionValidation = (app, connection) => {
+  app.post("/sessionValidation", function (req, res) {
+
+    const token = req.body.token;
+
+    if (!token) {
+        return res.sendStatus(401);
+    }
+
+    const user = jwt.verify(token, ACCESS_TOKEN_SECRET);
+    jwt.verify(token, REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) {
+            return res.sendStatus(403);
         }
-      }
-    );
+
+        const accessToken = jwt.sign({
+          username: user.username,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          role: user.role_name,
+          token: req.body.token,
+        }, ACCESS_TOKEN_SECRET, {expiresIn: '20m'});
+
+        const refreshToken = jwt.sign({
+          username: user.username,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          role: user.role_name,
+          token: req.body.token,
+        }, REFRESH_TOKEN_SECRET);
+
+        res.status(200).send(
+            {
+              username: user.username,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              role: user.role_name,
+              token: req.body.token,
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+            }
+        );
+    });
   });
 };
+
+const handlePostRefreshSession = (app, connection) => {
+    app.post('/token', (req, res) => {
+        const { token } = req.body;
+
+        if (!token) {
+            return res.sendStatus(401);
+        }
+
+        if (!refreshTokens.includes(token)) {
+            return res.sendStatus(403);
+        }
+
+        jwt.verify(token, refreshTokenSecret, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+
+            const accessToken = jwt.sign({ username: user.username, role: user.role }, accessTokenSecret, { expiresIn: '20m' });
+
+            res.json({
+                accessToken
+            });
+        });
+    });
+}
+
+
 
 /**
  * Function to handle the logout process by destroying
