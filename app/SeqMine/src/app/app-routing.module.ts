@@ -30,11 +30,13 @@ const routes: Routes = [
   },
   {
     path: 'login',
+    data: {onlyLoggedIn: false},
     component: LoginComponent,
   },
   {
     path: 'register',
     canActivate: [AuthGuard],
+    data: {onlyLoggedIn: false},
     component: RegisterComponent,
   },
   {
@@ -43,14 +45,17 @@ const routes: Routes = [
   },
   {
     path: 'user-table',
+    data: {onlyLoggedIn: true, rolesOnly: ['admin']},
     component: UserTableComponent,
   },
   {
     path: 'user-modify',
+    data: {onlyLoggedIn: true, rolesOnly: ['admin']},
     component: UserManageComponent,
   },
   {
     path: 'user-add',
+    data: {onlyLoggedIn: true, rolesOnly: ['admin']},
     component: UserManageComponent,
   },
   {
@@ -59,14 +64,17 @@ const routes: Routes = [
   },
   {
     path: 'file-storage-manage',
+    data: {onlyLoggedIn: true, rolesOnly: ['admin', 'investigator']},
     component: FileStorageManageComponent,
   },
   {
     path: 'file-storage-modify',
+    data: {onlyLoggedIn: true, rolesOnly: ['admin', 'investigator']},
     component: FileStorageManageComponent,
   },
   {
     path: 'confirm-page',
+    data: {onlyLoggedIn: true, rolesOnly: ['admin', 'investigator']},
     component: ConfirmationPageComponent,
   },
   {

@@ -4,7 +4,8 @@ import {
   CanActivate,
   RouterStateSnapshot,
   UrlTree,
-  Router
+  Router,
+  Data
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { SessionHandlingService } from '../services/session-handling.service';
@@ -30,12 +31,24 @@ export class AuthGuard implements CanActivate {
 
   {
 
+    const params: Data = route.data;
+    console.log('params', params);
 
-    if (this.sessionHandler.isLoggedIn) {
+    // Check login requirement.
+    // This must apply for all routes which uses this guard.
+    if (this.sessionHandler.isLoggedIn !== params['onlyLoggedIn']) {
       this.router.navigate(['/home']);
       return false;
     }
-    console.log(this.sessionHandler.isLoggedIn);
+
+    // Check role requirement.
+    // This is an optional parameter.
+    if (params['rolesOnly'] !== undefined) {
+        if (this.sessionHandler.userData.role !== params['rolesOnly']) {
+          this.router.navigate(['/home']);
+          return false;
+        }
+    }
 
     return true;
   }

@@ -127,7 +127,6 @@ export class RegisterComponent {
     }
 
     ngOnInit() {
-
     }
 
 }

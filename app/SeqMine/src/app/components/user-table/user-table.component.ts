@@ -91,6 +91,5 @@ export class UserTableComponent {
    * */
   ngOnInit() {
     this.fetchAllUsers();
-
   }
 }
