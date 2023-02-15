@@ -19,6 +19,7 @@ const cors = require("cors");
 const path = require('path');
 const multer = require("multer");
 const requestFunctions = require("./request-functions");
+const jwt = require('jsonwebtoken');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -28,6 +29,24 @@ app.use('/', express.static(path.join(__dirname, './public')))
 
 const ACCESS_TOKEN_SECRET = 'hellohello';
 
+const authenticateJWT = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+
+        jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+
+            req.user = user;
+            next();
+        });
+    } else {
+        res.sendStatus(401);
+    }
+};
 
 // Create a connection to the databse.
 // You can create your user in the next comment below called "USERS".
@@ -63,7 +82,7 @@ connection.connect(function (err) {
 requestFunctions.handleFileUpload(app, cors, connection);
 requestFunctions.handleGetRoles(app, cors, connection);
 requestFunctions.handleGetLastUserID(app, cors, connection);
-requestFunctions.handleGetUsers(app, cors, connection);
+requestFunctions.handleGetUsers(app, authenticateJWT, connection);
 requestFunctions.handlePostLogin(app, connection, ACCESS_TOKEN_SECRET);
 requestFunctions.handlePostAddUser(app, cors, connection);
 requestFunctions.handlePostUserByID(app, cors, connection);

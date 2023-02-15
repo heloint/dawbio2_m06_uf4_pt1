@@ -12,6 +12,7 @@ export type DataForCookie = {
   last_name: string;
   role: string;
   token: string;
+  accessToken: string;
 };
 
 @Injectable({
@@ -23,7 +24,7 @@ export class SessionHandlingService {
   isLoggedIn: Boolean = false;
   #BASE_URL: string = 'http://localhost:3000';
   validationError!: string | null;
-  userData: DataForCookie = {role: '', username: '', first_name: '', last_name: '', token: ''};
+  userData: DataForCookie = {role: '', username: '', first_name: '', last_name: '', token: '', accessToken: ''};
 
   constructor(
     private route: Router,
@@ -93,6 +94,8 @@ export class SessionHandlingService {
             res.token,
             { expires: 3 }
           );
+          localStorage['token'] = res.accessToken;
+          console.log(res);
           this.userData = res;
           this.isLoggedIn = true;
           this.route.navigate(['/home']);

@@ -291,8 +291,8 @@ const handleGetLastUserID = (app, cors, connection) => {
  * @param {Object} cors - Module to handle CORS.
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handleGetUsers = (app, cors, connection) => {
-  app.get("/users", cors(), function (req, res) {
+const handleGetUsers = (app, authenticateJWT, connection) => {
+  app.get("/users", authenticateJWT, function (req, res) {
     connection.query(
       `SELECT
                 U.user_id,
@@ -356,7 +356,7 @@ const handlePostLogin = (app, connection, accessTokenSecret) => {
             }, accessTokenSecret);
 
             // res.json({token: accessToken});
-              //
+
             res.status(200).send(
                 {
                   username: result[0].username,
@@ -364,6 +364,7 @@ const handlePostLogin = (app, connection, accessTokenSecret) => {
                   last_name: result[0].last_name,
                   role: result[0].role_name,
                   token: req.body.token,
+                  accessToken: accessToken,
                 }
             );
 

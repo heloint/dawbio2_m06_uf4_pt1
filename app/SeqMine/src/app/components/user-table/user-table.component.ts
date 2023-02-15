@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DatabaseService } from '../../services/database.service';
+import { DatabaseService, DBUserArr } from '../../services/database.service';
 import { User } from '../../models/user.model';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -27,20 +27,27 @@ export class UserTableComponent {
   */
   fetchAllUsers(): any {
     return this.database.getAllUsers().subscribe(
-      users => {
-        users.result.forEach((user) => {
-            this.allUsersArr.push(new User(
-                user.user_id,
-                user.username,
-                user.role_name,
-                user.password,
-                user.email,
-                user.first_name,
-                user.last_name,
-                new Date(user.registration_date)
-            ));
-        });
-      });
+        (result: DBUserArr) => {
+
+            result.result.forEach((user) => {
+                this.allUsersArr.push(new User(
+                    user.user_id,
+                    user.username,
+                    user.role_name,
+                    user.password,
+                    user.email,
+                    user.first_name,
+                    user.last_name,
+                    new Date(user.registration_date)
+                ));
+            });
+        },
+        (error) => {
+            console.log('do not have permission');
+        }
+
+        );
+
   }
 
   /**
