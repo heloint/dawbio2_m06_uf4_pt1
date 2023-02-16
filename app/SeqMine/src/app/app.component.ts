@@ -14,7 +14,7 @@ export class AppComponent {
   ){}
 
   ngOnInit() {
-    this.sessionService.validateSessionCookie(); 
+    this.sessionService.validateSession();
   }
 
 }

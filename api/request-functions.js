@@ -35,14 +35,6 @@ const configureStorage = () => {
  */
 const handleRegisterFileUpload = (app, cors, connection) => {
   app.post("/registerSequence", (req, res) => {
-    console.log({
-      1: req.body.name,
-      2: req.body.size,
-      3: `${__dirname}/uploads/${req.body.name}`,
-      4: req.body.gene,
-      5: req.body.taxonomyID,
-      6: req.body.uploadedBy,
-    });
     connection.query(
       ` INSERT INTO sequence_files VALUES
             (
@@ -92,7 +84,6 @@ const handleFileUpload = (app, cors, connection) => {
       }
     },
     (err, req, res, next) => {
-      console.log(err.message);
       res.status(400).json({ error: err.message });
     }
   );
@@ -108,7 +99,6 @@ const handleDownloadSequenceFile = (app, cors, connection) => {
 
   app.get(
     "/downloadSequenceFile", (req, res) => {
-        console.log(req.query.id);
       const fileID = req.query.id;
 
       // If no file received, then exception sent back.
@@ -121,7 +111,6 @@ const handleDownloadSequenceFile = (app, cors, connection) => {
           [fileID],
           function (error, result, field) {
             if (error) {
-                console.log('fdsa');
               console.log(error);
               res.status(400).send({ result: false });
             } else {
@@ -293,7 +282,6 @@ const handleGetLastUserID = (app, cors, connection) => {
  */
 const handleGetUsers = (app, authenticateJWT, connection) => {
   app.get("/users", authenticateJWT, function (req, res) {
-      console.log(REFRESH_TOKENS);
     connection.query(
       `SELECT
                 U.user_id,
@@ -336,32 +324,21 @@ const handlePostLogin = (app, connection) => {
           res.status(400).send({ results: false });
         } else {
 
+          // If result is not zero, then register the session token.
           if (result.length > 0) {
-            // If result is not zero, then register the session token.
-            connection.query(
-              `INSERT INTO user_sessions VALUES (NEXT VALUE FOR user_sess_id, ?, ?, CURRENT_TIMESTAMP())`,
-              [result[0].user_id, req.body.token],
-              function (error, result, field) {
-                if (error) {
-                  res.status(400).send({ results: false });
-                }
-              }
-            );
 
             const accessToken = jwt.sign({
               username: result[0].username,
               first_name: result[0].first_name,
               last_name: result[0].last_name,
               role: result[0].role_name,
-              token: req.body.token,
-            }, ACCESS_TOKEN_SECRET, {expiresIn: '20m'});
+            }, ACCESS_TOKEN_SECRET, {expiresIn: '1m'});
 
             const refreshToken = jwt.sign({
               username: result[0].username,
               first_name: result[0].first_name,
               last_name: result[0].last_name,
               role: result[0].role_name,
-              token: req.body.token,
             }, REFRESH_TOKEN_SECRET);
 
             REFRESH_TOKENS.push(refreshToken);
@@ -373,12 +350,10 @@ const handlePostLogin = (app, connection) => {
                   first_name: result[0].first_name,
                   last_name: result[0].last_name,
                   role: result[0].role_name,
-                  token: req.body.token,
                   accessToken: accessToken,
                   refreshToken: refreshToken,
                 }
             );
-
 
           } else {
             res.status(200).send({});
@@ -400,31 +375,29 @@ const handlePostSessionValidation = (app, connection) => {
   app.post("/sessionValidation", function (req, res) {
 
     const token = req.body.token;
-
     if (!token) {
         return res.sendStatus(401);
     }
 
-    const user = jwt.verify(token, ACCESS_TOKEN_SECRET);
-    jwt.verify(token, REFRESH_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
+    // const user = jwt.verify(token, ACCESS_TOKEN_SECRET);
+
         if (err) {
+            console.log(err);
             return res.sendStatus(403);
         }
-
         const accessToken = jwt.sign({
           username: user.username,
           first_name: user.first_name,
           last_name: user.last_name,
           role: user.role_name,
-          token: req.body.token,
-        }, ACCESS_TOKEN_SECRET, {expiresIn: '20m'});
+        }, ACCESS_TOKEN_SECRET, {expiresIn: '1m'});
 
         const refreshToken = jwt.sign({
           username: user.username,
           first_name: user.first_name,
           last_name: user.last_name,
           role: user.role_name,
-          token: req.body.token,
         }, REFRESH_TOKEN_SECRET);
 
         res.status(200).send(
@@ -433,7 +406,6 @@ const handlePostSessionValidation = (app, connection) => {
               first_name: user.first_name,
               last_name: user.last_name,
               role: user.role_name,
-              token: req.body.token,
               accessToken: accessToken,
               refreshToken: refreshToken,
             }
@@ -443,27 +415,39 @@ const handlePostSessionValidation = (app, connection) => {
 };
 
 const handlePostRefreshSession = (app, connection) => {
-    app.post('/token', (req, res) => {
-        const { token } = req.body;
-
-        if (!token) {
+    app.post('/refreshSession', (req, res) => {
+        const refreshToken = req.body.refreshToken;
+        if (!refreshToken) {
             return res.sendStatus(401);
         }
 
-        if (!refreshTokens.includes(token)) {
+        if (!REFRESH_TOKENS.includes(refreshToken)) {
             return res.sendStatus(403);
         }
 
-        jwt.verify(token, refreshTokenSecret, (err, user) => {
+        jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
             if (err) {
+                console.log(err);
                 return res.sendStatus(403);
             }
 
-            const accessToken = jwt.sign({ username: user.username, role: user.role }, accessTokenSecret, { expiresIn: '20m' });
+        const accessToken = jwt.sign({
+          username: user.username,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          role: user.role_name,
+        }, ACCESS_TOKEN_SECRET, {expiresIn: '1m'});
 
-            res.json({
-                accessToken
-            });
+        res.status(200).send(
+            {
+              username: user.username,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              role: user.role_name,
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+            }
+        );
         });
     });
 }
@@ -480,18 +464,19 @@ const handlePostRefreshSession = (app, connection) => {
  */
 const handlePostLogOut = (app, cors, connection) => {
   app.post("/logout", cors(), function (req, res) {
-    connection.query(
-      `DELETE FROM user_sessions WHERE token=?`,
-      [req.body.token],
-      function (error, result, field) {
-        if (error) {
-          console.log(error);
-          res.status(400).send({ results: false });
-        } else {
-          res.status(200).send({});
-        }
-      }
-    );
+
+    const token = req.body.token;
+    console.log('deleting refresh token');
+
+    if (!token) {
+        return res.sendStatus(401);
+    }
+    const index = REFRESH_TOKENS.indexOf(token);
+
+    if (index > -1) {
+        array.splice(index, 1);
+    }
+    return res.sendStatus(200);
   });
 };
 
@@ -524,7 +509,6 @@ const handlePostAddUser = (app, cors, connection) => {
       ],
       function (error, result, field) {
         if (error) {
-          console.log(error);
             let errorMsg = 'Internal error has occured.';
             if (error.code === 'ER_DUP_ENTRY') {
                 errorMsg = 'User already exists!';
@@ -733,6 +717,7 @@ module.exports = {
   handleGetUsers: handleGetUsers,
   handlePostLogin: handlePostLogin,
   handlePostSessionValidation: handlePostSessionValidation,
+  handlePostRefreshSession: handlePostRefreshSession,
   handlePostLogOut: handlePostLogOut,
   handlePostAddUser: handlePostAddUser,
   handlePostUserByID: handlePostUserByID,

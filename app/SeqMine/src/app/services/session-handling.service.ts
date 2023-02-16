@@ -79,11 +79,7 @@ export class SessionHandlingService {
 
     validationResult.subscribe((res) => {
         if (Object.keys(res).length > 0) {
-          this.cookieService.set(
-            'SeqMineSession',
-            res.token,
-            { expires: 3 }
-          );
+
           localStorage['token'] = res.accessToken;
           localStorage['refreshToken'] = res.refreshToken;
 
@@ -108,24 +104,57 @@ export class SessionHandlingService {
   }
 
 
+  /* Validates session token against the "database"
+   * and registers the session token if all good.
+   * @param username string
+   * @param password string
+   * @return Observable<DataForCookie>
+   * */
+  private validateRefreshToken(): Observable<DataForCookie> {
+    return this.http.post<DataForCookie>(this.#BASE_URL + '/refreshSession',
+                                         {refreshToken: localStorage['refreshToken']})
+  }
+
   /* Try to validate the session cookie of the user.
    * If the token is valid and still alive, then continue with the session.
    * @param inputUsername string
    * @param inputPassword string
    * @return void
    **/
-  validateSessionCookie(){
-      if (this.cookieService.getAll()['SeqMineSession'] !== undefined) {
-        const token: string = this.cookieService.getAll()['SeqMineSession'];
+  validateSession(){
+      if (localStorage['token'] !== undefined && localStorage['refreshToken'] !== undefined) {
+        const token: string = localStorage['token'];
+        const refreshToken: string = localStorage['refreshToken'];
         const validationResult: Observable<DataForCookie> = this.validateSessionToken();
 
-        validationResult.subscribe((res) => {
+        validationResult.subscribe(
+            (res) => {
             if (Object.keys(res).length > 0) {
               this.isLoggedIn = true;
               this.userData = res;
               this.route.navigate(['/home']);
             }
-        });
+        },
+        (err) => {
+
+            const refreshValidationResult: Observable<DataForCookie> = this.validateRefreshToken();
+            
+                console.log('enters the refresh troubleshoot');
+            refreshValidationResult.subscribe(
+                (res) => {
+                    if (Object.keys(res).length > 0) {
+                      this.isLoggedIn = true;
+                      this.userData = res;
+                      this.route.navigate(['/home']);
+                    }
+                },
+                (err) => {
+                  this.isLoggedIn = false;
+                  this.route.navigate(['/home']);
+                }
+            );
+        }
+        );
       }
   }
 
@@ -139,7 +168,8 @@ export class SessionHandlingService {
         error: error => {
         }
     });
-    this.cookieService.deleteAll();
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     this.isLoggedIn = false;
   }
 

@@ -92,6 +92,7 @@ requestFunctions.handlePostDeleteUserByID(app, cors, connection);
 requestFunctions.handlePostUpdateUser(app, cors, connection);
 requestFunctions.handleRegisterFileUpload(app, cors, connection);
 requestFunctions.handlePostSessionValidation(app, connection);
+requestFunctions.handlePostRefreshSession(app, connection);
 requestFunctions.handlePostLogOut(app, cors, connection);
 requestFunctions.handleGetSequenceFiles(app, cors, connection);
 requestFunctions.handleDownloadSequenceFile(app, cors, connection);
@@ -99,7 +100,7 @@ requestFunctions.handlePostDeleteFileByID(app, cors, connection);
 requestFunctions.handlePostRegisterUser(app, cors, connection);
 requestFunctions.handlePostSeqFileByID(app, cors, connection);
 requestFunctions.handlePostUpdateSeqFile(app, cors, connection);
-console.log(REFRESH_TOKENS);
+
 app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");
 });
