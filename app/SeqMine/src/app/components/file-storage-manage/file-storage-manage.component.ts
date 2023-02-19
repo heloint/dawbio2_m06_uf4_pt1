@@ -4,7 +4,6 @@ import { DatabaseService, DBStorageEntity } from '../../services/database.servic
 import { SessionHandlingService } from '../../services/session-handling.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { StorageEntity } from '../../models/storage-entity.model';
-import { CookieService } from 'ngx-cookie-service';
 import { ActivatedRoute} from '@angular/router';
 
 
@@ -32,9 +31,8 @@ export class FileStorageManageComponent {
   constructor(
     private database: DatabaseService,
     private http: HttpClient,
-    private cookieService: CookieService,
-        private route: ActivatedRoute,
-        private sessionHandler: SessionHandlingService
+    private route: ActivatedRoute,
+    private sessionHandler: SessionHandlingService
   ) {}
 
   // Initialize login FormGroup + FormControl.

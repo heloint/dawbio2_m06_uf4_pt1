@@ -147,7 +147,10 @@ export class UserManageComponent {
             registration_date: new Date()
         }).subscribe({
             next: result => { this.creationResult = result.result; },
-            error: error => { this.creationResult = false; this.errorMessage += error.error.errorMsg}
+            error: error => { 
+                this.creationResult = false;
+                this.errorMessage = error.error.errorMsg
+            }
         });
     }
 

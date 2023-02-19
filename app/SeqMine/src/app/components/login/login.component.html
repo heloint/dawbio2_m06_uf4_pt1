@@ -21,6 +21,7 @@
         <span
           *ngIf="this.loginForm.get('username')?.errors?.['required'] &&
                              this.loginForm.get('username')?.touched"
+          class="text-danger"
         >
           Username field is empty.
         </span>
@@ -42,6 +43,7 @@
         <span
           *ngIf="this.loginForm.get('password')?.errors?.['required'] &&
                             this.loginForm.get('password')?.touched"
+          class="text-danger"
         >
           Password cannot be empty.
         </span>

@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { CredentialValidationService} from '../../services/credential-validation.service';
 import { SessionHandlingService } from '../../services/session-handling.service';
 import { User } from '../../models/user.model';
-import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +12,6 @@ import { CookieService } from 'ngx-cookie-service';
 export class LoginComponent {
   constructor(
     private route: Router,
-    private cookieService: CookieService,
     private sessionService: SessionHandlingService
   ) {}
 
@@ -30,19 +26,19 @@ export class LoginComponent {
   }
 
   /*
-   * Get username from cookie
+   * Get username from session data.
    * @return string
    * */
   get loggedInUsername(): string {
-    return Object.keys(this.cookieService.getAll())[0];
+    return this.sessionService.userData.username;
   }
 
   /*
-   * Get role from cookie.
+   * Get role from session data.
    * @return string
    * */
   get loggedInRole(): string {
-    return Object.values(this.cookieService.getAll())[0];
+    return this.sessionService.userData.role;
   }
 
   /*
@@ -67,7 +63,8 @@ export class LoginComponent {
   }
 
   /* Send the credentials for validation to sessionService, who will consult with the
-   * server if the credentials are correct or not. If correct, then initializes the cookies of the session.
+   * server if the credentials are correct or not.
+   * If correct, then initializes the the session.
    * @return void
    * */
   doLogin() {
@@ -75,13 +72,5 @@ export class LoginComponent {
       this.loginForm.get('username')?.value,
       this.loginForm.get('password')?.value
     );
-  }
-
-  /* Delete cookie and logout.
-   * @return void
-   **/
-  doLogOut() {
-    this.cookieService.deleteAll();
-    this.sessionService.isLoggedIn = false;
   }
 }

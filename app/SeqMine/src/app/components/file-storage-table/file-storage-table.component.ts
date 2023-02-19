@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from '../../services/database.service';
 import { StorageEntity } from '../../models/storage-entity.model';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SessionHandlingService, DataForCookie } from '../../services/session-handling.service';
+import { SessionHandlingService, SessionData } from '../../services/session-handling.service';
 
 @Component({
   selector: 'app-file-storage-table',
@@ -21,7 +21,7 @@ export class FileStorageTableComponent {
     private sessionHandler: SessionHandlingService
   ) { }
 
-  get sessionUser(): DataForCookie {
+  get sessionUser(): SessionData {
     return this.sessionHandler.userData;
   }
 

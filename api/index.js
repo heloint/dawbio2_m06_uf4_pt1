@@ -60,10 +60,10 @@ const connection = mysql.createConnection({
 
     // USERS:
     // ======
-    user: "dama",
-    password: "Stabilo1",
-    /* user: "danielmajer",
-    password: "Fdfac416+", */
+    /* user: "dama",
+    password: "Stabilo1", */
+    user: "danielmajer",
+    password: "Fdfac416+",
 
 });
 console.log("Logging into the database...");
@@ -81,25 +81,25 @@ connection.connect(function (err) {
     console.log("Connected as id " + connection.threadId);
 });
 
-requestFunctions.handleFileUpload(app, cors, connection);
-requestFunctions.handleGetRoles(app, cors, connection);
-requestFunctions.handleGetLastUserID(app, cors, connection);
+requestFunctions.handleFileUpload(app, connection);
+requestFunctions.handleGetRoles(app, connection);
+requestFunctions.handleGetLastUserID(app, connection);
 requestFunctions.handleGetUsers(app, authenticateJWT, connection);
-requestFunctions.handlePostLogin(app, connection, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, REFRESH_TOKENS);
-requestFunctions.handlePostAddUser(app, cors, connection);
-requestFunctions.handlePostUserByID(app, cors, connection);
-requestFunctions.handlePostDeleteUserByID(app, cors, connection);
-requestFunctions.handlePostUpdateUser(app, cors, connection);
-requestFunctions.handleRegisterFileUpload(app, cors, connection);
+requestFunctions.handlePostLogin(app, connection);
+requestFunctions.handlePostAddUser(app, connection);
+requestFunctions.handlePostUserByID(app, connection);
+requestFunctions.handlePostDeleteUserByID(app, connection);
+requestFunctions.handlePostUpdateUser(app, connection);
+requestFunctions.handleRegisterFileUpload(app, connection);
 requestFunctions.handlePostSessionValidation(app, connection);
 requestFunctions.handlePostRefreshSession(app, connection);
-requestFunctions.handlePostLogOut(app, cors, connection);
-requestFunctions.handleGetSequenceFiles(app, cors, connection);
-requestFunctions.handleDownloadSequenceFile(app, cors, connection);
-requestFunctions.handlePostDeleteFileByID(app, cors, connection);
-requestFunctions.handlePostRegisterUser(app, cors, connection);
-requestFunctions.handlePostSeqFileByID(app, cors, connection);
-requestFunctions.handlePostUpdateSeqFile(app, cors, connection);
+requestFunctions.handlePostLogOut(app, connection);
+requestFunctions.handleGetSequenceFiles(app, connection);
+requestFunctions.handleDownloadSequenceFile(app, connection);
+requestFunctions.handlePostDeleteFileByID(app, connection);
+requestFunctions.handlePostRegisterUser(app, connection);
+requestFunctions.handlePostSeqFileByID(app, connection);
+requestFunctions.handlePostUpdateSeqFile(app, connection);
 
 app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");
