@@ -1,15 +1,27 @@
+-- Delete previous DB and create a new one.
+-- #####################################################################
 DROP DATABASE IF EXISTS SeqMine;
 
 CREATE DATABASE IF NOT EXISTS SeqMine;
 
 USE SeqMine;
+-- #####################################################################
+
+-- Delete previous user and create a new one.
+-- #####################################################################
+DROP USER IF EXISTS seqmine;
+
+CREATE USER IF NOT EXISTS 'seqmine'@'localhost' IDENTIFIED BY 'seqmine';
+
+GRANT ALL ON SeqMine.* TO seqmine@localhost;
+-- #####################################################################
+
 
 -- Create sequences
 -- #####################################################################
 CREATE SEQUENCE user_id START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE roles_id START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE sequence_file_id START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE user_sess_id START WITH 1 INCREMENT BY 1;
 -- #####################################################################
 
 -- Create and fetch roles table.
@@ -23,7 +35,6 @@ INSERT INTO roles VALUES
     (NEXT VALUE FOR roles_id, "admin"),
     (NEXT VALUE FOR roles_id, "investigator")
 ;
-
 -- #####################################################################
 
 -- Create and fetch users table.
@@ -48,7 +59,6 @@ INSERT INTO users VALUES
     (NEXT VALUE FOR user_id, "user01", 2, "pass01", "lili@gmail.com", "Lili", "Lala", CURRENT_TIMESTAMP()),
     (NEXT VALUE FOR user_id, "user02", 2, "pass02", "didi@gmail.com", "Didi", "Dada", CURRENT_TIMESTAMP())
 ;
-
 -- #####################################################################
 
 -- Create and fetch sequence_files table.
@@ -71,19 +81,4 @@ INSERT INTO sequence_files VALUES
     (NEXT VALUE FOR sequence_file_id, "fasta-example.fasta", "Testing fasta file.", 100, "./uploads/fasta-example.fasta", "SELL", 9606, CURRENT_TIMESTAMP(), "admin"),
     (NEXT VALUE FOR sequence_file_id, "fastq-example.fastq", "Testing fastq file.", 101, "./uploads/fastq-example.fastq", "SELL", 9615, CURRENT_TIMESTAMP(), "investigator")
 ;
-
 -- #####################################################################
-
--- Create and fetch user_sessions table.
--- Also, prepare a scheduled event to delete sessions older, than x time.
--- #####################################################################
-CREATE TABLE IF NOT EXISTS user_sessions(
-                                user_sess_id INT(50) PRIMARY KEY,
-                                user_id INT(10) NOT NULL CHECK(user_id <> 0),
-                                token VARCHAR(50) NOT NULL CHECK(token <> ''),
-                                timestamp TIME NOT NULL,
-                                FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
-
--- #####################################################################
-

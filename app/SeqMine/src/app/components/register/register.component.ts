@@ -114,7 +114,7 @@ export class RegisterComponent {
         return this.database.registerUser({
             user_id: 0,
             username: this.userRegistrationForm.get('username')?.value,
-            role_name: '',
+            role_name: 'investigator',
             password: this.userRegistrationForm.get('password')?.value,
             email: this.userRegistrationForm.get('email')?.value,
             first_name: this.userRegistrationForm.get('firstName')?.value,

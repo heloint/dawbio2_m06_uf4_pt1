@@ -132,8 +132,8 @@ const handleDownloadSequenceFile = (app, connection) => {
  * @param {Object} app - Express application
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handlePostDeleteFileByID = (app, connection) => {
-  app.post("/deleteFileByID", function (req, res) {
+const handlePostDeleteFileByID = (app, authenticatejwt, connection) => {
+  app.post("/deleteFileByID", authenticatejwt, function (req, res) {
       connection.query(
         `SELECT path FROM sequence_files WHERE file_id=?`,
           [req.body.id],
@@ -192,8 +192,8 @@ const handleGetSequenceFiles = (app, connection) => {
  * @param {Object} app - Express application
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handlePostUpdateSeqFile = (app, connection) => {
-  app.post("/updateSequenceFile", function (req, res) {
+const handlePostUpdateSeqFile = (app, authenticatejwt, connection) => {
+  app.post("/updateSequenceFile", authenticatejwt, function (req, res) {
     connection.query(
       `
             UPDATE sequence_files
@@ -229,8 +229,8 @@ const handlePostUpdateSeqFile = (app, connection) => {
  * @param {Object} app - Express application
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handleGetRoles = (app, connection) => {
-  app.get("/roles", function (req, res) {
+const handleGetRoles = (app, authenticatejwt, connection) => {
+  app.get("/roles", authenticatejwt, function (req, res) {
     connection.query(`SELECT * FROM roles`, function (error, results, field) {
       if (error) {
         console.log(error);
@@ -248,8 +248,8 @@ const handleGetRoles = (app, connection) => {
  * @param {Object} app - Express application
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handleGetLastUserID = (app, connection) => {
-  app.get("/lastUserID", function (req, res) {
+const handleGetLastUserID = (app, authenticatejwt, connection) => {
+  app.get("/lastUserID", authenticatejwt, function (req, res) {
     connection.query(
       `SELECT MAX(user_id) AS last_id FROM users`,
       function (error, results, field) {
@@ -270,8 +270,8 @@ const handleGetLastUserID = (app, connection) => {
  * @param {Object} app - Express application
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handleGetUsers = (app, authenticateJWT, connection) => {
-  app.get("/users", authenticateJWT, function (req, res) {
+const handleGetUsers = (app, authenticatejwt, connection) => {
+  app.get("/users", authenticatejwt, function (req, res) {
     connection.query(
       `SELECT
                 U.user_id,
@@ -473,8 +473,8 @@ const handlePostLogOut = (app, connection) => {
  * @param {Object} app - Express application
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handlePostAddUser = (app, connection) => {
-  app.post("/addUser", function (req, res) {
+const handlePostAddUser = (app, authenticatejwt, connection) => {
+  app.post("/addUser", authenticatejwt, function (req, res) {
     connection.query(
       ` INSERT INTO users VALUES
             (NEXT VALUE FOR user_id,
@@ -585,8 +585,8 @@ const handlePostSeqFileByID = (app, connection) => {
  * @param {Object} app - Express application
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handlePostUserByID = (app, connection) => {
-  app.post("/userByID", function (req, res) {
+const handlePostUserByID = (app, authenticatejwt, connection) => {
+  app.post("/userByID", authenticatejwt, function (req, res) {
     connection.query(
       ` SELECT
             U.user_id,
@@ -623,8 +623,8 @@ const handlePostUserByID = (app, connection) => {
  * @param {Object} app - Express application
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handlePostDeleteUserByID = (app, connection) => {
-  app.post("/deleteUserByID", function (req, res) {
+const handlePostDeleteUserByID = (app, authenticatejwt, connection) => {
+  app.post("/deleteUserByID", authenticatejwt,function (req, res) {
     connection.query(
       `DELETE FROM users WHERE user_id=?`,
       [req.body.userID],
@@ -648,8 +648,8 @@ const handlePostDeleteUserByID = (app, connection) => {
  * @param {Object} app - Express application
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handlePostUpdateUser = (app, connection) => {
-  app.post("/updateUser", function (req, res) {
+const handlePostUpdateUser = (app, authenticatejwt, connection) => {
+  app.post("/updateUser", authenticatejwt, function (req, res) {
     connection.query(
       `
             UPDATE users
