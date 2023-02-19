@@ -8,7 +8,28 @@
 
         <h3 *ngIf="getFileDeletionStatus()" class="text-center" id="success-deletion-message">File "{{ recentlyDeletedUser }}" has successfully been deleted. </h3>
         <h3 *ngIf="getFileDeletionStatus() === false" class="text-center" id="failed-deletion-message">Failed to delete "{{ recentlyDeletedUser }}".<br> Something went wrong.</h3>
+        <form [formGroup]="searchBarForm" class="d-flex my-3">
+            <div class="col-6 text-center form-group d-flex align-items-center">
+                <input
+                  id="login-username"
+                  type="text"
+                  formControlName="searchTerm"
+                  class="form-control"
+                  placeholder="Term to search .."
+                />
+            </div>
+            <div>
+              <button
+                class="btn btn-m btn-info btn-md mx-2"
+                type="button"
+                (click)="searchByTerm(this.searchBarForm.get('searchTerm')?.value)"
+              >
+                SEARCH
+              </button>
+            </div>
+        </form>
 
+        <pagination-controls (pageChange)="cp=$event"></pagination-controls>
         <table class="table table-hover">
           <thead>
             <tr>
@@ -24,7 +45,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let file of this.allFilesArr" scope="row">
+            <tr *ngFor="let file of this.filesToDisplay | paginate: { itemsPerPage: this.rowNumberLimit, currentPage: cp }" scope="row">
               <th scope="row">{{ file.id}}</th>
               <td>{{ file.name }}</td>
               <td>{{ file.description }}</td>
@@ -64,6 +85,7 @@
             </tr>
           </tbody>
         </table>
+        <pagination-controls (pageChange)="cp=$event"></pagination-controls>
     </div>
 </div>
 

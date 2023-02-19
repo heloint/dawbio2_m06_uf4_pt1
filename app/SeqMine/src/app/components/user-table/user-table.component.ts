@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DatabaseService, DBUserArr } from '../../services/database.service';
 import { User } from '../../models/user.model';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-user-table',
@@ -9,8 +10,10 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./user-table.component.css']
 })
 export class UserTableComponent {
-
+  cp: number = 1;
+  rowNumberLimit: number = 10;
   allUsersArr: Array<User> = [];
+  usersToDisplay: Array<User> = this.allUsersArr.map(e => e);
   recentlyDeletedUser: string | null = null;
   userDeletionStatus: Boolean | null = null;
 
@@ -19,6 +22,45 @@ export class UserTableComponent {
     private activatedRoute: ActivatedRoute,
     private database: DatabaseService,
   ) { }
+
+
+  // Initialize the mini-form for the search bar.
+  searchBarForm: FormGroup = new FormGroup({
+    searchTerm: new FormControl('', [])
+  });
+
+
+  /* Filters down the array of User objects by the search term.
+   * Returns the object if any of it's values contains the term as a substring.
+   * @param {string} term
+   * @return {void}
+   * */
+  searchByTerm(term: string) {
+        this.usersToDisplay = this.allUsersArr.map(e => e );
+        const searchResults: Array<User> = this.usersToDisplay.filter( (user) => {
+            const userValues: Array<string> = [
+                user.id.toString(),
+                user.username,
+                user.role,
+                user.password,
+                user.email,
+                user.firstName,
+                user.lastName,
+                user.registrationDate.toString(),
+            ];
+
+            for (let val of userValues) {
+                if (val.includes(term)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+      this.usersToDisplay = searchResults;
+  }
+
+
 
   /**
   * Subscribes to the result of the getAllUsers function from the database service.
@@ -40,6 +82,8 @@ export class UserTableComponent {
                     user.last_name,
                     new Date(user.registration_date)
                 ));
+
+                this.usersToDisplay = this.allUsersArr.map(e => e);
             });
         },
         (error) => {

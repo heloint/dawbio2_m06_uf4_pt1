@@ -3,6 +3,7 @@ import { DatabaseService } from '../../services/database.service';
 import { StorageEntity } from '../../models/storage-entity.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SessionHandlingService, SessionData } from '../../services/session-handling.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-file-storage-table',
@@ -10,7 +11,11 @@ import { SessionHandlingService, SessionData } from '../../services/session-hand
   styleUrls: ['./file-storage-table.component.css']
 })
 export class FileStorageTableComponent {
+
+  cp: number = 1;
+  rowNumberLimit: number = 10;
   allFilesArr: Array<StorageEntity> = [];
+  filesToDisplay: Array<StorageEntity> = this.allFilesArr.map(e => e );
   recentlyDeletedUser: string | null = null;
   userDeletionStatus: Boolean | null = null;
 
@@ -21,6 +26,45 @@ export class FileStorageTableComponent {
     private sessionHandler: SessionHandlingService
   ) { }
 
+  // Initialize the mini-form for the search bar.
+  searchBarForm: FormGroup = new FormGroup({
+    searchTerm: new FormControl('', [])
+  });
+
+  /* Filters down the array of StorageEntity objects by the search term.
+   * Returns the object if any of it's values contains the term as a substring.
+   * @param {string} term
+   * @return {void}
+   * */
+  searchByTerm(term: string) {
+        this.filesToDisplay = this.allFilesArr.map(e => e );
+        const searchResults: Array<StorageEntity> = this.filesToDisplay.filter( (entity) => {
+            const entityValues: Array<string> = [
+                entity.id.toString(),
+                entity.name,
+                entity.description,
+                entity.size.toString(),
+                entity.gene,
+                entity.taxonomyID.toString(),
+                entity.uploadDate.toString(),
+                entity.uploadedBy,
+            ];
+
+        console.log(entityValues);
+            for (let val of entityValues) {
+                if (val.includes(term)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+      this.filesToDisplay = searchResults;
+  }
+
+  /* Get the user datas of the current session.
+   * @return {SessionData}
+   * */
   get sessionUser(): SessionData {
     return this.sessionHandler.userData;
   }
@@ -45,6 +89,11 @@ export class FileStorageTableComponent {
                 new Date(file.upload_date),
                 file.uploaded_by,
             ));
+
+            // Create a copy of the original variable, "this.allFilesArr".
+            // This copy will be used to be filtered, rather than mutating the original,
+            // which will contain all the found files.
+            this.filesToDisplay = this.allFilesArr.map(e => e );
         });
       });
   }
@@ -60,13 +109,8 @@ export class FileStorageTableComponent {
 
   /**
    * Navigates to the /confirm-page route, passing in the following parameters:
-   *     id: the id of the user to be deleted.
-   *     confirmDialog: a string containing a confirmation message to be displayed.
-   *     method: the method to be executed after confirming, in this case "userDelete".
-   *     username: the username of the user to be deleted.
-   *
    *@param {number} id - The id of the user to be deleted.
-   *@param {string} username - The username of the user to be deleted.
+   *@param {string} name - The username of the user to be deleted.
    *@returns {void}
     */
   requireConfirmation(id: number, name: string) {

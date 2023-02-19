@@ -58,8 +58,8 @@ export class SessionHandlingService {
    * @param password string
    * @return Observable<SessionData>
    * */
-  private destroySessionToken(refreshToken: string): Observable<SessionData> {
-    return this.http.post<SessionData>(this.#BASE_URL + '/logout', {refreshToken: refreshToken})
+  private destroySessionToken(): Observable<SessionData> {
+    return this.http.post<SessionData>(this.#BASE_URL + '/logout', {refreshToken: localStorage['refreshToken']})
   }
 
   /* Try to validate credens and login the user.
@@ -157,10 +157,8 @@ export class SessionHandlingService {
 
   // Delete session token and logout.
   public doLogOut() {
-    const token: string = localStorage['token'];
-    const refreshToken: string = localStorage['refreshToken'];
 
-    this.destroySessionToken(token).subscribe({
+    this.destroySessionToken().subscribe({
         next: result => {
         },
         error: error => {

@@ -374,18 +374,19 @@ const handlePostSessionValidation = (app, connection) => {
             console.log(err);
             return res.sendStatus(403);
         }
+        console.log(user);
         const accessToken = jwt.sign({
           username: user.username,
           first_name: user.first_name,
           last_name: user.last_name,
-          role: user.role_name,
+          role: user.role,
         }, ACCESS_TOKEN_SECRET, {expiresIn: '20m'});
 
         const refreshToken = jwt.sign({
           username: user.username,
           first_name: user.first_name,
           last_name: user.last_name,
-          role: user.role_name,
+          role: user.role,
         }, REFRESH_TOKEN_SECRET);
 
         res.status(200).send(
@@ -393,7 +394,7 @@ const handlePostSessionValidation = (app, connection) => {
               username: user.username,
               first_name: user.first_name,
               last_name: user.last_name,
-              role: user.role_name,
+              role: user.role,
               accessToken: accessToken,
               refreshToken: refreshToken,
             }
