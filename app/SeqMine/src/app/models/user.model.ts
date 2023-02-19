@@ -21,7 +21,7 @@ export class User {
     email: string,
     firstName: string,
     lastName: string,
-    registrationDate: Date,
+    registrationDate: Date
   ) {
     this.#id = id;
     this.#username = username;
@@ -34,7 +34,7 @@ export class User {
   }
 
   // Get ID.
-  get id(): number{
+  get id(): number {
     return this.#id;
   }
 
@@ -42,7 +42,6 @@ export class User {
   get username(): string {
     return this.#username;
   }
-
 
   // Get role.
   get role(): string {
@@ -111,6 +110,6 @@ export class User {
 
   // Set registration date.
   set registrationDate(registrationDate: Date) {
-    this.#registrationDate= registrationDate;
+    this.#registrationDate = registrationDate;
   }
 }

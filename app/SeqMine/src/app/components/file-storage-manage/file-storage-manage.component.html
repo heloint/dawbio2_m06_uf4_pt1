@@ -2,13 +2,16 @@
   <div class="row justify-content-center">
     <form class="col-6" [formGroup]="sequenceManageForm">
       <fieldset>
-
         <div *ngIf="this.isModifyFileMode; else modifyLegend">
           <div class="my-3">
-              <h3>Modify sequence file</h3>
+            <h3>Modify sequence file</h3>
           </div>
-          <h4 *ngIf="this.modificationResult" class="success-msg">Successful update!</h4>
-          <h4 *ngIf="this.modificationResult === false" class="failed-msg">Failed to update!</h4>
+          <h4 *ngIf="this.modificationResult" class="success-msg">
+            Successful update!
+          </h4>
+          <h4 *ngIf="this.modificationResult === false" class="failed-msg">
+            Failed to update!
+          </h4>
         </div>
 
         <ng-template #modifyLegend>
@@ -22,15 +25,14 @@
           <label for="exampleInputEmail1" class="form-label mt-3"
             >File name</label
           >
-          <input type="text" class="form-control" formControlName="fileName"/>
+          <input type="text" class="form-control" formControlName="fileName" />
           <span
             class="text-danger"
-          *ngIf="this.sequenceManageForm.get('fileName')?.errors?.['required'] &&
+            *ngIf="this.sequenceManageForm.get('fileName')?.errors?.['required'] &&
                              this.sequenceManageForm.get('fileName')?.touched"
-        >
-          File name field cannot be empty.
-        </span>
-        
+          >
+            File name field cannot be empty.
+          </span>
         </div>
         <!-- END: FILE NAME -->
 
@@ -39,28 +41,32 @@
           <label for="exampleInputEmail1" class="form-label mt-3"
             >Taxonomy ID</label
           >
-          <input type="number" class="form-control" formControlName="taxonomyID"/>
-        <span
+          <input
+            type="number"
+            class="form-control"
+            formControlName="taxonomyID"
+          />
+          <span
             class="text-danger"
-          *ngIf="this.sequenceManageForm.get('taxonomyID')?.errors?.['required'] &&
+            *ngIf="this.sequenceManageForm.get('taxonomyID')?.errors?.['required'] &&
                              this.sequenceManageForm.get('taxonomyID')?.touched"
-        >
-          Taxonomy ID field cannot be empty.
-        </span>
-        <span
+          >
+            Taxonomy ID field cannot be empty.
+          </span>
+          <span
             class="text-danger"
-          *ngIf="this.sequenceManageForm.get('taxonomyID')?.errors?.['min'] &&
+            *ngIf="this.sequenceManageForm.get('taxonomyID')?.errors?.['min'] &&
                              this.sequenceManageForm.get('taxonomyID')?.touched"
-        >
-          Taxonomy ID value cannot be less than 1.
-        </span>
-        <span
+          >
+            Taxonomy ID value cannot be less than 1.
+          </span>
+          <span
             class="text-danger"
-          *ngIf="this.sequenceManageForm.get('taxonomyID')?.errors?.['max'] &&
+            *ngIf="this.sequenceManageForm.get('taxonomyID')?.errors?.['max'] &&
                              this.sequenceManageForm.get('taxonomyID')?.touched"
-        >
-          Taxonomy ID value is too big.
-        </span>
+          >
+            Taxonomy ID value is too big.
+          </span>
         </div>
         <!-- END: TAX. ID -->
 
@@ -69,21 +75,21 @@
           <label for="exampleInputEmail1" class="form-label mt-3"
             >Gene name / Gene ID</label
           >
-          <input type="text" class="form-control" formControlName="geneID"/>
+          <input type="text" class="form-control" formControlName="geneID" />
           <span
             class="text-danger"
-          *ngIf="this.sequenceManageForm.get('geneID')?.errors?.['required'] &&
+            *ngIf="this.sequenceManageForm.get('geneID')?.errors?.['required'] &&
                              this.sequenceManageForm.get('geneID')?.touched"
-        >
-          Gene identifier field cannot be empty.
-        </span>
-        <span
+          >
+            Gene identifier field cannot be empty.
+          </span>
+          <span
             class="text-danger"
-          *ngIf="this.sequenceManageForm.get('geneID')?.errors?.['maxlength'] &&
+            *ngIf="this.sequenceManageForm.get('geneID')?.errors?.['maxlength'] &&
                              this.sequenceManageForm.get('geneID')?.touched"
-        >
-          Gene identifier is too long.
-        </span>
+          >
+            Gene identifier is too long.
+          </span>
         </div>
         <!-- END: Gene identifier -->
 
@@ -102,18 +108,18 @@
           </textarea>
           <span
             class="text-danger"
-          *ngIf="this.sequenceManageForm.get('description')?.errors?.['required'] &&
+            *ngIf="this.sequenceManageForm.get('description')?.errors?.['required'] &&
                              this.sequenceManageForm.get('description')?.touched"
-        >
-          Description field cannot be empty.
-        </span>
-        <span
+          >
+            Description field cannot be empty.
+          </span>
+          <span
             class="text-danger"
-          *ngIf="this.sequenceManageForm.get('geneID')?.errors?.['maxlength'] &&
+            *ngIf="this.sequenceManageForm.get('geneID')?.errors?.['maxlength'] &&
                              this.sequenceManageForm.get('geneID')?.touched"
-        >
-          Description is too long.
-        </span>
+          >
+            Description is too long.
+          </span>
         </div>
         <!-- END: DESCRIPTION -->
 
@@ -128,40 +134,52 @@
             multiple
             (change)="onFileSelected($event)"
           />
-        <span
+          <span
             class="text-danger"
-          *ngIf="this.sequenceManageForm.get('files')?.errors?.['required'] &&
+            *ngIf="this.sequenceManageForm.get('files')?.errors?.['required'] &&
                              this.sequenceManageForm.get('files')?.touched"
-        >
-          No files are selected.
-        </span>
-        <span
+          >
+            No files are selected.
+          </span>
+          <span
             class="text-danger"
-          *ngIf="this.sequenceManageForm.get('files')?.errors?.['invalidFileExtension'] &&
+            *ngIf="this.sequenceManageForm.get('files')?.errors?.['invalidFileExtension'] &&
                              this.sequenceManageForm.get('files')?.touched"
-        >
-          The listed files contain invalid files.
-          All files must be a valid sequence format. Such as, .fasta, .fastq, .gb, etc..
-        </span>
+          >
+            The listed files contain invalid files. All files must be a valid
+            sequence format. Such as, .fasta, .fastq, .gb, etc..
+          </span>
         </div>
         <!-- END: FILE UPLOAD -->
 
-        <button *ngIf="isModifyFileMode" type="submit"
-            [disabled]="sequenceManageForm.invalid"
-            (click)="modifySequenceFiles()"
-            class="btn btn-primary my-3">Modify
+        <button
+          *ngIf="isModifyFileMode"
+          type="submit"
+          [disabled]="sequenceManageForm.invalid"
+          (click)="modifySequenceFiles()"
+          class="btn btn-primary my-3"
+        >
+          Modify
         </button>
-        <button *ngIf="isModifyFileMode === false" type="submit"
-            [disabled]="sequenceManageForm.invalid"
-            (click)="uploadSequenceFiles()"
-            class="btn btn-primary my-3">Upload
+        <button
+          *ngIf="isModifyFileMode === false"
+          type="submit"
+          [disabled]="sequenceManageForm.invalid"
+          (click)="uploadSequenceFiles()"
+          class="btn btn-primary my-3"
+        >
+          Upload
         </button>
       </fieldset>
 
-    <!-- Progress bars. -->
+      <!-- Progress bars. -->
       <div>
-          <h3 *ngIf='uploadSuccess === true' class="text-success">Successfully uploaded files!</h3>
-          <h3 *ngIf='uploadSuccess === false' class="text-danger">{{ errorMessage }}</h3>
+        <h3 *ngIf="uploadSuccess === true" class="text-success">
+          Successfully uploaded files!
+        </h3>
+        <h3 *ngIf="uploadSuccess === false" class="text-danger">
+          {{ errorMessage }}
+        </h3>
 
         <div *ngFor="let progressInfo of progressInfos" class="my-3">
           <p>{{ progressInfo.fileName }}</p>
@@ -179,8 +197,7 @@
           </div>
         </div>
       </div>
-    <!-- END: Progress bars. -->
-
+      <!-- END: Progress bars. -->
     </form>
   </div>
 </div>

@@ -1,125 +1,123 @@
 export class StorageEntity {
-    #id: number;
-    #name: string;
-    #description: string;
-    #size: number;
-    #path: string;
-    #gene: string;
-    #taxonomyID: number;
-    #uploadDate: Date;
-    #uploadedBy: string;
+  #id: number;
+  #name: string;
+  #description: string;
+  #size: number;
+  #path: string;
+  #gene: string;
+  #taxonomyID: number;
+  #uploadDate: Date;
+  #uploadedBy: string;
 
-    constructor(
-      id: number = 0,
-      name: string = '',
-      description: string,
-      size: number = 0,
-      path: string = '',
-      gene: string = '',
-      taxonomyID: number = 0,
-      uploadDate: Date = new Date(),
-      uploadedBy: string = ''
-    ){
+  constructor(
+    id: number = 0,
+    name: string = '',
+    description: string,
+    size: number = 0,
+    path: string = '',
+    gene: string = '',
+    taxonomyID: number = 0,
+    uploadDate: Date = new Date(),
+    uploadedBy: string = ''
+  ) {
+    this.#id = id;
+    this.#name = name;
+    this.#description = description;
+    this.#size = size;
+    this.#path = path;
+    this.#gene = gene;
+    this.#taxonomyID = taxonomyID;
+    this.#uploadDate = uploadDate;
+    this.#uploadedBy = uploadedBy;
+  }
 
-      this.#id = id;
-      this.#name = name;
-      this.#description = description;
-      this.#size = size;
-      this.#path = path;
-      this.#gene = gene;
-      this.#taxonomyID = taxonomyID;
-      this.#uploadDate = uploadDate;
-      this.#uploadedBy = uploadedBy;
-    }
+  // Get id.
+  get id(): number {
+    return this.#id;
+  }
 
-    // Get id.
-    get id(): number {
-        return this.#id;
-    }
+  // Get name.
+  get name(): string {
+    return this.#name;
+  }
 
-    // Get name.
-    get name(): string{
-        return this.#name;
-    }
+  // Get description.
+  get description(): string {
+    return this.#description;
+  }
 
-    // Get description.
-    get description(): string{
-        return this.#description;
-    }
+  // Get size.
+  get size(): number {
+    return this.#size;
+  }
 
-    // Get size.
-    get size(): number {
-        return this.#size;
-    }
+  // Get path.
+  get path(): string {
+    return this.#path;
+  }
 
-    // Get path.
-    get path(): string{
-        return this.#path;
-    }
+  // Get gene.
+  get gene(): string {
+    return this.#gene;
+  }
 
-    // Get gene.
-    get gene(): string{
-        return this.#gene;
-    }
+  // Get taxonomyID.
+  get taxonomyID(): number {
+    return this.#taxonomyID;
+  }
 
-    // Get taxonomyID.
-    get taxonomyID(): number {
-        return this.#taxonomyID;
-    }
+  // Get uploadDate.
+  get uploadDate(): Date {
+    return this.#uploadDate;
+  }
 
-    // Get uploadDate.
-    get uploadDate(): Date{
-        return this.#uploadDate;
-    }
+  // Get uploadedBy.
+  get uploadedBy(): string {
+    return this.#uploadedBy;
+  }
 
-    // Get uploadedBy.
-    get uploadedBy(): string{
-        return this.#uploadedBy;
-    }
+  // set id.
+  set id(id: number) {
+    this.#id = id;
+  }
 
+  // set name.
+  set name(name: string) {
+    this.#name = name;
+  }
 
-    // set id.
-    set id(id: number) {
-        this.#id = id;
-    }
+  // set description.
+  set description(description: string) {
+    this.#description = description;
+  }
 
-    // set name.
-    set name(name: string){
-        this.#name = name;
-    }
+  // set size.
+  set size(size: number) {
+    this.#size = size;
+  }
 
-    // set description.
-    set description(description: string) {
-        this.#description = description;
-    }
+  // set path.
+  set path(path: string) {
+    this.#path = path;
+  }
 
-    // set size.
-    set size(size: number) {
-        this.#size = size;
-    }
+  // set gene.
+  set gene(gene: string) {
+    this.#gene = gene;
+  }
 
-    // set path.
-    set path(path: string) {
-        this.#path = path;
-    }
+  // set taxonomyID.
+  set taxonomyID(taxonomyID: number) {
+    this.#taxonomyID = taxonomyID;
+  }
 
-    // set gene.
-    set gene(gene: string) {
-        this.#gene = gene;
-    }
+  // set uploadDate.
+  set uploadDate(uploadDate: Date) {
+    this.#uploadDate = uploadDate;
+  }
 
-    // set taxonomyID.
-    set taxonomyID(taxonomyID: number) {
-        this.#taxonomyID = taxonomyID;
-    }
-
-    // set uploadDate.
-    set uploadDate(uploadDate: Date) {
-        this.#uploadDate = uploadDate;
-    }
-
-    // set uploadedBy.
-    set uploadedBy(uploadedBy) {
-        this.#uploadedBy = uploadedBy;
-    }
+  // set uploadedBy.
+  set uploadedBy(uploadedBy) {
+    this.#uploadedBy = uploadedBy;
+  }
 }

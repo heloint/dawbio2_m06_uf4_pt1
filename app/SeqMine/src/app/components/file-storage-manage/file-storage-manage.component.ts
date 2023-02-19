@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
-import { DatabaseService, DBStorageEntity } from '../../services/database.service';
+import {
+  DatabaseService,
+  DBStorageEntity,
+} from '../../services/database.service';
 import { SessionHandlingService } from '../../services/session-handling.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { StorageEntity } from '../../models/storage-entity.model';
-import { ActivatedRoute} from '@angular/router';
-
+import { ActivatedRoute } from '@angular/router';
 
 export type ProgressEntity = {
   value: number;
@@ -42,9 +44,7 @@ export class FileStorageManageComponent {
       Validators.min(1),
       Validators.max(999999999999),
     ]),
-    fileName: new FormControl('', [
-      Validators.required,
-    ]),
+    fileName: new FormControl('', [Validators.required]),
     geneID: new FormControl('', [
       Validators.required,
       Validators.maxLength(25),
@@ -55,7 +55,6 @@ export class FileStorageManageComponent {
     ]),
     files: new FormControl('', [Validators.required]),
   });
-
 
   /* Save the selected files from the event. Must use this way,
    * because Angular doesn't manage this scenary correctly.
@@ -110,7 +109,7 @@ export class FileStorageManageComponent {
   }
 
   /* Iterates over the selected files and
-   ** calls the "upload" method to upload the files and observe the progress of it.
+   * calls the "upload" method to upload the files and observe the progress of it.
    * @return void
    * */
   uploadSequenceFiles(): void {
@@ -181,57 +180,60 @@ export class FileStorageManageComponent {
     }
   }
 
-    /**
-     * modifySequenceFiles updates a file's data in the database.
-     *
-     * @return {void}
-     */
-    modifySequenceFiles() {
-        return this.database.updateSequenceFile({
-            file_id: this.fileID,
-            name: this.sequenceManageForm.get('fileName')?.value,
-            description: this.sequenceManageForm.get('description')?.value,
-            size: 0,
-            path: '',
-            gene: this.sequenceManageForm.get('geneID')?.value,
-            taxonomy_id: this.sequenceManageForm.get('taxonomyID')?.value,
-            upload_date: new Date(),
-            uploaded_by: ''
-        }).subscribe({
-            next: result => { 
-                console.log(result);
-                this.modificationResult = result.result;
-            },
-            error: error => { this.modificationResult = false; }
-        });
-    }
+  /**
+   * Updates a file's data in the database.
+   * @return {void}
+   */
+  modifySequenceFiles() {
+    return this.database
+      .updateSequenceFile({
+        file_id: this.fileID,
+        name: this.sequenceManageForm.get('fileName')?.value,
+        description: this.sequenceManageForm.get('description')?.value,
+        size: 0,
+        path: '',
+        gene: this.sequenceManageForm.get('geneID')?.value,
+        taxonomy_id: this.sequenceManageForm.get('taxonomyID')?.value,
+        upload_date: new Date(),
+        uploaded_by: '',
+      })
+      .subscribe({
+        next: (result) => {
+          this.modificationResult = result.result;
+        },
+        error: (error) => {
+          this.modificationResult = false;
+        },
+      });
+  }
 
-    fetchFileByID(id: number) {
-      return this.database.getFileByID(id).subscribe(
-        result => {
-          if (Object.keys(result).length > 0) {
-            const foundFile: DBStorageEntity = result.result[0];
-            this.sequenceManageForm.controls['fileName'].setValue(foundFile.name);
-            this.sequenceManageForm.controls['taxonomyID'].setValue(foundFile.taxonomy_id);
-            this.sequenceManageForm.controls['geneID'].setValue(foundFile.gene);
-            this.sequenceManageForm.controls['description'].setValue(foundFile.description);
-          }
-        }
-      );
-
-    }
+  fetchFileByID(id: number) {
+    return this.database.getFileByID(id).subscribe((result) => {
+      if (Object.keys(result).length > 0) {
+        const foundFile: DBStorageEntity = result.result[0];
+        this.sequenceManageForm.controls['fileName'].setValue(foundFile.name);
+        this.sequenceManageForm.controls['taxonomyID'].setValue(
+          foundFile.taxonomy_id
+        );
+        this.sequenceManageForm.controls['geneID'].setValue(foundFile.gene);
+        this.sequenceManageForm.controls['description'].setValue(
+          foundFile.description
+        );
+      }
+    });
+  }
 
   ngOnInit() {
-      this.fileID = Number(this.route.snapshot.paramMap.get('fileID'));
+    this.fileID = Number(this.route.snapshot.paramMap.get('fileID'));
 
-      if (this.fileID) {
-        this.fetchFileByID(this.fileID);
-        this.isModifyFileMode = true;
+    if (this.fileID) {
+      this.fetchFileByID(this.fileID);
+      this.isModifyFileMode = true;
 
-        // This assignment is just to avoid to trigger Validators.required.
-        // In this case we are re-using the same component for uploading and modifying.
-        // If this is not assigned, then it will complain about invalid form.
-        this.sequenceManageForm.controls['files'].setValue('____');
-      }
+      // This assignment is just to avoid to trigger Validators.required.
+      // In this case we are re-using the same component for uploading and modifying.
+      // If this is not assigned, then it will complain about invalid form.
+      this.sequenceManageForm.controls['files'].setValue('____');
+    }
   }
 }

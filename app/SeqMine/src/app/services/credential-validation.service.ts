@@ -19,17 +19,12 @@ export interface InfoTypes {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CredentialValidationService {
-
   #BASE_URL: string = 'http://localhost:3000';
 
-  constructor(
-    private http: HttpClient
-  ) {}
-
-
+  constructor(private http: HttpClient) {}
 
   /* Validates user object against the "database".
    * @param user User

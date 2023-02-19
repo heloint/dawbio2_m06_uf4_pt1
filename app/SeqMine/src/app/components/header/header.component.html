@@ -2,8 +2,7 @@
   <div class="container-fluid">
     <div class="col-4 d-flex justify-content-center">
       <a class="navbar-brand" href="#"
-        ><img src="/assets/images/SeqMine-logo.png"
-              alt="Site logo"
+        ><img src="/assets/images/SeqMine-logo.png" alt="Site logo"
       /></a>
     </div>
     <button
@@ -87,7 +86,8 @@
               >Sequence storage</a
             >
             <div class="dropdown-divider"></div>
-            <a *ngIf="['admin', 'investigator'].includes(this.userData.role)"
+            <a
+              *ngIf="['admin', 'investigator'].includes(this.userData.role)"
               class="dropdown-item"
               routerLink="/file-storage-manage"
               routerLinkActive="active"
@@ -96,28 +96,17 @@
           </div>
         </li>
         <li *ngIf="!this.isLoggedIn" class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="/register"
-            routerLinkActive="active"
+          <a class="nav-link" routerLink="/register" routerLinkActive="active"
             >Register</a
           >
         </li>
         <li *ngIf="!this.isLoggedIn" class="nav-item">
-          <a
-            class="nav-link"
-            routerLink="/login"
-            routerLinkActive="active"
+          <a class="nav-link" routerLink="/login" routerLinkActive="active"
             >Log in</a
           >
         </li>
         <li *ngIf="this.isLoggedIn" class="nav-item">
-          <a
-            class="nav-link"
-            href="#"
-            (click)="logout()"
-            >Log out</a
-          >
+          <a class="nav-link" href="#" (click)="logout()">Log out</a>
         </li>
       </ul>
     </div>

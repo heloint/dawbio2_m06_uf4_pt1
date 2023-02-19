@@ -5,69 +5,66 @@ import { StorageEntity } from '../models/storage-entity.model';
 
 // Represents a response with user related queries.
 export type DBUserArr = {
-    result: Array<DBUser>
-}
+  result: Array<DBUser>;
+};
 
 // Represents an item in a response with user related queries.
 export type DBUser = {
-    user_id: number,
-    username: string,
-    role_name: string,
-    password: string,
-    email: string,
-    first_name: string,
-    last_name: string,
-    registration_date: Date,
-}
+  user_id: number;
+  username: string;
+  role_name: string;
+  password: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  registration_date: Date;
+};
 
 // Represents a response with user related queries.
 export type DBStorageEntityArr = {
-    result: Array<DBStorageEntity>
-}
+  result: Array<DBStorageEntity>;
+};
 
 // Represents an item in a response with user related queries.
 export type DBStorageEntity = {
-    file_id: number,
-    name: string,
-    description: string,
-    size: number,
-    path: string,
-    gene: string,
-    taxonomy_id: number,
-    upload_date: Date,
-    uploaded_by: string,
-}
+  file_id: number;
+  name: string;
+  description: string;
+  size: number;
+  path: string;
+  gene: string;
+  taxonomy_id: number;
+  upload_date: Date;
+  uploaded_by: string;
+};
 
 // Represents a response with role related queries.
 export type DBRoleArr = {
-    result: Array<DBRole>
-}
+  result: Array<DBRole>;
+};
 
 // Represents an item in a response with role related queries.
 export type DBRole = {
-  role_id: number,
-  role_name: string
-}
+  role_id: number;
+  role_name: string;
+};
 
 export type DBLastUserID = {
   result: number;
-}
+};
 
 export type QueryConfirmation = {
-    result: Boolean;
-}
+  result: Boolean;
+};
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DatabaseService {
-
   // Base URL to the REST API server.
   #BASE_URL: string = 'http://localhost:3000';
 
-  constructor(
-    private http: HttpClient,
-  ) { }
+  constructor(private http: HttpClient) {}
 
   // Requests all the users can be found in the database.
   public getAllUsers() {
@@ -83,14 +80,18 @@ export class DatabaseService {
    * @param inputID number
    * */
   public getUserByID(inputID: number) {
-    return this.http.post<DBUserArr>(this.#BASE_URL + '/userByID', {userID: inputID});
+    return this.http.post<DBUserArr>(this.#BASE_URL + '/userByID', {
+      userID: inputID,
+    });
   }
 
   /* Requests to find a user by it's ID.
    * @param inputID number
    * */
   public getFileByID(inputID: number) {
-    return this.http.post<DBStorageEntityArr>(this.#BASE_URL + '/fileByID', {fileID: inputID});
+    return this.http.post<DBStorageEntityArr>(this.#BASE_URL + '/fileByID', {
+      fileID: inputID,
+    });
   }
 
   // Requests the last user id from the database.
@@ -101,75 +102,87 @@ export class DatabaseService {
   /* Send a request to the server to delete a user by the argument ID.
    * @param inputID number
    * */
-   public deleteUserByID(inputID: number) {
-     return this.http.post<QueryConfirmation>(this.#BASE_URL + '/deleteUserByID', {userID: inputID});
-   }
+  public deleteUserByID(inputID: number) {
+    return this.http.post<QueryConfirmation>(
+      this.#BASE_URL + '/deleteUserByID',
+      { userID: inputID }
+    );
+  }
 
   /* Send a request to the server to delete a file by the argument ID.
    * @param inputID number
    * */
-   public deleteFileByID(inputID: number) {
-     return this.http.post<QueryConfirmation>(this.#BASE_URL + '/deleteFileByID', {id: inputID});
-   }
+  public deleteFileByID(inputID: number) {
+    return this.http.post<QueryConfirmation>(
+      this.#BASE_URL + '/deleteFileByID',
+      { id: inputID }
+    );
+  }
 
+  /* Send a request to the server with a User object to update it's register with the new data.
+   * @param user DBUser
+   * */
+  public updateUser(user: DBUser) {
+    return this.http.post<QueryConfirmation>(
+      this.#BASE_URL + '/updateUser',
+      user
+    );
+  }
 
-   /* Send a request to the server with a User object to update it's register with the new data.
-    * @param user DBUser
-    * */
-    public updateUser(user: DBUser) {
-        return this.http.post<QueryConfirmation>(this.#BASE_URL + '/updateUser', user);
-    }
+  /* Send a request to the server with a User object to create a new resgister.
+   * @param user DBUser
+   * */
+  public addUser(user: DBUser) {
+    return this.http.post<QueryConfirmation>(this.#BASE_URL + '/addUser', user);
+  }
 
-   /* Send a request to the server with a User object to create a new resgister.
-    * @param user DBUser
-    * */
-    public addUser(user: DBUser) {
-        return this.http.post<QueryConfirmation>(this.#BASE_URL + '/addUser', user);
-    }
-    
-   /* Send a request to the server with a File object save it on the server.
-    * @param user DBUser
-    * */
-    public uploadSequence(file: File) {
+  /* Send a request to the server with a File object save it on the server.
+   * @param user DBUser
+   * */
+  public uploadSequence(file: File) {
+    let formData: FormData = new FormData();
 
-      let formData: FormData = new FormData();
+    formData.append('file', file);
 
-      formData.append("file", file);
+    const req = new HttpRequest(
+      'POST',
+      `${this.#BASE_URL}/uploadSequence`,
+      formData,
+      {
+        reportProgress: true,
+        responseType: 'json',
+      }
+    );
 
-      const req = new HttpRequest('POST',
-                                  `${this.#BASE_URL}/uploadSequence`,
-                                  formData, {
-                                    reportProgress: true,
-                                    responseType: 'json'
-      });
+    return this.http.request(req);
+  }
 
-      return this.http.request(req);
-    }
+  /* Send a request to the server with a User object to create a new resgister.
+   * @param user DBUser
+   * */
+  public registerUser(user: DBUser) {
+    return this.http.post<QueryConfirmation>(
+      this.#BASE_URL + '/registerUser',
+      user
+    );
+  }
 
-   /* Send a request to the server with a User object to create a new resgister.
-    * @param user DBUser
-    * */
-    public registerUser(user: DBUser) {
-        return this.http.post<QueryConfirmation>(this.#BASE_URL + '/registerUser', user);
-    }
-    
-   /* Send a request to the server with a StorageEntity object
-    * to register it in the database.
-    * @param user DBUser
-    * */
-    public registerSequence(storageEntity: StorageEntity) {
-
-      return this.http.post<QueryConfirmation>(this.#BASE_URL + '/registerSequence',
-            {
-              name: storageEntity.name ,
-              size: storageEntity.size ,
-              gene: storageEntity.gene,
-              taxonomyID: storageEntity.taxonomyID ,
-              uploadedBy: storageEntity.uploadedBy
-            }
-        );
-    }
-
+  /* Send a request to the server with a StorageEntity object
+   * to register it in the database.
+   * @param user DBUser
+   * */
+  public registerSequence(storageEntity: StorageEntity) {
+    return this.http.post<QueryConfirmation>(
+      this.#BASE_URL + '/registerSequence',
+      {
+        name: storageEntity.name,
+        size: storageEntity.size,
+        gene: storageEntity.gene,
+        taxonomyID: storageEntity.taxonomyID,
+        uploadedBy: storageEntity.uploadedBy,
+      }
+    );
+  }
 
   // Requests all the sequence files can be found in the database.
   public getAllSequenceFiles() {
@@ -177,13 +190,16 @@ export class DatabaseService {
   }
 
   public generateFileDownloadHREF(id: number): string {
-        return `${this.#BASE_URL}/downloadSequenceFile?id=${id}`;
+    return `${this.#BASE_URL}/downloadSequenceFile?id=${id}`;
   }
 
-   /* Send a request to the server with a DBStorageEntity object to update it's register with the new data.
-    * @param user DBStorageEntity
-    * */
-    public updateSequenceFile(file: DBStorageEntity) {
-        return this.http.post<QueryConfirmation>(this.#BASE_URL + '/updateSequenceFile', file);
-    }
+  /* Send a request to the server with a DBStorageEntity object to update it's register with the new data.
+   * @param user DBStorageEntity
+   * */
+  public updateSequenceFile(file: DBStorageEntity) {
+    return this.http.post<QueryConfirmation>(
+      this.#BASE_URL + '/updateSequenceFile',
+      file
+    );
+  }
 }

@@ -8,9 +8,8 @@ describe('FileStorageTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FileStorageTableComponent ]
-    })
-    .compileComponents();
+      declarations: [FileStorageTableComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FileStorageTableComponent);
     component = fixture.componentInstance;

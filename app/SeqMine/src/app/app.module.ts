@@ -38,7 +38,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     UserManageComponent,
     FooterComponent,
     HeaderComponent,
-    ConfirmationPageComponent
+    ConfirmationPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,11 +46,11 @@ import { NgxPaginationModule } from 'ngx-pagination';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgxPaginationModule
+    NgxPaginationModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

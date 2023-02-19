@@ -1,92 +1,111 @@
 <div class="container">
+  <div class="row my-3">
+    <h3 class="text-center">Sequence Files</h3>
+  </div>
 
-    <div class="row my-3">
-        <h3 class="text-center">Sequence Files</h3>
-    </div>
+  <div class="row">
+    <h3
+      *ngIf="getFileDeletionStatus()"
+      class="text-center"
+      id="success-deletion-message"
+    >
+      File "{{ recentlyDeletedUser }}" has successfully been deleted.
+    </h3>
+    <h3
+      *ngIf="getFileDeletionStatus() === false"
+      class="text-center"
+      id="failed-deletion-message"
+    >
+      Failed to delete "{{ recentlyDeletedUser }}".<br />
+      Something went wrong.
+    </h3>
+    <form [formGroup]="searchBarForm" class="d-flex my-3">
+      <div class="col-6 text-center form-group d-flex align-items-center">
+        <input
+          id="login-username"
+          type="text"
+          formControlName="searchTerm"
+          class="form-control"
+          placeholder="Term to search .."
+        />
+      </div>
+      <div>
+        <button
+          class="btn btn-m btn-info btn-md mx-2"
+          type="button"
+          (click)="searchByTerm(this.searchBarForm.get('searchTerm')?.value)"
+        >
+          SEARCH
+        </button>
+      </div>
+    </form>
 
-    <div class="row">
+    <pagination-controls (pageChange)="cp = $event"></pagination-controls>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Size</th>
+          <th scope="col">Gene</th>
+          <th scope="col">Taxonomy ID</th>
+          <th scope="col">Upload date</th>
+          <th scope="col">Uploaded by</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="
+            let file of this.filesToDisplay
+              | paginate
+                : { itemsPerPage: this.rowNumberLimit, currentPage: cp }
+          "
+          scope="row"
+        >
+          <th scope="row">{{ file.id }}</th>
+          <td>{{ file.name }}</td>
+          <td>{{ file.description }}</td>
+          <td>{{ file.size }}</td>
+          <td>{{ file.gene }}</td>
+          <td>{{ file.taxonomyID }}</td>
+          <td>
+            {{
+              file.uploadDate.toISOString().split("T").join(" ").split(".")[0]
+            }}
+          </td>
+          <td>{{ file.uploadedBy }}</td>
+          <td>
+            <div class="d-flex justify-content-around">
+              <button type="button" class="btn btn-info">
+                <a [href]="getDownloadLink(file.id)" style="color: inherit">
+                  Download
+                </a>
+              </button>
 
-        <h3 *ngIf="getFileDeletionStatus()" class="text-center" id="success-deletion-message">File "{{ recentlyDeletedUser }}" has successfully been deleted. </h3>
-        <h3 *ngIf="getFileDeletionStatus() === false" class="text-center" id="failed-deletion-message">Failed to delete "{{ recentlyDeletedUser }}".<br> Something went wrong.</h3>
-        <form [formGroup]="searchBarForm" class="d-flex my-3">
-            <div class="col-6 text-center form-group d-flex align-items-center">
-                <input
-                  id="login-username"
-                  type="text"
-                  formControlName="searchTerm"
-                  class="form-control"
-                  placeholder="Term to search .."
-                />
-            </div>
-            <div>
               <button
-                class="btn btn-m btn-info btn-md mx-2"
+                *ngIf="['admin', 'investigator'].includes(sessionUser.role)"
                 type="button"
-                (click)="searchByTerm(this.searchBarForm.get('searchTerm')?.value)"
+                class="btn btn-primary"
+                (click)="goToSeqFileManage(file.id)"
               >
-                SEARCH
+                Modify
+              </button>
+
+              <button
+                *ngIf="sessionUser.role === 'admin'"
+                type="button"
+                class="btn btn-danger"
+                (click)="requireConfirmation(file.id, file.name)"
+              >
+                Delete
               </button>
             </div>
-        </form>
-
-        <pagination-controls (pageChange)="cp=$event"></pagination-controls>
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Description</th>
-              <th scope="col">Size</th>
-              <th scope="col">Gene</th>
-              <th scope="col">Taxonomy ID</th>
-              <th scope="col">Upload date</th>
-              <th scope="col">Uploaded by</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let file of this.filesToDisplay | paginate: { itemsPerPage: this.rowNumberLimit, currentPage: cp }" scope="row">
-              <th scope="row">{{ file.id}}</th>
-              <td>{{ file.name }}</td>
-              <td>{{ file.description }}</td>
-              <td>{{ file.size}}</td>
-              <td>{{ file.gene}}</td>
-              <td>{{ file.taxonomyID}}</td>
-              <td>{{ file.uploadDate.toISOString().split('T').join(' ').split('.')[0]}}</td>
-              <td>{{ file.uploadedBy}}</td>
-              <td>
-                  <div class="d-flex justify-content-around">
-                      <button type="button"
-                              class="btn btn-info"
-                      >
-                      <a
-                          [href]="getDownloadLink(file.id)"
-                          style="color: inherit;"
-                          >
-                        Download
-                      </a>
-                      </button>
-
-                      <button *ngIf="['admin','investigator'].includes(sessionUser.role)" type="button"
-                              class="btn btn-primary"
-                              (click)="goToSeqFileManage(file.id)"
-                      >
-                        Modify
-                      </button>
-
-                      <button *ngIf="sessionUser.role === 'admin' " type="button"
-                              class="btn btn-danger"
-                              (click)="requireConfirmation(file.id, file.name)"
-                      >
-                        Delete
-                      </button>
-                  </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <pagination-controls (pageChange)="cp=$event"></pagination-controls>
-    </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <pagination-controls (pageChange)="cp = $event"></pagination-controls>
+  </div>
 </div>
-
-

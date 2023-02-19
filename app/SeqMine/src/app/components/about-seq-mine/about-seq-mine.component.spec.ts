@@ -8,9 +8,8 @@ describe('AboutSeqMineComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AboutSeqMineComponent ]
-    })
-    .compileComponents();
+      declarations: [AboutSeqMineComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AboutSeqMineComponent);
     component = fixture.componentInstance;

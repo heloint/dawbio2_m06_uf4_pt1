@@ -5,7 +5,7 @@ import {
   RouterStateSnapshot,
   UrlTree,
   Router,
-  Data
+  Data,
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { SessionHandlingService } from '../services/session-handling.service';
@@ -14,11 +14,10 @@ import { SessionHandlingService } from '../services/session-handling.service';
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-
   constructor(
     private sessionHandler: SessionHandlingService,
-    private router: Router,
-  ){}
+    private router: Router
+  ) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -27,10 +26,7 @@ export class AuthGuard implements CanActivate {
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>
     | boolean
-    | UrlTree
-
-  {
-
+    | UrlTree {
     const params: Data = route.data;
     console.log('params', params);
 
@@ -44,10 +40,10 @@ export class AuthGuard implements CanActivate {
     // Check role requirement.
     // This is an optional parameter.
     if (params['rolesOnly'] !== undefined) {
-        if (this.sessionHandler.userData.role !== params['rolesOnly']) {
-          this.router.navigate(['/home']);
-          return false;
-        }
+      if (this.sessionHandler.userData.role !== params['rolesOnly']) {
+        this.router.navigate(['/home']);
+        return false;
+      }
     }
 
     return true;

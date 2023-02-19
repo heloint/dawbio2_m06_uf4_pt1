@@ -4,24 +4,39 @@
       <fieldset>
         <div *ngIf="this.isAddUserMode; else modifyLegend">
           <div class="my-3">
-              <h3>Add user</h3>
+            <h3>Add user</h3>
           </div>
-          <h4 *ngIf="this.creationResult" class="success-msg">Successfully created user!</h4>
-          <h4 *ngIf="this.creationResult === false" class="failed-msg">{{ this.errorMessage }}</h4>
+          <h4 *ngIf="this.creationResult" class="success-msg">
+            Successfully created user!
+          </h4>
+          <h4 *ngIf="this.creationResult === false" class="failed-msg">
+            {{ this.errorMessage }}
+          </h4>
         </div>
 
         <ng-template #modifyLegend>
           <div class="my-3">
-              <h3>Modify user</h3>
+            <h3>Modify user</h3>
           </div>
-          <h4 *ngIf="this.modificationResult" class="success-msg">Successful update!</h4>
-          <h4 *ngIf="this.modificationResult === false" class="failed-msg">Failed to update!</h4>
+          <h4 *ngIf="this.modificationResult" class="success-msg">
+            Successful update!
+          </h4>
+          <h4 *ngIf="this.modificationResult === false" class="failed-msg">
+            Failed to update!
+          </h4>
         </ng-template>
 
         <!-- ID -->
         <div class="form-group">
-          <label for="exampleInputEmail1" class="form-label mt-3">User ID</label>
-          <input type="number" [readonly]="true" class="form-control" formControlName="id">
+          <label for="exampleInputEmail1" class="form-label mt-3"
+            >User ID</label
+          >
+          <input
+            type="number"
+            [readonly]="true"
+            class="form-control"
+            formControlName="id"
+          />
         </div>
         <!-- END: ID -->
 
@@ -29,7 +44,9 @@
         <div class="form-group">
           <label for="role" class="form-label mt-3">Role</label>
           <select class="form-select" id="role" formControlName="role">
-            <option *ngFor="let role of this.roles" [value]="role.name" >{{ role.name | titlecase }}</option>
+            <option *ngFor="let role of this.roles" [value]="role.name">
+              {{ role.name | titlecase }}
+            </option>
           </select>
         </div>
         <!-- END: ROLE -->
@@ -37,76 +54,95 @@
         <!-- USERNAME -->
         <div class="form-group">
           <label for="username" class="form-label mt-3">Username</label>
-          <input type="text" class="form-control" id="username" placeholder="Enter username" formControlName="username">
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            placeholder="Enter username"
+            formControlName="username"
+          />
 
-            <span
-              *ngIf="this.userManageForm.get('username')?.errors?.['required'] &&
+          <span
+            *ngIf="this.userManageForm.get('username')?.errors?.['required'] &&
                                this.userManageForm.get('username')?.touched"
-              class="text-danger"
-            >
-              Username field is empty.
-            </span>
+            class="text-danger"
+          >
+            Username field is empty.
+          </span>
 
-            <span
-              *ngIf="this.userManageForm.get('username')?.errors?.['minlength'] &&
+          <span
+            *ngIf="this.userManageForm.get('username')?.errors?.['minlength'] &&
                                this.userManageForm.get('username')?.touched"
-              class="text-danger"
-            >
-              Minimum 5 character length is required.
-            </span>
-            <span
-              *ngIf="this.userManageForm.get('username')?.errors?.['pattern'] &&
+            class="text-danger"
+          >
+            Minimum 5 character length is required.
+          </span>
+          <span
+            *ngIf="this.userManageForm.get('username')?.errors?.['pattern'] &&
                                this.userManageForm.get('username')?.touched"
-              class="text-danger"
-            >
-              Username contains illegal characters, such as special characters or spaces.
-            </span>
+            class="text-danger"
+          >
+            Username contains illegal characters, such as special characters or
+            spaces.
+          </span>
         </div>
         <!-- END: USERNAME -->
 
         <!-- FIRST NAME-->
         <div class="form-group">
           <label for="first name" class="form-label mt-3">First name</label>
-          <input type="text" class="form-control" id="firstname" placeholder="Enter first name" formControlName="firstName">
+          <input
+            type="text"
+            class="form-control"
+            id="firstname"
+            placeholder="Enter first name"
+            formControlName="firstName"
+          />
 
-            <span
-              *ngIf="this.userManageForm.get('firstName')?.errors?.['required'] &&
+          <span
+            *ngIf="this.userManageForm.get('firstName')?.errors?.['required'] &&
                                this.userManageForm.get('firstName')?.touched"
-              class="text-danger"
-            >
-              First name field is empty.
-            </span>
+            class="text-danger"
+          >
+            First name field is empty.
+          </span>
 
-            <span
-              *ngIf="this.userManageForm.get('firstName')?.errors?.['pattern'] &&
+          <span
+            *ngIf="this.userManageForm.get('firstName')?.errors?.['pattern'] &&
                                this.userManageForm.get('firstName')?.touched"
-              class="text-danger"
-            >
-              First name contains illegal characters, such as special characters.
-            </span>
+            class="text-danger"
+          >
+            First name contains illegal characters, such as special characters.
+          </span>
         </div>
         <!-- END: FIRST NAME-->
 
         <!-- Last NAME-->
         <div class="form-group">
           <label for="Last name" class="form-label mt-3">Last name</label>
-          <input type="text" class="form-control" id="Last name" placeholder="Enter last name" formControlName="lastName">
+          <input
+            type="text"
+            class="form-control"
+            id="Last name"
+            placeholder="Enter last name"
+            formControlName="lastName"
+          />
 
-            <span
-              *ngIf="this.userManageForm.get('lastName')?.errors?.['required'] &&
+          <span
+            *ngIf="this.userManageForm.get('lastName')?.errors?.['required'] &&
                                this.userManageForm.get('lastName')?.touched"
-              class="text-danger"
-            >
-              Last name field is empty.
-            </span>
+            class="text-danger"
+          >
+            Last name field is empty.
+          </span>
 
-            <span
-              *ngIf="this.userManageForm.get('lastName')?.errors?.['pattern'] &&
+          <span
+            *ngIf="this.userManageForm.get('lastName')?.errors?.['pattern'] &&
                                this.userManageForm.get('lastName')?.touched"
-              class="text-danger"
-            >
-              Last name contains illegal characters, such as special characters.
-            </span>
+            class="text-danger"
+          >
+            Last name contains illegal characters, such as special characters.
+          </span>
         </div>
         <!-- END: Last NAME-->
 
@@ -114,11 +150,24 @@
         <div class="form-group">
           <label for="password" class="form-label mt-3">Password</label>
           <span class="d-flex">
-              <input type="{{ passwordType }}" class="form-control" id="password" placeholder="Enter password." formControlName="password">
-              <button *ngIf="isAddUserMode" (click)="changePassVisibilityOnPass()">
-                 <i class="fa fa-eye" aria-hidden="true" *ngIf="!showPass"></i>
-                 <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="showPass"></i>
-              </button>
+            <input
+              type="{{ passwordType }}"
+              class="form-control"
+              id="password"
+              placeholder="Enter password."
+              formControlName="password"
+            />
+            <button
+              *ngIf="isAddUserMode"
+              (click)="changePassVisibilityOnPass()"
+            >
+              <i class="fa fa-eye" aria-hidden="true" *ngIf="!showPass"></i>
+              <i
+                class="fa fa-eye-slash"
+                aria-hidden="true"
+                *ngIf="showPass"
+              ></i>
+            </button>
           </span>
           <div
             *ngIf="this.userManageForm.get('password')?.errors?.['required'] &&
@@ -139,85 +188,98 @@
 
         <!-- PASSWORD CONFIRMATION -->
         <div *ngIf="this.isAddUserMode" class="form-group">
-          <label for="passwordConfirmation" class="form-label mt-3">Confirm password</label>
+          <label for="passwordConfirmation" class="form-label mt-3"
+            >Confirm password</label
+          >
 
           <span class="d-flex">
-              <input type="{{ passwordConfType }}"
-                     class="form-control" 
-                     id="passwordConfirmation"
-                     placeholder="Confirm password."
-                     formControlName="passwordConfirmation"
-                      appPasswordConfirmValidation
-                      [firstPassword]="this.userManageForm.get('password')?.value"
-                >
-               <button (click)="changePassVisibilityOnPassConf()">
-                  <i class="fa fa-eye" aria-hidden="true" *ngIf="!showPassConf"></i>
-                  <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="showPassConf"></i>
-               </button>
+            <input
+              type="{{ passwordConfType }}"
+              class="form-control"
+              id="passwordConfirmation"
+              placeholder="Confirm password."
+              formControlName="passwordConfirmation"
+              appPasswordConfirmValidation
+              [firstPassword]="this.userManageForm.get('password')?.value"
+            />
+            <button (click)="changePassVisibilityOnPassConf()">
+              <i class="fa fa-eye" aria-hidden="true" *ngIf="!showPassConf"></i>
+              <i
+                class="fa fa-eye-slash"
+                aria-hidden="true"
+                *ngIf="showPassConf"
+              ></i>
+            </button>
           </span>
 
-            <span
-              *ngIf="this.userManageForm.get('passwordConfirmation')?.errors?.['required'] &&
+          <span
+            *ngIf="this.userManageForm.get('passwordConfirmation')?.errors?.['required'] &&
                               this.userManageForm.get('passwordConfirmation')?.touched"
-                class="text-danger"
-            >
-              Password repetation cannot be empty.
-            </span>
-            <span
-              *ngIf="this.userManageForm.get('passwordConfirmation')?.errors?.['unequivalentPassword'] &&
+            class="text-danger"
+          >
+            Password repetation cannot be empty.
+          </span>
+          <span
+            *ngIf="this.userManageForm.get('passwordConfirmation')?.errors?.['unequivalentPassword'] &&
                               this.userManageForm.get('passwordConfirmation')?.touched"
-                class="text-danger"
-            >
-              Two passwords must be the same.
-            </span>
+            class="text-danger"
+          >
+            Two passwords must be the same.
+          </span>
         </div>
         <!-- END: PASSWORD CONFIRMATION -->
 
         <!-- EMAIL -->
         <div class="form-group">
           <label for="email" class="form-label mt-3">Email address</label>
-          <input type="email" class="form-control" id="email" placeholder="Enter email" formControlName="email">
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="Enter email"
+            formControlName="email"
+          />
 
-            <span
-              *ngIf="this.userManageForm.get('email')?.errors?.['required'] &&
+          <span
+            *ngIf="this.userManageForm.get('email')?.errors?.['required'] &&
                               this.userManageForm.get('email')?.touched"
-                class="text-danger"
-            >
-              Email cannot be empty.
-            </span>
-            <span
-              *ngIf="this.userManageForm.get('email')?.errors?.['pattern'] &&
+            class="text-danger"
+          >
+            Email cannot be empty.
+          </span>
+          <span
+            *ngIf="this.userManageForm.get('email')?.errors?.['pattern'] &&
                         this.userManageForm.get('email')?.touched"
-                class="text-danger"
-            >
-              This email is not correct.
-            </span>
+            class="text-danger"
+          >
+            This email is not correct.
+          </span>
         </div>
         <!-- END: EMAIL -->
-
       </fieldset>
 
-      <div *ngIf="this.isAddUserMode;else modifyButton" class="my-3">
-        <button type="submit"
-                [disabled]="userManageForm.invalid"
-                class="btn btn-primary"
-                (click)="doAddUser()"
+      <div *ngIf="this.isAddUserMode; else modifyButton" class="my-3">
+        <button
+          type="submit"
+          [disabled]="userManageForm.invalid"
+          class="btn btn-primary"
+          (click)="doAddUser()"
         >
-            ADD USER
+          ADD USER
         </button>
       </div>
       <ng-template #modifyButton>
         <div class="my-3">
-          <button type="submit"
-                  [disabled]="userManageForm.invalid"
-                  class="btn btn-primary"
-                  (click)="doModifyUser()"
+          <button
+            type="submit"
+            [disabled]="userManageForm.invalid"
+            class="btn btn-primary"
+            (click)="doModifyUser()"
           >
             MODIFY USER
           </button>
         </div>
       </ng-template>
-
     </form>
   </div>
 </div>

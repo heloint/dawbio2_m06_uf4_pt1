@@ -16,9 +16,8 @@ import {
     },
   ],
 })
-export class PasswordConfirmValidationDirective implements Validator{
-
-  constructor() { }
+export class PasswordConfirmValidationDirective implements Validator {
+  constructor() {}
 
   /* Validates if the two password fields are match.
    * @param control AbstractControl
