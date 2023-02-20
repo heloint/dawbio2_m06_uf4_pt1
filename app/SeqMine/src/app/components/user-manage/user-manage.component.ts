@@ -9,7 +9,6 @@ import {
 } from '../../services/database.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SessionHandlingService } from '../../services/session-handling.service';
-import { retry } from 'rxjs';
 
 @Component({
   selector: 'app-user-manage',

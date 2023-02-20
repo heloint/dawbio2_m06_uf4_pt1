@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
 import { StorageEntity } from '../models/storage-entity.model';
 
 // Represents a response with user related queries.

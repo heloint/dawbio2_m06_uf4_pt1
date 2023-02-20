@@ -123,7 +123,7 @@ export class SessionHandlingService {
    * @param password string
    * @return Observable<SessionData>
    * */
-  private validateSessionToken(): Observable<SessionData> {
+  public validateSessionToken(): Observable<SessionData> {
     return this.http.post<SessionData>(this.#BASE_URL + '/sessionValidation', {
       token: localStorage['token'],
     });
@@ -135,7 +135,7 @@ export class SessionHandlingService {
    * @param password string
    * @return Observable<SessionData>
    * */
-  public validateRefreshToken(): Observable<SessionData> {
+  private validateRefreshToken(): Observable<SessionData> {
     return this.http.post<SessionData>(this.#BASE_URL + '/refreshSession', {
       refreshToken: localStorage['refreshToken'],
     });
@@ -184,17 +184,17 @@ export class SessionHandlingService {
       const validationResult: Observable<SessionData> =
         this.validateSessionToken();
 
-      validationResult.subscribe(
-        (res) => {
+      validationResult.subscribe({
+        next: (res) => {
           if (Object.keys(res).length > 0) {
             this.isLoggedIn = true;
             this.userData = res;
           }
         },
-        (err) => {
+        error: (err) => {
             this.tryUpdateToken();
         }
-      );
+      });
     }
   }
 

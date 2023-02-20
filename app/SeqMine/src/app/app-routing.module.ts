@@ -30,6 +30,7 @@ const routes: Routes = [
   },
   {
     path: 'login',
+    canActivate: [AuthGuard],
     data: { onlyLoggedIn: false },
     component: LoginComponent,
   },

@@ -7,7 +7,8 @@ import {
   Router,
   Data,
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of} from 'rxjs';
+import { tap, map, catchError } from 'rxjs/operators';
 import { SessionHandlingService } from '../services/session-handling.service';
 
 @Injectable({
@@ -30,22 +31,44 @@ export class AuthGuard implements CanActivate {
 
     const params: Data = route.data;
 
-    // Check login requirement.
-    // This must apply for all routes which uses this guard.
-    if (this.sessionHandler.isLoggedIn !== params['onlyLoggedIn']) {
-      this.router.navigate(['/home']);
-      return false;
-    }
+    return this.sessionHandler.validateSessionToken().pipe(
+        map(user => {
 
-    // Check role requirement.
-    // This is an optional parameter.
-    if (params['rolesOnly'] !== undefined) {
-      if (!params['rolesOnly'].includes(this.sessionHandler.userData.role)) {
-        this.router.navigate(['/home']);
-        return false;
-      }
-    }
+            // If token returns request, then user is logged in.
+            // If "onlyLoggedIn" set false, then we block access.
+            if (params['onlyLoggedIn'] !== undefined) {
+              if (params['onlyLoggedIn'] === false) {
+                this.router.navigate(['/home']);
+                return false;
+              }
+            }
 
-    return true;
+
+            // Check role requirement.
+            // This is an optional parameter.
+            if (params['rolesOnly'] !== undefined) {
+              if (!params['rolesOnly'].includes(user.role)) {
+                this.router.navigate(['/home']);
+                return false;
+              }
+            }
+
+            return true;
+        }),
+        // If error occurs, then return to home.
+        catchError(err => {
+
+            // If token returns error, then user isn't logged in.
+            // If "onlyLoggedIn" set false, then we let the access.
+            if (params['onlyLoggedIn'] !== undefined) {
+              if (params['onlyLoggedIn'] === false) {
+                return of(true);
+              }
+            }
+
+            this.router.navigate(['/home']);
+            return of(false);
+        })
+    );
   }
 }
