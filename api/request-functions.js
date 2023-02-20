@@ -35,10 +35,11 @@ const handleRegisterFileUpload = (app, connection) => {
       ` INSERT INTO sequence_files VALUES
             (
                 NEXT VALUE FOR sequence_file_id,
-                ?, ?, ?, ?, ?, CURRENT_TIMESTAMP(), ?
+                ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP(), ?
             ) `,
       [
         req.body.name,
+        req.body.description,
         req.body.size,
         `${__dirname}/uploads/${req.body.name}`,
         req.body.gene,

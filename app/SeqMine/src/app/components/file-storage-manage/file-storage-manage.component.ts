@@ -44,7 +44,6 @@ export class FileStorageManageComponent {
       Validators.min(1),
       Validators.max(999999999999),
     ]),
-    fileName: new FormControl('', [Validators.required]),
     geneID: new FormControl('', [
       Validators.required,
       Validators.maxLength(25),

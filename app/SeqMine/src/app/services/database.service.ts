@@ -176,6 +176,7 @@ export class DatabaseService {
       this.#BASE_URL + '/registerSequence',
       {
         name: storageEntity.name,
+        description: storageEntity.description,
         size: storageEntity.size,
         gene: storageEntity.gene,
         taxonomyID: storageEntity.taxonomyID,

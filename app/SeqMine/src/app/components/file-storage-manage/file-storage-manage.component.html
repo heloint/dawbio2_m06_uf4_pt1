@@ -17,24 +17,9 @@
         <ng-template #modifyLegend>
           <div class="my-3">
             <h3>Upload sequence files</h3>
+            <small><i>* You can upload files in batches, but only to one corresponding species and gene at a time.</i></small>
           </div>
         </ng-template>
-
-        <!-- FILE NAME -->
-        <div class="form-group">
-          <label for="exampleInputEmail1" class="form-label mt-3"
-            >File name</label
-          >
-          <input type="text" class="form-control" formControlName="fileName" />
-          <span
-            class="text-danger"
-            *ngIf="this.sequenceManageForm.get('fileName')?.errors?.['required'] &&
-                             this.sequenceManageForm.get('fileName')?.touched"
-          >
-            File name field cannot be empty.
-          </span>
-        </div>
-        <!-- END: FILE NAME -->
 
         <!-- TAX. ID -->
         <div class="form-group">
@@ -110,6 +95,7 @@
             class="text-danger"
             *ngIf="this.sequenceManageForm.get('description')?.errors?.['required'] &&
                              this.sequenceManageForm.get('description')?.touched"
+            class="text-danger"
           >
             Description field cannot be empty.
           </span>
@@ -117,8 +103,9 @@
             class="text-danger"
             *ngIf="this.sequenceManageForm.get('geneID')?.errors?.['maxlength'] &&
                              this.sequenceManageForm.get('geneID')?.touched"
+            class="text-danger"
           >
-            Description is too long.
+            Description is too long. Maximum 200 characters are permitted.
           </span>
         </div>
         <!-- END: DESCRIPTION -->

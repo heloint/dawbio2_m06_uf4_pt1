@@ -65,7 +65,7 @@ INSERT INTO users VALUES
 -- #####################################################################
 CREATE TABLE IF NOT EXISTS sequence_files(
                                 file_id INT(10) PRIMARY KEY,
-                                name VARCHAR(25) NOT NULL CHECK(name <> ''),
+                                name VARCHAR(100) NOT NULL CHECK(name <> ''),
                                 description TEXT NOT NULL CHECK(description <> ''),
                                 size INT(60) NOT NULL,
                                 path TEXT NOT NULL CHECK(path <> ''),
@@ -79,6 +79,8 @@ CREATE TABLE IF NOT EXISTS sequence_files(
 
 INSERT INTO sequence_files VALUES
     (NEXT VALUE FOR sequence_file_id, "fasta-example.fasta", "Testing fasta file.", 100, "./uploads/fasta-example.fasta", "SELL", 9606, CURRENT_TIMESTAMP(), "admin"),
-    (NEXT VALUE FOR sequence_file_id, "fastq-example.fastq", "Testing fastq file.", 101, "./uploads/fastq-example.fastq", "SELL", 9615, CURRENT_TIMESTAMP(), "investigator")
+    (NEXT VALUE FOR sequence_file_id, "fastq-example.fastq", "Testing fastq file.", 101, "./uploads/fastq-example.fastq", "SELL", 9615, CURRENT_TIMESTAMP(), "investigator"),
+    (NEXT VALUE FOR sequence_file_id, "alcohol_dehydrogenase-homo_sapiens.fasta", "ADH1B gene sample of human.",336, "./uploads/alcohol_dehydrogenase-homo_sapiens.fasta", "ADH1B", 9606, CURRENT_TIMESTAMP(), "investigator"),
+    (NEXT VALUE FOR sequence_file_id, "alcohol_dehydrogenase-drosophila_melanogaster.fasta", "ADH1B gene sample of fruit fly.",336, "./uploads/alcohol_dehydrogenase-drosophila_melanogaster.fasta", "ADH", 7227, CURRENT_TIMESTAMP(), "investigator")
 ;
 -- #####################################################################
