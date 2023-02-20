@@ -125,7 +125,7 @@ const handleDownloadSequenceFile = (app, connection) => {
 
 /**
  * Function to handle post request to delete the
- * user with the corresponding ID.
+ * file with the corresponding ID.
  * @param {Object} app - Express application
  * @param {Object} authenticatejwt - Token authentication with JWT.
  * @param {Object} connection - Connector instance to MySQL.
@@ -185,37 +185,71 @@ const handleGetSequenceFiles = (app, connection) => {
 
 /**
  * Function to handle post request to update the
- * user with the received datas.
+ * sequence file with the received datas.
  * @param {Object} app - Express application
  * @param {Object} authenticatejwt - Token authentication with JWT.
  * @param {Object} connection - Connector instance to MySQL.
  */
 const handlePostUpdateSeqFile = (app, authenticatejwt, connection) => {
   app.post("/updateSequenceFile", authenticatejwt, function (req, res) {
+    // First get the path of the existing file.
     connection.query(
-      `
+      `SELECT path FROM sequence_files WHERE file_id = ?`,
+      [req.body.file_id],
+      function (error, result, field) {
+        if (error) {
+          console.log(error);
+          res.status(400).send({ results: false });
+        } else {
+          // If the path of the existing file is found, continue..
+          if (result.length > 0) {
+            // Sanitize the new file name from weird chars..
+            const sanitizedFileName = req.body.name.replace(/^\W+|\W+$/g, "");
+            // Create the new path for the given new file name.
+            const newPath = `${path.dirname(
+              result[0].path
+            )}/${sanitizedFileName}`;
+
+            // Move / rename the file.
+            fs.rename(result[0].path, newPath, (err) => {
+              if (err) {
+                res.status(400).send({ results: false });
+              }
+            });
+
+            // Register the new file data in the DB.
+            connection.query(
+              `
             UPDATE sequence_files
             SET
                 name=?,
+                path=?,
                 description=?,
                 taxonomy_id=?,
                 gene=?
             WHERE
                 file_id=?
         `,
-      [
-        req.body.name,
-        req.body.description,
-        req.body.taxonomy_id,
-        req.body.gene,
-        req.body.file_id,
-      ],
-      function (error, result, field) {
-        if (error) {
-          console.log(error);
-          res.status(400).send({ results: false });
-        } else {
-          res.status(200).send({ result: true });
+              [
+                req.body.name,
+                newPath,
+                req.body.description,
+                req.body.taxonomy_id,
+                req.body.gene,
+                req.body.file_id,
+              ],
+              function (error, result, field) {
+                if (error) {
+                  console.log(error);
+                  res.status(400).send({ results: false });
+                } else {
+                  res.status(200).send({ result: true });
+                }
+              }
+            );
+          } else {
+            res.status(200).send({});
+          }
         }
       }
     );
@@ -229,6 +263,7 @@ const handlePostUpdateSeqFile = (app, authenticatejwt, connection) => {
  */
 const handlePostSeqFileByID = (app, connection) => {
   app.post("/fileByID", function (req, res) {
+    // const newFilePath = req.body.name
     connection.query(
       ` SELECT * FROM sequence_files WHERE file_id = ?`,
       [req.body.fileID],
@@ -247,7 +282,6 @@ const handlePostSeqFileByID = (app, connection) => {
     );
   });
 };
-
 
 /**
  * Function to handle getting all roles.
@@ -434,7 +468,7 @@ const handlePostSessionValidation = (app) => {
 /*
  * Handles the POST request for refreshing a user's session using a refresh token.
  * @param {Object} app - Express application instance
-*/
+ */
 const handlePostRefreshSession = (app) => {
   app.post("/refreshSession", (req, res) => {
     const refreshToken = req.body.refreshToken;
@@ -450,7 +484,6 @@ const handlePostRefreshSession = (app) => {
         console.log(err);
         return res.sendStatus(403);
       }
-
 
       const accessToken = jwt.sign(
         {

@@ -25,6 +25,31 @@
           </div>
         </ng-template>
 
+        <!-- FILE NAME -->
+        <div *ngIf="isModifyFileMode" class="form-group">
+          <label for="exampleInputEmail1" class="form-label mt-3"
+            >File name</label
+          >
+          <input type="text" class="form-control" formControlName="fileName"/>
+          <span
+            class="text-danger"
+          *ngIf="this.sequenceManageForm.get('fileName')?.errors?.['required'] &&
+                             this.sequenceManageForm.get('fileName')?.touched"
+        >
+          File name field cannot be empty.
+        </span>
+        <span
+            *ngIf="this.sequenceManageForm.get('fileName')?.errors?.['pattern'] &&
+                               this.sequenceManageForm.get('fileName')?.touched"
+            class="text-danger"
+          >
+            File name contains illegal characters, such as special characters.
+            Accessing parent directory is not allowed!
+          </span>
+        
+        </div>
+        <!-- END: FILE NAME -->
+
         <!-- TAX. ID -->
         <div class="form-group">
           <label for="exampleInputEmail1" class="form-label mt-3"

@@ -42,6 +42,10 @@ export class FileStorageManageComponent {
 
   // Initialize login FormGroup + FormControl.
   sequenceManageForm: FormGroup = new FormGroup({
+    fileName: new FormControl('', [
+      Validators.required,
+      Validators.pattern('^(?!.*\.\.\/).*$'),
+    ]),
     taxonomyID: new FormControl(0, [
       Validators.required,
       Validators.min(1),
@@ -218,6 +222,9 @@ export class FileStorageManageComponent {
         next: (result) => {
       if (Object.keys(result).length > 0) {
         const foundFile: DBStorageEntity = result.result[0];
+        this.sequenceManageForm.controls['fileName'].setValue(
+            foundFile.name
+        );
         this.sequenceManageForm.controls['taxonomyID'].setValue(
           foundFile.taxonomy_id
         );
@@ -235,6 +242,7 @@ export class FileStorageManageComponent {
         }
     }
     });
+
   }
 
   ngOnInit() {
@@ -248,6 +256,8 @@ export class FileStorageManageComponent {
       // In this case we are re-using the same component for uploading and modifying.
       // If this is not assigned, then it will complain about invalid form.
       this.sequenceManageForm.controls['files'].setValue('____');
+    } else {
+        this.sequenceManageForm.controls['fileName'].setValue('____');
     }
   }
 }
