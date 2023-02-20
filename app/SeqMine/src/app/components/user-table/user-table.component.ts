@@ -17,6 +17,7 @@ export class UserTableComponent {
   usersToDisplay: Array<User> = this.allUsersArr.map((e) => e);
   recentlyDeletedUser: string | null = null;
   userDeletionStatus: Boolean | null = null;
+  errorMsg: string | null = null;
 
   constructor(
     private route: Router,
@@ -85,7 +86,9 @@ export class UserTableComponent {
         });
       },
       (error) => {
-        console.log('do not have permission');
+        if (error.status !== 403) {
+          this.errorMsg = 'Internal error has occured.';
+        }
       }
     );
   }

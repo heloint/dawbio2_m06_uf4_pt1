@@ -16,7 +16,7 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="col-8 collapse navbar-collapse" id="navbarColor02">
+    <div class="col-5 collapse navbar-collapse" id="navbarColor02">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a
@@ -109,6 +109,25 @@
           <a class="nav-link" href="#" (click)="logout()">Log out</a>
         </li>
       </ul>
+
+      <!-- Logged in user tag -->
+      <div
+        *ngIf="this.isLoggedIn"
+        class="d-flex align-items-center mx-5"
+        id="logged-in-profile-tag"
+      >
+        <p class="m-0">
+          <img
+            src="/assets/images/anonymous-user-img.png"
+            alt="User profile picture"
+          />
+        </p>
+        <div>
+          <p class="m-0">{{ this.userData.username }}</p>
+          <p class="m-0">{{ this.userData.role }}</p>
+        </div>
+      </div>
+      <!-- END: Logged in user tag -->
     </div>
   </div>
 </nav>

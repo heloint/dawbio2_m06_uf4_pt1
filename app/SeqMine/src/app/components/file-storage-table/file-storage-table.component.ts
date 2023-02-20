@@ -20,6 +20,7 @@ export class FileStorageTableComponent {
   filesToDisplay: Array<StorageEntity> = this.allFilesArr.map((e) => e);
   recentlyDeletedUser: string | null = null;
   userDeletionStatus: Boolean | null = null;
+  internalErrorMsg: string | null = null;
 
   constructor(
     private route: Router,
@@ -53,7 +54,6 @@ export class FileStorageTableComponent {
           entity.uploadedBy,
         ];
 
-        console.log(entityValues);
         for (let val of entityValues) {
           if (val.includes(term)) {
             return true;
@@ -79,27 +79,36 @@ export class FileStorageTableComponent {
    * @returns {any} - A subscription to the getAllUsers result.
    */
   fetchAllSequenceFiles(): any {
-    return this.database.getAllSequenceFiles().subscribe((files) => {
-      files.result.forEach((file) => {
-        this.allFilesArr.push(
-          new StorageEntity(
-            file.file_id,
-            file.name,
-            file.description,
-            file.size,
-            file.path,
-            file.gene,
-            file.taxonomy_id,
-            new Date(file.upload_date),
-            file.uploaded_by
-          )
-        );
+    return this.database.getAllSequenceFiles().subscribe({
+      next: (files) => {
+        files.result.forEach((file) => {
+          this.allFilesArr.push(
+            new StorageEntity(
+              file.file_id,
+              file.name,
+              file.description,
+              file.size,
+              file.path,
+              file.gene,
+              file.taxonomy_id,
+              new Date(file.upload_date),
+              file.uploaded_by
+            )
+          );
 
-        // Create a copy of the original variable, "this.allFilesArr".
-        // This copy will be used to be filtered, rather than mutating the original,
-        // which will contain all the found files.
-        this.filesToDisplay = this.allFilesArr.map((e) => e);
-      });
+          // Create a copy of the original variable, "this.allFilesArr".
+          // This copy will be used to be filtered, rather than mutating the original,
+          // which will contain all the found files.
+          this.filesToDisplay = this.allFilesArr.map((e) => e);
+        });
+      },
+      error: (error) => {
+        if (error.status !== 403) {
+          this.internalErrorMsg = 'An internal error has occured.';
+        } else {
+          this.route.navigate(['/home']);
+        }
+      },
     });
   }
 

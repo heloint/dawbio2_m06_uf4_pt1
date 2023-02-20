@@ -27,8 +27,8 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
+
     const params: Data = route.data;
-    console.log('params', params);
 
     // Check login requirement.
     // This must apply for all routes which uses this guard.
@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate {
     // Check role requirement.
     // This is an optional parameter.
     if (params['rolesOnly'] !== undefined) {
-      if (this.sessionHandler.userData.role !== params['rolesOnly']) {
+      if (!params['rolesOnly'].includes(this.sessionHandler.userData.role)) {
         this.router.navigate(['/home']);
         return false;
       }

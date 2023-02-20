@@ -347,7 +347,7 @@ const handlePostLogin = (app, connection) => {
                 role: result[0].role_name,
               },
               ACCESS_TOKEN_SECRET,
-              { expiresIn: "20m" }
+              { expiresIn: "120m" }
             );
 
             const refreshToken = jwt.sign(
@@ -398,7 +398,6 @@ const handlePostSessionValidation = (app) => {
         console.log(err);
         return res.sendStatus(403);
       }
-      console.log(user);
       const accessToken = jwt.sign(
         {
           username: user.username,
@@ -407,7 +406,7 @@ const handlePostSessionValidation = (app) => {
           role: user.role,
         },
         ACCESS_TOKEN_SECRET,
-        { expiresIn: "20m" }
+        { expiresIn: "120m" }
       );
 
       const refreshToken = jwt.sign(
@@ -442,7 +441,6 @@ const handlePostRefreshSession = (app) => {
     if (!refreshToken) {
       return res.sendStatus(401);
     }
-
     if (!REFRESH_TOKENS.includes(refreshToken)) {
       return res.sendStatus(403);
     }
@@ -453,22 +451,23 @@ const handlePostRefreshSession = (app) => {
         return res.sendStatus(403);
       }
 
+
       const accessToken = jwt.sign(
         {
           username: user.username,
           first_name: user.first_name,
           last_name: user.last_name,
-          role: user.role_name,
+          role: user.role,
         },
         ACCESS_TOKEN_SECRET,
-        { expiresIn: "20m" }
+        { expiresIn: "1m" }
       );
 
       res.status(200).send({
         username: user.username,
         first_name: user.first_name,
         last_name: user.last_name,
-        role: user.role_name,
+        role: user.role,
         accessToken: accessToken,
         refreshToken: refreshToken,
       });
@@ -634,7 +633,6 @@ const handlePostDeleteUserByID = (app, authenticatejwt, connection) => {
           console.log(error);
           res.status(400).send({ results: false });
         } else {
-          console.log("Succesfully deleted user.");
           res.status(200).send({ result: true });
         }
       }
@@ -682,7 +680,6 @@ const handlePostUpdateUser = (app, authenticatejwt, connection) => {
           console.log(error);
           res.status(400).send({ results: false });
         } else {
-          console.log("Succesfully deleted user.");
           res.status(200).send({ result: true });
         }
       }

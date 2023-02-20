@@ -19,6 +19,7 @@ export class RegisterComponent {
   modificationResult: Boolean | null = null;
   registrationResult: Boolean | null = null;
   errorMessage: string = 'Failed to create user! ';
+  internalErrorMsg: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -138,8 +139,13 @@ export class RegisterComponent {
           this.registrationResult = result.result;
         },
         error: (error) => {
-          this.registrationResult = false;
-          this.errorMessage += error.error.errorMsg;
+
+            if (error.status !== 403) {
+                this.internalErrorMsg = 'An internal error has occured.';
+            } else {
+              this.registrationResult = false;
+              this.errorMessage = error.error.errorMsg;
+            }
         },
       });
   }

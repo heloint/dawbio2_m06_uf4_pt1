@@ -45,16 +45,19 @@ const routes: Routes = [
   },
   {
     path: 'user-table',
+    canActivate: [AuthGuard],
     data: { onlyLoggedIn: true, rolesOnly: ['admin'] },
     component: UserTableComponent,
   },
   {
     path: 'user-modify',
+    canActivate: [AuthGuard],
     data: { onlyLoggedIn: true, rolesOnly: ['admin'] },
     component: UserManageComponent,
   },
   {
     path: 'user-add',
+    canActivate: [AuthGuard],
     data: { onlyLoggedIn: true, rolesOnly: ['admin'] },
     component: UserManageComponent,
   },
@@ -64,16 +67,19 @@ const routes: Routes = [
   },
   {
     path: 'file-storage-manage',
+    canActivate: [AuthGuard],
     data: { onlyLoggedIn: true, rolesOnly: ['admin', 'investigator'] },
     component: FileStorageManageComponent,
   },
   {
     path: 'file-storage-modify',
+    canActivate: [AuthGuard],
     data: { onlyLoggedIn: true, rolesOnly: ['admin', 'investigator'] },
     component: FileStorageManageComponent,
   },
   {
     path: 'confirm-page',
+    canActivate: [AuthGuard],
     data: { onlyLoggedIn: true, rolesOnly: ['admin', 'investigator'] },
     component: ConfirmationPageComponent,
   },

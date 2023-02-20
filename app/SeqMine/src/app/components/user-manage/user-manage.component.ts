@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../models/user.model';
 import { Role } from '../../models/role.model';
 import {
@@ -8,6 +8,8 @@ import {
   DBRole,
 } from '../../services/database.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { SessionHandlingService } from '../../services/session-handling.service';
+import { retry } from 'rxjs';
 
 @Component({
   selector: 'app-user-manage',
@@ -25,10 +27,13 @@ export class UserManageComponent {
   showPassConf: Boolean = false;
   passwordType: string = 'password';
   passwordConfType: string = 'password';
+  internalErrorMsg: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
-    private database: DatabaseService
+    private redirectRoute: Router,
+    private database: DatabaseService,
+    private sessionHandler: SessionHandlingService,
   ) {}
 
   // Initialize login FormGroup + FormControl.
@@ -65,7 +70,8 @@ export class UserManageComponent {
    * @param inputID number
    * */
   fetchUserByID(inputID: number) {
-    return this.database.getUserByID(inputID).subscribe((result) => {
+    return this.database.getUserByID(inputID).subscribe({
+        next: (result) => {
       if (Object.keys(result).length > 0) {
         const foundUser: DBUser = result.result[0];
         this.userManageForm.controls['id'].setValue(foundUser.user_id);
@@ -78,6 +84,10 @@ export class UserManageComponent {
         );
         this.userManageForm.controls['lastName'].setValue(foundUser.last_name);
       }
+    },
+    error: (error) => {
+        this.redirectRoute.navigate(['/home']);
+    }
     });
   }
 
@@ -86,10 +96,19 @@ export class UserManageComponent {
    * @return {void}
    */
   fetchRoles() {
-    return this.database.getAllRoles().subscribe((result) => {
-      result.result.forEach((role) => {
-        this.roles.push(new Role(role.role_id, role.role_name));
-      });
+    return this.database.getAllRoles().subscribe({
+      next: (result) => {
+        result.result.forEach((role) => {
+          this.roles.push(new Role(role.role_id, role.role_name));
+        });
+      },
+      error: (error) => {
+            if (error.status !== 403) {
+                this.internalErrorMsg = 'An internal error has occured.';
+            } else {
+                this.redirectRoute.navigate(['/home']);
+            }
+      }
     });
   }
 
@@ -98,10 +117,19 @@ export class UserManageComponent {
    * @return {void}
    */
   fetchLastUserID() {
-    return this.database.getLastUserID().subscribe((result) => {
-      this.userManageForm.controls['id'].setValue(result.result + 1);
+    return this.database.getLastUserID().subscribe({
+        next: (result) => {
+          this.userManageForm.controls['id'].setValue(result.result + 1);
+        },
+        error: (error) => {
+            if (error.status !== 403) {
+                this.internalErrorMsg = 'An internal error has occured.';
+            } else {
+                this.redirectRoute.navigate(['/home']);
+            }
+        }
     });
-  }
+    }
 
   /**
    * Updates a user in the database.

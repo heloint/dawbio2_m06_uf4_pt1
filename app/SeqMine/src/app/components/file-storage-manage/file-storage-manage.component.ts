@@ -7,7 +7,7 @@ import {
 import { SessionHandlingService } from '../../services/session-handling.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { StorageEntity } from '../../models/storage-entity.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export type ProgressEntity = {
   value: number;
@@ -29,12 +29,15 @@ export class FileStorageManageComponent {
     'Failed to upload files. Contact with our maintanence.';
   isModifyFileMode: Boolean = false;
   modificationResult: Boolean | null = null;
+    internalErrorMsg: string | null = null;
 
   constructor(
     private database: DatabaseService,
     private http: HttpClient,
     private route: ActivatedRoute,
+    private redirectRoute: Router,
     private sessionHandler: SessionHandlingService
+
   ) {}
 
   // Initialize login FormGroup + FormControl.
@@ -206,11 +209,15 @@ export class FileStorageManageComponent {
       });
   }
 
+  /* Gets data about file corresponding to the given ID.
+   * @param { number } id
+   * @return { void }
+   * */
   fetchFileByID(id: number) {
-    return this.database.getFileByID(id).subscribe((result) => {
+    return this.database.getFileByID(id).subscribe({
+        next: (result) => {
       if (Object.keys(result).length > 0) {
         const foundFile: DBStorageEntity = result.result[0];
-        this.sequenceManageForm.controls['fileName'].setValue(foundFile.name);
         this.sequenceManageForm.controls['taxonomyID'].setValue(
           foundFile.taxonomy_id
         );
@@ -219,6 +226,14 @@ export class FileStorageManageComponent {
           foundFile.description
         );
       }
+    },
+    error: (error) => {
+        if (error.status !== 403) {
+            this.internalErrorMsg = 'An internal error has occured.';
+        } else {
+            this.redirectRoute.navigate(['/home']);
+        }
+    }
     });
   }
 

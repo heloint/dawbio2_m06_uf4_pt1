@@ -17,6 +17,10 @@ export class LoginComponent {
 
   validationResult!: User | null;
 
+  get internalErrorMsg(): string | null {
+      return this.sessionService.internalErrorMsg;
+  }
+
   /*
    * Check if the user logged in.
    * @return Boolean

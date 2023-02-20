@@ -1,4 +1,8 @@
 <div class="container">
+    <div *ngIf="internalErrorMsg" class="text-center text-danger">
+        <h3>{{ internalErrorMsg }}</h3>
+    </div>
+
   <fieldset>
     <h3 class="text-center mt-5">Login</h3>
     <form

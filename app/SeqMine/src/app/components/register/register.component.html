@@ -1,4 +1,7 @@
 <div class="container">
+    <div *ngIf="internalErrorMsg" class="text-center text-danger">
+        <h3>{{ internalErrorMsg }}</h3>
+    </div>
   <div class="row justify-content-center">
     <form
       [formGroup]="userRegistrationForm"

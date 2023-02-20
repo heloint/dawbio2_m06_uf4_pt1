@@ -3,7 +3,13 @@
     <h3 class="text-center">Sequence Files</h3>
   </div>
 
-  <div class="row">
+  <div *ngIf="internalErrorMsg" class="text-center text-danger">
+      <h3>
+        {{ internalErrorMsg }}
+      </h3>
+  </div>
+
+  <div *ngIf="!internalErrorMsg" class="row">
     <h3
       *ngIf="getFileDeletionStatus()"
       class="text-center"

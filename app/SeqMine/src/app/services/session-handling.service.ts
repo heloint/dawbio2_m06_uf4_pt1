@@ -32,6 +32,7 @@ export class SessionHandlingService {
     accessToken: '',
     refreshToken: '',
   };
+  internalErrorMsg: string | null = null;
 
   constructor(
     private route: Router,
@@ -93,17 +94,26 @@ export class SessionHandlingService {
       this.createToken()
     );
 
-    validationResult.subscribe((res) => {
-      if (Object.keys(res).length > 0) {
-        localStorage['token'] = res.accessToken;
-        localStorage['refreshToken'] = res.refreshToken;
+    validationResult.subscribe({
+        next: (res) => {
+          if (Object.keys(res).length > 0) {
+            localStorage['token'] = res.accessToken;
+            localStorage['refreshToken'] = res.refreshToken;
 
-        this.userData = res;
-        this.isLoggedIn = true;
-        this.route.navigate(['/home']);
-      } else {
-        this.validationError = 'Invalid username or password.';
-      }
+            this.userData = res;
+            this.isLoggedIn = true;
+            this.route.navigate(['/home']);
+          } else {
+            this.validationError = 'Invalid username or password.';
+          }
+        },
+        error: (error) => {
+            if (error.status !== 403) {
+                this.internalErrorMsg = 'An internal error has occured.';
+            } else {
+                this.route.navigate(['/home']);
+            }
+        }
     });
   }
 
@@ -125,11 +135,38 @@ export class SessionHandlingService {
    * @param password string
    * @return Observable<SessionData>
    * */
-  private validateRefreshToken(): Observable<SessionData> {
+  public validateRefreshToken(): Observable<SessionData> {
     return this.http.post<SessionData>(this.#BASE_URL + '/refreshSession', {
       refreshToken: localStorage['refreshToken'],
     });
   }
+
+  /* Send a request to the server,
+   * to generate an updated accessToken with the refreshToken.
+   * @return { void }
+   * */
+  public tryUpdateToken() {
+      const refreshValidationResult: Observable<SessionData> =
+        this.validateRefreshToken();
+
+      refreshValidationResult.subscribe(
+        (res) => {
+          if (Object.keys(res).length > 0) {
+            this.isLoggedIn = true;
+            this.userData = res;
+
+            localStorage['token'] = res.accessToken;
+            localStorage['refreshToken'] = res.refreshToken;
+          }
+        },
+        (err) => {
+          this.isLoggedIn = false;
+          localStorage.clear();
+          this.route.navigate(['/home']);
+        }
+      );
+  }
+
 
   /* Try to validate the session token of the user.
    * If the token is valid and still alive, then continue with the session.
@@ -155,22 +192,7 @@ export class SessionHandlingService {
           }
         },
         (err) => {
-          const refreshValidationResult: Observable<SessionData> =
-            this.validateRefreshToken();
-
-          console.log('enters the refresh troubleshoot');
-          refreshValidationResult.subscribe(
-            (res) => {
-              if (Object.keys(res).length > 0) {
-                this.isLoggedIn = true;
-                this.userData = res;
-              }
-            },
-            (err) => {
-              this.isLoggedIn = false;
-              this.route.navigate(['/home']);
-            }
-          );
+            this.tryUpdateToken();
         }
       );
     }
