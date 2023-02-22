@@ -63,6 +63,7 @@ connection.connect(function (err) {
  * @return void
  * */
 const authenticateRole = (req, res, next) => {
+    console.log('req.path', req.path);
   const permitedRoles = PATH_ROLE_RESTRICTIONS[req.path];
   const authHeader = req.headers.authorization;
 
@@ -96,6 +97,7 @@ global.PATH_ROLE_RESTRICTIONS = {
   "/lastUserID": ["admin"],
   "/users": ["admin"],
   "/userByID": ["admin"],
+  "/addUser": ["admin"],
   "/deleteUserByID": ["admin"],
   "/updateUser": ["admin"],
 };
