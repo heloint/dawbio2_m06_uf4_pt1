@@ -85,7 +85,7 @@ const handleFileUpload = (app) => {
 };
 
 /**
- * Function to handle the file upload
+ * Function to handle the file download
  * @param {Object} app - Express application
  * @param {Object} connection - Connector instance to MySQL.
  */
@@ -190,7 +190,7 @@ const handleGetSequenceFiles = (app, connection) => {
  * @param {Object} authenticatejwt - Token authentication with JWT.
  * @param {Object} connection - Connector instance to MySQL.
  */
-const handlePostUpdateSeqFile = (app, authenticatejwt, connection) => {
+const handlePostUpdateSeqFile = (app, authenticatejwt, connection, lala) => {
   app.post("/updateSequenceFile", authenticatejwt, function (req, res) {
     // First get the path of the existing file.
     connection.query(
@@ -493,7 +493,7 @@ const handlePostRefreshSession = (app) => {
           role: user.role,
         },
         ACCESS_TOKEN_SECRET,
-        { expiresIn: "1m" }
+        { expiresIn: "120m" }
       );
 
       res.status(200).send({

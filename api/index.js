@@ -55,13 +55,15 @@ connection.connect(function (err) {
 });
 
 /* Authenticates and assures that the incoming request
- * is from a user with "investigator" level role.
+ * is from a user with the given level of role declared
+ * in the "PATH_ROLE_RESTRICTIONS" global variable.
  * @param req request
  * @param res response
  * @param next
  * @return void
  * */
-const authenticateInvestigator = (req, res, next) => {
+const authenticateRole = (req, res, next) => {
+  const permitedRoles = PATH_ROLE_RESTRICTIONS[req.path];
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
@@ -72,7 +74,7 @@ const authenticateInvestigator = (req, res, next) => {
         return res.sendStatus(403);
       }
 
-      if (!user.role || user.role !== "investigator") {
+      if (!permitedRoles.includes(user.role)) {
         return res.sendStatus(403);
       }
 
@@ -84,34 +86,18 @@ const authenticateInvestigator = (req, res, next) => {
   }
 };
 
-/* Authenticates and assures that the incoming request
- * is from a user with "admin" level role.
- * @param req request
- * @param res response
- * @param next
- * @return void
- * */
-const authenticateAdmin = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-
-  if (authHeader) {
-    const token = authHeader.split(" ")[1];
-
-    jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
-      if (err) {
-        return res.sendStatus(403);
-      }
-
-      if (!user.role || user.role !== "admin") {
-        return res.sendStatus(403);
-      }
-
-      req.user = user;
-      next();
-    });
-  } else {
-    res.sendStatus(401);
-  }
+// PERMISSIONS FOR RESTRICTED SITES
+// @key {string} An API route that we want to restrict.
+// @key {array<string>} An array of roles, that are permitted to consume the API route.
+global.PATH_ROLE_RESTRICTIONS = {
+  "/deleteFileByID": ["admin"],
+  "/updateSequenceFile": ["admin", "investigator"],
+  "/roles": ["admin"],
+  "/lastUserID": ["admin"],
+  "/users": ["admin"],
+  "/userByID": ["admin"],
+  "/deleteUserByID": ["admin"],
+  "/updateUser": ["admin"],
 };
 
 // Initialize route endpoint listeners.
@@ -121,26 +107,22 @@ const authenticateAdmin = (req, res, next) => {
 // ============================================
 requestFunctions.handleFileUpload(app);
 requestFunctions.handleDownloadSequenceFile(app, connection);
-requestFunctions.handlePostDeleteFileByID(app, authenticateAdmin, connection);
+requestFunctions.handlePostDeleteFileByID(app, authenticateRole, connection);
 requestFunctions.handleGetSequenceFiles(app, connection);
-requestFunctions.handlePostUpdateSeqFile(
-  app,
-  authenticateInvestigator,
-  connection
-);
+requestFunctions.handlePostUpdateSeqFile(app, authenticateRole, connection);
 requestFunctions.handleRegisterFileUpload(app, connection);
 requestFunctions.handlePostSeqFileByID(app, connection);
 // ============================================
 
 // USERS
 // ============================================
-requestFunctions.handleGetRoles(app, authenticateAdmin, connection);
-requestFunctions.handleGetLastUserID(app, authenticateAdmin, connection);
-requestFunctions.handleGetUsers(app, authenticateAdmin, connection);
-requestFunctions.handlePostAddUser(app, authenticateAdmin, connection);
-requestFunctions.handlePostUserByID(app, authenticateAdmin, connection);
-requestFunctions.handlePostDeleteUserByID(app, authenticateAdmin, connection);
-requestFunctions.handlePostUpdateUser(app, authenticateAdmin, connection);
+requestFunctions.handleGetRoles(app, authenticateRole, connection);
+requestFunctions.handleGetLastUserID(app, authenticateRole, connection);
+requestFunctions.handleGetUsers(app, authenticateRole, connection);
+requestFunctions.handlePostAddUser(app, authenticateRole, connection);
+requestFunctions.handlePostUserByID(app, authenticateRole, connection);
+requestFunctions.handlePostDeleteUserByID(app, authenticateRole, connection);
+requestFunctions.handlePostUpdateUser(app, authenticateRole, connection);
 requestFunctions.handlePostRegisterUser(app, connection);
 // ============================================
 
