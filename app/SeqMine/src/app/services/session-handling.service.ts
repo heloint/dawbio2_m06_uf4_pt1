@@ -21,7 +21,7 @@ export type SessionData = {
 export class SessionHandlingService {
   // Initialize and declare variables.
   isLoggedIn: Boolean = false;
-  #BASE_URL: string = 'http://localhost:3000';
+  // #BASE_URL: string = 'http://localhost:3000';
   validationError!: string | null;
   userData: SessionData = {
     role: '',
@@ -62,7 +62,7 @@ export class SessionHandlingService {
     token: string
   ): Observable<SessionData> {
     return this.http
-      .post<SessionData>(this.#BASE_URL + '/login', {
+      .post<SessionData>('/login', {
         username: usernameParam,
         password: passwordParam,
         token: token,
@@ -76,7 +76,7 @@ export class SessionHandlingService {
    * @return Observable<SessionData>
    * */
   private destroySessionToken(): Observable<SessionData> {
-    return this.http.post<SessionData>(this.#BASE_URL + '/logout', {
+    return this.http.post<SessionData>('/logout', {
       refreshToken: localStorage['refreshToken'],
     });
   }
@@ -124,7 +124,7 @@ export class SessionHandlingService {
    * @return Observable<SessionData>
    * */
   public validateSessionToken(): Observable<SessionData> {
-    return this.http.post<SessionData>(this.#BASE_URL + '/sessionValidation', {
+    return this.http.post<SessionData>('/sessionValidation', {
       token: localStorage['token'],
     });
   }
@@ -136,7 +136,7 @@ export class SessionHandlingService {
    * @return Observable<SessionData>
    * */
   private validateRefreshToken(): Observable<SessionData> {
-    return this.http.post<SessionData>(this.#BASE_URL + '/refreshSession', {
+    return this.http.post<SessionData>('/refreshSession', {
       refreshToken: localStorage['refreshToken'],
     });
   }

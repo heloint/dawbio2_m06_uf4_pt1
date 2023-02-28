@@ -20,7 +20,7 @@ export interface InfoTypes {
   providedIn: 'root',
 })
 export class CredentialValidationService {
-  #BASE_URL: string = 'http://localhost:3000';
+  // #BASE_URL: string = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 

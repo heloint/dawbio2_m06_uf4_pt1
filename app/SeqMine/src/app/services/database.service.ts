@@ -61,25 +61,25 @@ export type QueryConfirmation = {
 })
 export class DatabaseService {
   // Base URL to the REST API server.
-  #BASE_URL: string = 'http://localhost:3000';
+  // #BASE_URL: string = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
   // Requests all the users can be found in the database.
   public getAllUsers() {
-    return this.http.get<DBUserArr>(this.#BASE_URL + '/users');
+    return this.http.get<DBUserArr>('/users');
   }
 
   // Requests all the roles can be found in the database.
   public getAllRoles() {
-    return this.http.get<DBRoleArr>(this.#BASE_URL + '/roles');
+    return this.http.get<DBRoleArr>('/roles');
   }
 
   /* Requests to find a user by it's ID.
    * @param inputID number
    * */
   public getUserByID(inputID: number) {
-    return this.http.post<DBUserArr>(this.#BASE_URL + '/userByID', {
+    return this.http.post<DBUserArr>('/userByID', {
       userID: inputID,
     });
   }
@@ -88,14 +88,14 @@ export class DatabaseService {
    * @param inputID number
    * */
   public getFileByID(inputID: number) {
-    return this.http.post<DBStorageEntityArr>(this.#BASE_URL + '/fileByID', {
+    return this.http.post<DBStorageEntityArr>('/fileByID', {
       fileID: inputID,
     });
   }
 
   // Requests the last user id from the database.
   public getLastUserID() {
-    return this.http.get<DBLastUserID>(this.#BASE_URL + '/lastUserID');
+    return this.http.get<DBLastUserID>('/lastUserID');
   }
 
   /* Send a request to the server to delete a user by the argument ID.
@@ -103,7 +103,7 @@ export class DatabaseService {
    * */
   public deleteUserByID(inputID: number) {
     return this.http.post<QueryConfirmation>(
-      this.#BASE_URL + '/deleteUserByID',
+      '/deleteUserByID',
       { userID: inputID }
     );
   }
@@ -113,7 +113,7 @@ export class DatabaseService {
    * */
   public deleteFileByID(inputID: number) {
     return this.http.post<QueryConfirmation>(
-      this.#BASE_URL + '/deleteFileByID',
+      '/deleteFileByID',
       { id: inputID }
     );
   }
@@ -123,7 +123,7 @@ export class DatabaseService {
    * */
   public updateUser(user: DBUser) {
     return this.http.post<QueryConfirmation>(
-      this.#BASE_URL + '/updateUser',
+      '/updateUser',
       user
     );
   }
@@ -132,7 +132,7 @@ export class DatabaseService {
    * @param user DBUser
    * */
   public addUser(user: DBUser) {
-    return this.http.post<QueryConfirmation>(this.#BASE_URL + '/addUser', user);
+    return this.http.post<QueryConfirmation>('/addUser', user);
   }
 
   /* Send a request to the server with a File object save it on the server.
@@ -145,7 +145,7 @@ export class DatabaseService {
 
     const req = new HttpRequest(
       'POST',
-      `${this.#BASE_URL}/uploadSequence`,
+      `/uploadSequence`,
       formData,
       {
         reportProgress: true,
@@ -161,7 +161,7 @@ export class DatabaseService {
    * */
   public registerUser(user: DBUser) {
     return this.http.post<QueryConfirmation>(
-      this.#BASE_URL + '/registerUser',
+      '/registerUser',
       user
     );
   }
@@ -172,7 +172,7 @@ export class DatabaseService {
    * */
   public registerSequence(storageEntity: StorageEntity) {
     return this.http.post<QueryConfirmation>(
-      this.#BASE_URL + '/registerSequence',
+      '/registerSequence',
       {
         name: storageEntity.name,
         description: storageEntity.description,
@@ -186,11 +186,11 @@ export class DatabaseService {
 
   // Requests all the sequence files can be found in the database.
   public getAllSequenceFiles() {
-    return this.http.get<DBStorageEntityArr>(this.#BASE_URL + '/sequenceFiles');
+    return this.http.get<DBStorageEntityArr>('/sequenceFiles');
   }
 
   public generateFileDownloadHREF(id: number): string {
-    return `${this.#BASE_URL}/downloadSequenceFile?id=${id}`;
+    return `/downloadSequenceFile?id=${id}`;
   }
 
   /* Send a request to the server with a DBStorageEntity object to update it's register with the new data.
@@ -198,7 +198,7 @@ export class DatabaseService {
    * */
   public updateSequenceFile(file: DBStorageEntity) {
     return this.http.post<QueryConfirmation>(
-      this.#BASE_URL + '/updateSequenceFile',
+      '/updateSequenceFile',
       file
     );
   }
